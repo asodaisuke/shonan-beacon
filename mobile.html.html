@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SHONAN BEACON | FIELD</title>
+
+  <!-- ★★★ iframe脱出スクリプト（最優先実行）★★★ -->
+  <script>
+    // GASはgoogleusercontent.comのiframe内にコンテンツを表示する。
+    // iframe内ではブラウザのPermissions-Policyによりマイクが使えない。
+    // → トップレベルウィンドウに強制リダイレクトして「直接訪問」にする。
+    if (window.self !== window.top) {
+      // iframe内にいる → トップレベルへ脱出
+      window.top.location.href = window.location.href;
+    }
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #06090f;
+      --bg2:    #0c1220;
+      --navy:   #1a2a5e;
+      --blue:   #0d6efd;
+      --cyan:   #00d4ff;
+      --gold:   #c9a227;
+      --text:   #dde4f0;
+      --muted:  #3d4f6b;
+    }
+
+    html, body {
+      height: 100vh;
+      height: 100dvh;   /* iOS Safari対応: dynamic viewport height */
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+      color: var(--text);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: space-between;
+      /* Googleバナーが消えた後の全画面表示対応 */
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* ─── TOP BAR ─── */
+    .top-bar {
+      width: 100%; padding: 20px 24px 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .tb-title {
+      font-size: 13px; font-weight: 900; letter-spacing: 3px;
+      background: linear-gradient(120deg, #8a6210, var(--gold), #f0d060);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .tb-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-top: 3px; }
+    .tb-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
+      animation: dot-blink 2s ease-in-out infinite;
+    }
+    @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:.1} }
+
+    /* ─── MISSION SELECT ─── */
+    .mission-row {
+      width: 100%; padding: 0 24px; flex-shrink: 0;
+    }
+    .mission-sel {
+      width: 100%; background: rgba(255,255,255,.04);
+      border: 1px solid rgba(201,162,39,.2); border-radius: 10px;
+      color: var(--text); padding: 11px 14px; font-size: 13px;
+      font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+      outline: none; appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath fill='%23c9a227' d='M6 7L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+    }
+
+    /* ─── MAIN REC AREA ─── */
+    .rec-area {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0;
+      position: relative; width: 100%;
+    }
+
+    /* ripple rings */
+    .ripple-ring {
+      position: absolute;
+      width: 210px; height: 210px;
+      border-radius: 50%; border: 1.5px solid rgba(0,180,255,.5);
+      opacity: 0; pointer-events: none;
+      animation: ripple-idle 3.5s ease-out infinite;
+    }
+    .ripple-ring:nth-child(2) { animation-delay: 1.15s; }
+    .ripple-ring:nth-child(3) { animation-delay: 2.3s; }
+    @keyframes ripple-idle {
+      0%   { transform: scale(.9); opacity: .55; }
+      100% { transform: scale(2.0); opacity: 0; }
+    }
+
+    /* recording ripples — faster, brighter */
+    .ripple-ring.rec-ring {
+      border-color: rgba(0,212,255,.8);
+      animation: ripple-rec 1.4s ease-out infinite;
+    }
+    .ripple-ring.rec-ring:nth-child(2) { animation-delay: .45s; }
+    .ripple-ring.rec-ring:nth-child(3) { animation-delay: .90s; }
+    @keyframes ripple-rec {
+      0%   { transform: scale(.9); opacity: .8; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+
+    /* ── BIG BUTTON ── */
+    .rec-btn-wrap {
+      position: relative; z-index: 1;
+      width: 200px; height: 200px;
+    }
+
+    .rec-btn {
+      width: 100%; height: 100%; border-radius: 50%;
+      border: 3px solid var(--navy);
+      background: radial-gradient(circle at 40% 35%, #1a2d6e 0%, #0c183a 60%, #060c1e 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px; cursor: pointer;
+      transition: all .35s;
+      box-shadow:
+        0 0 0 6px rgba(26,42,94,.5),
+        0 0 0 12px rgba(26,42,94,.25),
+        0 20px 60px rgba(0,60,180,.4),
+        inset 0 1px 0 rgba(255,255,255,.06);
+      -webkit-tap-highlight-color: transparent;
+      position: relative; overflow: hidden;
+    }
+
+    /* inner shimmer ring */
+    .rec-btn::before {
+      content: ''; position: absolute; inset: 10px; border-radius: 50%;
+      border: 1px solid rgba(0,180,255,.18);
+    }
+    .rec-btn::after {
+      content: ''; position: absolute; inset: 20px; border-radius: 50%;
+      border: 1px solid rgba(0,180,255,.1);
+    }
+
+    .rec-btn.recording {
+      border-color: rgba(0,212,255,.6);
+      box-shadow:
+        0 0 0 6px rgba(0,100,200,.4),
+        0 0 0 14px rgba(0,180,255,.15),
+        0 0 50px rgba(0,212,255,.35),
+        0 20px 60px rgba(0,60,180,.5),
+        inset 0 1px 0 rgba(255,255,255,.08);
+      animation: btn-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes btn-pulse {
+      0%,100% { box-shadow: 0 0 0 6px rgba(0,100,200,.4),0 0 0 14px rgba(0,180,255,.15),0 0 50px rgba(0,212,255,.35),0 20px 60px rgba(0,60,180,.5); }
+      50%      { box-shadow: 0 0 0 8px rgba(0,100,200,.6),0 0 0 20px rgba(0,180,255,.2),0 0 70px rgba(0,212,255,.5),0 20px 70px rgba(0,60,180,.6); }
+    }
+
+    .btn-icon { font-size: 50px; line-height: 1; }
+    .btn-label { font-size: 14px; font-weight: 900; letter-spacing: 4px; color: rgba(255,255,255,.85); }
+    .btn-sub   { font-size: 9px; font-weight: 400; letter-spacing: 2px; color: var(--muted); }
+
+    /* ─── TIMER + STATUS ─── */
+    .timer-block {
+      margin-top: 28px; text-align: center; z-index: 1; flex-shrink: 0;
+    }
+    .main-timer {
+      font-size: 48px; font-weight: 200; letter-spacing: 5px;
+      color: var(--text); font-variant-numeric: tabular-nums; line-height: 1;
+    }
+    .main-timer.active { color: var(--cyan); text-shadow: 0 0 20px rgba(0,212,255,.4); }
+    .main-status {
+      font-size: 11px; letter-spacing: 2px; color: var(--muted);
+      margin-top: 8px; min-height: 16px; transition: color .3s;
+    }
+    .main-status.active { color: var(--cyan); }
+
+    /* ─── ERROR BANNER ─── */
+    .error-banner {
+      display: none; width: calc(100% - 48px); padding: 12px 16px;
+      background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.4);
+      border-radius: 10px; font-size: 12px; color: #fca5a5;
+      text-align: center; line-height: 1.6; z-index: 1; flex-shrink: 0;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .error-banner.show { display: block; }
+
+    /* ─── AUDIO PREVIEW ─── */
+    .audio-preview-wrap {
+      display: none; width: calc(100% - 48px); margin: 12px 0 0; z-index: 1;
+    }
+    .audio-preview-wrap audio { width: 100%; border-radius: 10px; }
+
+    /* ─── SEND BUTTON ─── */
+    .send-btn {
+      width: calc(100% - 48px); padding: 16px;
+      border: none; border-radius: 14px;
+      background: linear-gradient(135deg, #8a6210, var(--gold), #f0d060, var(--gold));
+      background-size: 300%; background-position: 0%;
+      color: #050505; font-size: 13px; font-weight: 900;
+      letter-spacing: 3px; cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      box-shadow: 0 6px 24px rgba(201,162,39,.4);
+      transition: all .4s; flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+      display: none;
+    }
+    .send-btn.visible { display: block; }
+    .send-btn:hover { background-position: 100%; box-shadow: 0 8px 30px rgba(201,162,39,.55); }
+    .send-btn:disabled { background: #1e2a3a; color: var(--muted); box-shadow: none; cursor: not-allowed; }
+
+    /* ─── BOTTOM SPACER ─── */
+    .btm { height: 28px; flex-shrink: 0; }
+
+    /* ─── "MESSAGE SENT" NOTIFICATION ─── */
+    .mother-notif {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      padding: 0; transform: translateY(-100%);
+      transition: transform .55s cubic-bezier(.34,1.56,.64,1);
+    }
+    .mother-notif.show { transform: translateY(0); }
+    .notif-inner {
+      background: rgba(6,9,15,.97);
+      border-bottom: 1px solid rgba(0,212,255,.3);
+      padding: 14px 24px 16px;
+      display: flex; align-items: center; gap: 14px;
+      backdrop-filter: blur(16px);
+    }
+    .notif-icon { font-size: 28px; }
+    .notif-text-wrap {}
+    .notif-title {
+      font-size: 11px; font-weight: 900; letter-spacing: 2.5px;
+      color: var(--cyan); margin-bottom: 3px;
+    }
+    .notif-body { font-size: 13px; color: var(--text); font-weight: 300; }
+
+    /* transmission line animation */
+    .notif-line {
+      height: 2px; background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      background-size: 200%; animation: tline 1.5s linear infinite;
+    }
+    @keyframes tline { 0%{background-position:200%} 100%{background-position:-200%} }
+
+    /* ─── RESULTS SHEET ─── */
+    .results-sheet {
+      position: fixed; inset: 0; z-index: 400;
+      background: rgba(6,9,15,.98);
+      transform: translateY(100%);
+      transition: transform .5s cubic-bezier(.25,.85,.25,1);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .results-sheet.open { transform: translateY(0); }
+
+    .sheet-hdr {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(201,162,39,.2);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .sheet-title { font-size: 12px; font-weight: 900; letter-spacing: 2.5px; color: var(--gold); }
+    .sheet-close {
+      width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,.1);
+      background: transparent; color: var(--muted); font-size: 16px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sheet-body { flex: 1; overflow-y: auto; padding: 14px 16px 24px; }
+    .sheet-body::-webkit-scrollbar { width: 3px; }
+    .sheet-body::-webkit-scrollbar-thumb { background: rgba(201,162,39,.3); }
+
+    /* agent blocks */
+    .res-block {
+      border-radius: 14px; overflow: hidden; margin-bottom: 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    }
+    .res-hdr {
+      padding: 12px 16px; display: flex; align-items: center;
+      gap: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+    .res-icon { font-size: 20px; }
+    .res-name { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #fff; flex: 1; }
+    .res-chev { font-size: 11px; color: rgba(255,255,255,.5); transition: transform .3s; }
+    .res-block.open .res-chev { transform: rotate(180deg); }
+    .res-body { display: none; padding: 14px 16px; background: rgba(255,255,255,.97); }
+    .res-block.open .res-body { display: block; }
+    .res-text { font-size: 13px; line-height: 1.82; color: #263238; white-space: pre-wrap; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; }
+
+    .counter-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--cyan); margin: 18px 0 10px; }
+    .counter-item {
+      background: rgba(0,212,255,.06); border-left: 2px solid var(--cyan);
+      border-radius: 0 8px 8px 0; padding: 10px 12px;
+      font-size: 13px; line-height: 1.7; color: rgba(255,255,255,.8);
+      margin-bottom: 8px; font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+    }
+
+    /* transcription */
+    .transcript-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 14px; margin-bottom: 12px;
+    }
+    .tc-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; }
+    .tc-text  { font-size: 13px; line-height: 1.8; color: rgba(255,255,255,.7); white-space: pre-wrap; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; }
+
+    /* ─── LOADING OVERLAY ─── */
+    .load-veil {
+      position: fixed; inset: 0; z-index: 600;
+      background: rgba(6,9,15,.96); backdrop-filter: blur(10px);
+      display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+    }
+    .load-veil.on { display: flex; }
+    .sonar { width: 70px; height: 70px; position: relative; }
+    .sonar-ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 1px solid var(--cyan); opacity: 0;
+      animation: sonar-ex 2s ease-out infinite;
+    }
+    .sonar-ring:nth-child(2){animation-delay:.6s}
+    .sonar-ring:nth-child(3){animation-delay:1.2s}
+    @keyframes sonar-ex{ 0%{transform:scale(.3);opacity:.9} 100%{transform:scale(2.5);opacity:0} }
+    .sonar-core { position:absolute;inset:40%;background:var(--cyan);border-radius:50%;box-shadow:0 0 16px var(--cyan); }
+    .l-label { font-size:12px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,.9); }
+    .l-step  { font-size:10px;color:var(--muted);letter-spacing:1.5px;min-height:14px; }
+  </style>
+</head>
+<body>
+
+<!-- ─── MOTHER BRAIN NOTIFICATION ─── -->
+<div class="mother-notif" id="motherNotif">
+  <div class="notif-line"></div>
+  <div class="notif-inner">
+    <div class="notif-icon">🧠</div>
+    <div class="notif-text-wrap">
+      <div class="notif-title">TRANSMISSION COMPLETE</div>
+      <div class="notif-body">Message Sent to Mother Brain</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOP BAR ─── -->
+<div class="top-bar">
+  <div>
+    <div class="tb-title">SHONAN BEACON</div>
+    <div class="tb-sub">FIELD UNIT</div>
+  </div>
+  <div class="tb-dot"></div>
+</div>
+
+<!-- ─── MISSION SELECT ─── -->
+<div class="mission-row">
+  <select class="mission-sel" id="missionSel">
+    <option>週次経営会議</option>
+    <option>月次売上報告</option>
+    <option>新人研修計画</option>
+    <option>店舗改善ミーティング</option>
+    <option>エリア合同会議</option>
+    <option>その他</option>
+  </select>
+</div>
+
+<!-- ─── REC AREA ─── -->
+<div class="rec-area">
+  <!-- ripple rings -->
+  <div class="ripple-ring" id="r1"></div>
+  <div class="ripple-ring" id="r2"></div>
+  <div class="ripple-ring" id="r3"></div>
+
+  <div class="rec-btn-wrap">
+    <button class="rec-btn" id="recBtn" onclick="toggleRec()">
+      <span class="btn-icon" id="btnIcon">🎙️</span>
+      <span class="btn-label" id="btnLabel">REC</span>
+      <span class="btn-sub" id="btnSub">TAP TO RECORD</span>
+    </button>
+  </div>
+
+  <div class="timer-block">
+    <div class="main-timer" id="mainTimer">00:00</div>
+    <div class="main-status" id="mainStatus">STANDBY</div>
+  </div>
+</div>
+
+<!-- ERROR BANNER -->
+<div class="error-banner" id="errorBanner"></div>
+
+<!-- AUDIO PREVIEW -->
+<div class="audio-preview-wrap" id="audioPreview">
+  <audio id="audioEl" controls></audio>
+</div>
+
+<!-- SEND BUTTON -->
+<button class="send-btn" id="sendBtn" onclick="sendToMotherBrain()">
+  SEND TO MOTHER BRAIN
+</button>
+
+<div class="btm"></div>
+
+<!-- ─── RESULTS SHEET ─── -->
+<div class="results-sheet" id="resultsSheet">
+  <div class="sheet-hdr">
+    <span class="sheet-title">ANALYSIS REPORT</span>
+    <button class="sheet-close" onclick="closeResults()">&#x2715;</button>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
+</div>
+
+<!-- ─── LOADING ─── -->
+<div class="load-veil" id="loadVeil">
+  <div class="sonar">
+    <div class="sonar-ring"></div><div class="sonar-ring"></div><div class="sonar-ring"></div>
+    <div class="sonar-core"></div>
+  </div>
+  <div class="l-label">TRANSMITTING...</div>
+  <div class="l-step" id="lStep">Contacting Mother Brain...</div>
+</div>
+
+<script>
+// ============================================================
+// ★ CONFIG
+// ============================================================
+// ★★★ GASデプロイURLをここに設定してください ★★★
+const GAS_API_URL = 'YOUR_GAS_DEPLOYMENT_URL_HERE';
+// 例: 'https://script.google.com/macros/s/AKfycb.../exec'
+
+const AGENT_IMAGE_FILE_ID = '1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI';
+const USE_IMAGE = true;
+
+let agentImageDataUrl = null;
+
+// ★ 画像をfetch()で取得（GitHub Pages対応）
+if (USE_IMAGE && GAS_API_URL !== 'YOUR_GAS_DEPLOYMENT_URL_HERE') {
+  fetch(GAS_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'getAgentImage' })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) { if (res.imageUrl) agentImageDataUrl = res.imageUrl; })
+  .catch(function(e) { console.error('image fetch error:', e); });
+}
+// ============================================================
+
+const LOAD_STEPS = [
+  'Contacting Mother Brain...', 'Loading field intel...',
+  'CFO running numbers...', 'CMO scanning Shonan market...',
+  'COO checking field ops...', 'CLO risk assessment...',
+  "Devil's Advocate activated...", 'Generating counter-intel...',
+];
+
+let mediaRec = null, chunks = [], recBlob = null;
+let timerIv = null, elapsed = 0, isRec = false;
+let loadIdx = 0, loadIv = null;
+
+// ─── REC ───
+function toggleRec() { isRec ? stopRec() : startRec(); }
+
+async function startRec() {
+  // エラーバナーを消す
+  hideError();
+
+  // ★ マイク権限チェック（ユーザー操作＝クリック起点で実行される）
+  try {
+    // mediaDevices APIが存在するか確認
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      showError('このブラウザはマイク機能に対応していません。Chrome / Safari の最新版をお使いください。');
+      return;
+    }
+
+    // ★ getUserMedia をユーザーのクリック操作の直後に呼ぶ（重要）
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    // ★ ブラウザ互換性: 対応するMIMEタイプを検索
+    const candidates = [
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/mp4',
+      'audio/ogg;codecs=opus',
+      'audio/ogg',
+      ''  // フォールバック（ブラウザデフォルト）
+    ];
+    let selectedMime = '';
+    for (const m of candidates) {
+      if (!m || (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(m))) {
+        selectedMime = m;
+        break;
+      }
+    }
+
+    const options = selectedMime ? { mimeType: selectedMime } : {};
+    mediaRec = new MediaRecorder(stream, options);
+    chunks = [];
+
+    mediaRec.ondataavailable = function(e) {
+      if (e.data && e.data.size > 0) chunks.push(e.data);
+    };
+
+    mediaRec.onstop = function() {
+      recBlob = new Blob(chunks, { type: mediaRec.mimeType || 'audio/webm' });
+      var el = document.getElementById('audioEl');
+      el.src = URL.createObjectURL(recBlob);
+      document.getElementById('audioPreview').style.display = 'block';
+      document.getElementById('sendBtn').classList.add('visible');
+      setStatus('RECORDING COMPLETE', false);
+      // マイクストリームを解放
+      stream.getTracks().forEach(function(t) { t.stop(); });
+    };
+
+    mediaRec.onerror = function(e) {
+      console.error('MediaRecorder error:', e);
+      showError('録音エラーが発生しました: ' + (e.error ? e.error.name : 'unknown'));
+      stream.getTracks().forEach(function(t) { t.stop(); });
+    };
+
+    mediaRec.start(1000);
+    isRec = true;
+    elapsed = 0;
+    timerIv = setInterval(function() { elapsed++; renderTimer(); }, 1000);
+
+    var btn = document.getElementById('recBtn');
+    btn.classList.add('recording');
+    document.getElementById('btnIcon').textContent = '⏹️';
+    document.getElementById('btnLabel').textContent = 'STOP';
+    document.getElementById('btnSub').textContent = 'TAP TO STOP';
+    ['r1','r2','r3'].forEach(function(id) { document.getElementById(id).classList.add('rec-ring'); });
+    setStatus('● RECORDING IN PROGRESS', true);
+    document.getElementById('audioPreview').style.display = 'none';
+    document.getElementById('sendBtn').classList.remove('visible');
+
+  } catch(err) {
+    // ★ エラー名を詳細に出力してデバッグしやすくする
+    console.error('Microphone error:', err.name, err.message);
+
+    var errorMsg = '';
+    switch (err.name) {
+      case 'NotAllowedError':
+        errorMsg = 'マイクの使用が許可されていません。ブラウザの設定でマイクを許可してください。';
+        break;
+      case 'NotFoundError':
+        errorMsg = 'マイクが見つかりません。デバイスにマイクが接続されているか確認してください。';
+        break;
+      case 'NotReadableError':
+        errorMsg = 'マイクが他のアプリに使用されています。他のアプリを閉じてから再試行してください。';
+        break;
+      case 'OverconstrainedError':
+        errorMsg = 'マイクの設定に問題があります。ブラウザを再起動してみてください。';
+        break;
+      case 'SecurityError':
+        errorMsg = 'セキュリティエラー: HTTPS接続が必要です。URLを確認してください。';
+        break;
+      default:
+        errorMsg = 'マイクエラー [' + err.name + ']: ' + err.message;
+    }
+
+    showError(errorMsg);
+    document.getElementById('mainStatus').textContent = 'MIC ERROR';
+  }
+}
+
+function stopRec() {
+  if (!mediaRec || !isRec) return;
+  mediaRec.stop(); isRec = false; clearInterval(timerIv);
+  var btn = document.getElementById('recBtn');
+  btn.classList.remove('recording');
+  document.getElementById('btnIcon').textContent = '🎙️';
+  document.getElementById('btnLabel').textContent = 'REC';
+  document.getElementById('btnSub').textContent = 'TAP TO RECORD';
+  ['r1','r2','r3'].forEach(function(id) { document.getElementById(id).classList.remove('rec-ring'); });
+}
+
+function renderTimer() {
+  var el = document.getElementById('mainTimer');
+  el.textContent = String(Math.floor(elapsed/60)).padStart(2,'0') + ':' + String(elapsed%60).padStart(2,'0');
+}
+
+function setStatus(msg, active) {
+  var el = document.getElementById('mainStatus');
+  el.textContent = msg;
+  el.className = 'main-status' + (active ? ' active' : '');
+  var te = document.getElementById('mainTimer');
+  te.className = 'main-timer' + (active ? ' active' : '');
+}
+
+// ─── ERROR DISPLAY ───
+function showError(msg) {
+  var banner = document.getElementById('errorBanner');
+  banner.textContent = msg;
+  banner.classList.add('show');
+}
+function hideError() {
+  document.getElementById('errorBanner').classList.remove('show');
+}
+
+// ─── SEND ───
+async function sendToMotherBrain() {
+  if (!recBlob) return;
+
+  var b64 = await toB64(recBlob);
+  var now = new Date();
+  var ds = [now.getFullYear(), pad(now.getMonth()+1), pad(now.getDate())].join('') + '_' + [pad(now.getHours()),pad(now.getMinutes())].join('');
+  var ext = recBlob.type.includes('webm') ? '.webm' : recBlob.type.includes('mp4') ? '.mp4' : '.audio';
+
+  setLoading(true);
+  document.getElementById('sendBtn').disabled = true;
+
+  // ★ google.script.run → fetch() に変更（GitHub Pages対応）
+  fetch(GAS_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'runAnalysis',
+      params: {
+        inputType: 'audio',
+        base64Audio: b64.split(',')[1],
+        audioMime: recBlob.type,
+        audioFilename: 'SCB_' + ds + ext,
+      }
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(onSuccess)
+  .catch(onErr);
+}
+
+function onSuccess(res) {
+  setLoading(false);
+  document.getElementById('sendBtn').disabled = false;
+
+  showMotherNotif();
+
+  if (!res || !res.success) return;
+
+  renderResults(res);
+}
+
+function onErr(e) {
+  setLoading(false);
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('mainStatus').textContent = 'TRANSMISSION FAILED';
+  console.error('runAnalysis error:', e);
+}
+
+// ─── MOTHER BRAIN NOTIF ───
+function showMotherNotif() {
+  var n = document.getElementById('motherNotif');
+  n.classList.add('show');
+  setTimeout(function() { n.classList.remove('show'); }, 3800);
+}
+
+// ─── RESULTS ───
+function renderResults(res) {
+  var body = document.getElementById('sheetBody');
+  body.innerHTML = '';
+
+  if (res.transcribedText && res.transcribedText.length > 10) {
+    body.innerHTML += '<div class="transcript-card">' +
+      '<div class="tc-label">TRANSCRIPTION</div>' +
+      '<div class="tc-text">' + esc(res.transcribedText) + '</div>' +
+      '</div>';
+  }
+
+  var ORDER = ['CFO','CMO','COO','CLO','DEVIL'];
+  var COLORS = { CFO:'#1565c0', CMO:'#6a1b9a', COO:'#2e7d32', CLO:'#bf360c', DEVIL:'#c62828' };
+  var EMOJI  = { CFO:'💰', CMO:'📣', COO:'⚙️', CLO:'⚖️', DEVIL:'😈' };
+  var LABELS = { CFO:'CFO — FINANCE', CMO:'CMO — MARKETING', COO:'COO — OPERATIONS', CLO:'CLO — LEGAL', DEVIL:"DEVIL'S ADVOCATE" };
+
+  ORDER.forEach(function(k, i) {
+    var text = (res.agentResults && res.agentResults[k]) || '';
+    var div = document.createElement('div');
+    div.className = 'res-block' + (i===0 ? ' open' : '');
+    div.innerHTML =
+      '<div class="res-hdr" style="background:' + COLORS[k] + ';" onclick="this.parentElement.classList.toggle(\'open\')">' +
+        '<span class="res-icon">' + EMOJI[k] + '</span>' +
+        '<span class="res-name">' + LABELS[k] + '</span>' +
+        '<span class="res-chev">▼</span>' +
+      '</div>' +
+      '<div class="res-body"><div class="res-text">' + esc(text) + '</div></div>';
+    body.appendChild(div);
+  });
+
+  var qs = res.counterQuestions || [];
+  if (qs.length > 0) {
+    var d = document.createElement('div');
+    d.innerHTML = '<div class="counter-title">▸ COUNTER INTELLIGENCE</div>' +
+      qs.map(function(q) { return '<div class="counter-item">❓ ' + esc(q) + '</div>'; }).join('');
+    body.appendChild(d);
+  }
+
+  document.getElementById('resultsSheet').classList.add('open');
+}
+
+function closeResults() {
+  document.getElementById('resultsSheet').classList.remove('open');
+}
+
+// ─── LOADING ───
+function setLoading(on) {
+  document.getElementById('loadVeil').classList.toggle('on', on);
+  if (on) {
+    loadIdx = 0; stepLoad();
+    loadIv = setInterval(stepLoad, 3500);
+  } else {
+    clearInterval(loadIv);
+  }
+}
+function stepLoad() {
+  if (loadIdx < LOAD_STEPS.length)
+    document.getElementById('lStep').textContent = LOAD_STEPS[loadIdx++];
+}
+
+// ─── UTILS ───
+function pad(n) { return String(n).padStart(2,'0'); }
+function toB64(b) { return new Promise(function(r,j) { var rd = new FileReader(); rd.onloadend = function() { r(rd.result); }; rd.onerror = j; rd.readAsDataURL(b); }); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+</script>
+</body>
+</html>
