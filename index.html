@@ -26,11 +26,12 @@
       --muted:      #4a5568;
       --card:       rgba(255,255,255,0.032);
       --border:     rgba(201,162,39,0.18);
-      --cfo:  #3b82f6;
-      --cmo:  #a855f7;
-      --coo:  #22c55e;
-      --clo:  #f97316;
-      --dvl:  #ef4444;
+      /* 新体制のカラーパレット */
+      --secretary:  #3b82f6; /* 青: 冷静な秘書 */
+      --sales:      #22c55e; /* 緑: 活気ある営業 */
+      --planner:    #c9a227; /* 金: 統括プランナー */
+      --marketing:  #a855f7; /* 紫: クリエイティブなマーケ */
+      --devil:      #ef4444; /* 赤: 警告のデビル */
     }
 
     html, body { height: 100%; overflow: hidden; background: var(--bg); }
@@ -181,12 +182,14 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 19px; background: var(--bg2);
     }
-    .msg-avatar.a-user  { border-color: var(--gold); }
-    .msg-avatar.a-cfo   { border-color: var(--cfo); }
-    .msg-avatar.a-cmo   { border-color: var(--cmo); }
-    .msg-avatar.a-coo   { border-color: var(--coo); }
-    .msg-avatar.a-clo   { border-color: var(--clo); }
-    .msg-avatar.a-devil { border-color: var(--dvl); }
+    
+    /* 新体制のアバター色 */
+    .msg-avatar.a-user      { border-color: var(--gold); }
+    .msg-avatar.a-secretary { border-color: var(--secretary); }
+    .msg-avatar.a-sales     { border-color: var(--sales); }
+    .msg-avatar.a-planner   { border-color: var(--planner); }
+    .msg-avatar.a-marketing { border-color: var(--marketing); }
+    .msg-avatar.a-devil     { border-color: var(--devil); }
 
     .msg-body { flex: 1; min-width: 0; }
     .msg-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
@@ -201,12 +204,14 @@
       font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
       white-space: pre-wrap; word-break: break-word;
     }
-    .chat-msg.a-user  .msg-bubble { border-color: var(--gold);  background: rgba(201,162,39,.07); }
-    .chat-msg.a-cfo   .msg-bubble { border-color: var(--cfo); }
-    .chat-msg.a-cmo   .msg-bubble { border-color: var(--cmo); }
-    .chat-msg.a-coo   .msg-bubble { border-color: var(--coo); }
-    .chat-msg.a-clo   .msg-bubble { border-color: var(--clo); }
-    .chat-msg.a-devil .msg-bubble { border-color: var(--dvl); }
+    
+    /* 新体制の吹き出し色 */
+    .chat-msg.a-user      .msg-bubble { border-color: var(--gold);  background: rgba(201,162,39,.07); }
+    .chat-msg.a-secretary .msg-bubble { border-color: var(--secretary); }
+    .chat-msg.a-sales     .msg-bubble { border-color: var(--sales); }
+    .chat-msg.a-planner   .msg-bubble { border-color: var(--planner); }
+    .chat-msg.a-marketing .msg-bubble { border-color: var(--marketing); }
+    .chat-msg.a-devil     .msg-bubble { border-color: var(--devil); }
 
     .right-col { display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow-y: auto; }
     .right-col::-webkit-scrollbar { width: 3px; }
@@ -295,8 +300,8 @@
       z-index: 300;
     }
     .toast.show { transform: translateX(0); }
-    .toast.ok   { border-color: var(--coo); }
-    .toast.err  { border-color: var(--dvl); }
+    .toast.ok   { border-color: var(--sales); }
+    .toast.err  { border-color: var(--devil); }
   </style>
 </head>
 <body>
@@ -316,29 +321,29 @@
 </header>
 
 <div class="agent-bar z1">
-  <div class="agent-slot" id="slot-CFO" data-key="CFO">
-    <div class="portrait-wrap"><span class="portrait-emoji">💰</span></div>
-    <div class="agent-id">CFO</div><div class="agent-role">FINANCE</div>
+  <div class="agent-slot" id="slot-SECRETARY" data-key="SECRETARY">
+    <div class="portrait-wrap"><span class="portrait-emoji">📋</span></div>
+    <div class="agent-id">秘書</div><div class="agent-role">SECRETARY</div>
   </div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-CMO" data-key="CMO">
-    <div class="portrait-wrap"><span class="portrait-emoji">📣</span></div>
-    <div class="agent-id">CMO</div><div class="agent-role">MARKETING</div>
+  <div class="agent-slot" id="slot-SALES" data-key="SALES">
+    <div class="portrait-wrap"><span class="portrait-emoji">📈</span></div>
+    <div class="agent-id">営業部長</div><div class="agent-role">SALES</div>
   </div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-COO" data-key="COO">
-    <div class="portrait-wrap"><span class="portrait-emoji">⚙️</span></div>
-    <div class="agent-id">COO</div><div class="agent-role">OPERATIONS</div>
+  <div class="agent-slot" id="slot-PLANNER" data-key="PLANNER">
+    <div class="portrait-wrap"><span class="portrait-emoji">💡</span></div>
+    <div class="agent-id">プランナー</div><div class="agent-role">PLANNER</div>
   </div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-CLO" data-key="CLO">
-    <div class="portrait-wrap"><span class="portrait-emoji">⚖️</span></div>
-    <div class="agent-id">CLO</div><div class="agent-role">LEGAL</div>
+  <div class="agent-slot" id="slot-MARKETING" data-key="MARKETING">
+    <div class="portrait-wrap"><span class="portrait-emoji">📱</span></div>
+    <div class="agent-id">マーケSNS</div><div class="agent-role">MARKETING</div>
   </div>
   <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-DEVIL" data-key="DEVIL">
     <div class="portrait-wrap"><span class="portrait-emoji">😈</span></div>
-    <div class="agent-id">DEVIL</div><div class="agent-role">ADVOCATE</div>
+    <div class="agent-id">デビル</div><div class="agent-role">ADVOCATE</div>
   </div>
 </div>
 
@@ -382,12 +387,14 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ★ GASデプロイURL
+// ★ 代表のGASデプロイURL
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwYYD01ewZTSTaF3RkdznHjh_509pTO93mljkdxngn1YMElkXFry6gyZyJZ3upZ8eAFlw/exec';
 
-const AGENT_COLORS = { CFO:'#3b82f6', CMO:'#a855f7', COO:'#22c55e', CLO:'#f97316', DEVIL:'#ef4444' };
-const AGENT_LABELS = { CFO:'CFO', CMO:'CMO', COO:'COO', CLO:'CLO', DEVIL:"DEVIL'S ADVOCATE" };
-const AGENT_EMOJI  = { CFO:'💰', CMO:'📣', COO:'⚙️', CLO:'⚖️', DEVIL:'😈' };
+// 新体制のキーボード（参謀のID）
+const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL'];
+const AGENT_COLORS = { SECRETARY:'#3b82f6', SALES:'#22c55e', PLANNER:'#c9a227', MARKETING:'#a855f7', DEVIL:'#ef4444' };
+const AGENT_LABELS = { SECRETARY:'秘書', SALES:'営業部長', PLANNER:'プランナー', MARKETING:'マーケ・SNS', DEVIL:'デビル' };
+const AGENT_EMOJI  = { SECRETARY:'📋', SALES:'📈', PLANNER:'💡', MARKETING:'📱', DEVIL:'😈' };
 
 window.addEventListener('load', () => {
   tick(); setInterval(tick, 1000);
@@ -403,7 +410,9 @@ async function startAnalysis() {
   if (!input) { toast('入力してください','err'); return; }
 
   addMsg('user', '👤', 'YOU', input, '#c9a227');
-  ['CFO','CMO','COO','CLO','DEVIL'].forEach(k => setState(k,'thinking'));
+  
+  // 5人のアイコンを思考中(チカチカ)にする
+  AGENT_KEYS.forEach(k => setState(k,'thinking'));
   setLoading(true);
   document.getElementById('execBtn').disabled = true;
 
@@ -422,26 +431,33 @@ async function startAnalysis() {
 function onSuccess(aiText) {
   setLoading(false);
   document.getElementById('execBtn').disabled = false;
-  ['CFO','CMO','COO','CLO','DEVIL'].forEach(k => setState(k,'idle'));
+  AGENT_KEYS.forEach(k => setState(k,'idle'));
 
-  const ORDER = ['CFO','CMO','COO','CLO','DEVIL'];
+  // AIのテキストから各参謀のセリフを正確に切り抜く「正規表現」の魔法
+  const lookahead = "(?=\\[秘書\\]|\\[営業部長\\]|\\[プランナー\\]|\\[マーケ.*?担当\\]|\\[デビル\\]|$)";
   const regexMap = {
-      CFO: /\[CFO\]:?\s*([\s\S]*?)(?=\[CMO\]|\[COO\]|\[CLO\]|\[デビル\]|$)/i,
-      CMO: /\[CMO\]:?\s*([\s\S]*?)(?=\[CFO\]|\[COO\]|\[CLO\]|\[デビル\]|$)/i,
-      COO: /\[COO\]:?\s*([\s\S]*?)(?=\[CFO\]|\[CMO\]|\[CLO\]|\[デビル\]|$)/i,
-      CLO: /\[CLO\]:?\s*([\s\S]*?)(?=\[CFO\]|\[CMO\]|\[COO\]|\[デビル\]|$)/i,
-      DEVIL: /\[デビル\]:?\s*([\s\S]*?)(?=\[CFO\]|\[CMO\]|\[COO\]|\[CLO\]|$)/i
+      SECRETARY: new RegExp(`\\[秘書\\]:?\\s*([\\s\\S]*?)${lookahead}`, 'i'),
+      SALES:     new RegExp(`\\[営業部長\\]:?\\s*([\\s\\S]*?)${lookahead}`, 'i'),
+      PLANNER:   new RegExp(`\\[プランナー\\]:?\\s*([\\s\\S]*?)${lookahead}`, 'i'),
+      MARKETING: new RegExp(`\\[マーケ.*?担当\\]:?\\s*([\\s\\S]*?)${lookahead}`, 'i'),
+      DEVIL:     new RegExp(`\\[デビル\\]:?\\s*([\\s\\S]*?)${lookahead}`, 'i')
   };
 
-  ORDER.forEach((k, i) => {
+  AGENT_KEYS.forEach((k, i) => {
     setTimeout(() => {
       setState(k, 'active');
       const match = aiText.match(regexMap[k]);
-      const text = match ? match[1].trim() : (aiText.length > 0 && k === 'CFO' ? aiText : "提言待機中...");
-      addMsg(k.toLowerCase(), AGENT_EMOJI[k], AGENT_LABELS[k], text, AGENT_COLORS[k]);
+      
+      // 発言が見つかった場合はそれを表示。見つからなければフォールバック
+      const text = match ? match[1].trim() : (aiText.length > 0 && k === 'SECRETARY' ? aiText : "");
+      
+      if (text) {
+          addMsg(k.toLowerCase(), AGENT_EMOJI[k], AGENT_LABELS[k], text, AGENT_COLORS[k]);
+      }
       setTimeout(() => setState(k,'idle'), 3000);
     }, i * 1200);
   });
+  
   toast('✓ 分析完了', 'ok');
   document.getElementById('textField').value = "";
 }
@@ -449,7 +465,7 @@ function onSuccess(aiText) {
 function onErr(e) {
   setLoading(false);
   document.getElementById('execBtn').disabled = false;
-  ['CFO','CMO','COO','CLO','DEVIL'].forEach(k => setState(k,'idle'));
+  AGENT_KEYS.forEach(k => setState(k,'idle'));
   toast('エラー: ' + e.message, 'err');
 }
 
