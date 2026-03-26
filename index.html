@@ -3,28 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHONAN BEACON | FIELD TERMINAL</title>
+    <title>SHONAN CENTRAL BEACON</title>
     <style>
-        body { background: #0a101d; color: #00f2ff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-align: center; }
-        textarea { width: 90%; height: 100px; background: #1a2533; border: 1px solid #00f2ff; color: #fff; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 16px; }
-        #executeBtn { width: 90%; padding: 15px; background: #00f2ff; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; }
-        #executeBtn:disabled { background: #444; color: #888; }
-        #loader { display: none; margin: 20px; color: #00f2ff; font-style: italic; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        #output { text-align: left; background: rgba(0,242,255,0.05); padding: 20px; border-radius: 10px; line-height: 1.6; white-space: pre-wrap; margin-top: 20px; }
+        :root {
+            --bg-color: #050a14;
+            --panel-bg: #0b1320;
+            --neon-cyan: #00f2ff;
+            --neon-yellow: #ffcc00;
+            --text-main: #c0d0e0;
+            --text-dim: #556677;
+        }
+        
+        body { margin: 0; padding: 30px; background-color: var(--bg-color); color: var(--text-main); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        /* ヘッダー周り */
+        .header { display: flex; align-items: center; border-bottom: 1px solid rgba(0,242,255,0.2); padding-bottom: 15px; margin-bottom: 40px; }
+        .header h1 { color: var(--neon-yellow); font-size: 24px; margin: 0; letter-spacing: 3px; }
+        .header p { margin: 5px 0 0 0; font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+        
+        /* 5人の参謀アバター */
+        .personas { display: flex; justify-content: center; gap: 50px; margin-bottom: 40px; flex-wrap: wrap; }
+        .persona { text-align: center; width: 80px; }
+        .icon-circle { width: 70px; height: 70px; border-radius: 50%; background: #111a2e; border: 1px solid #1f2d45; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 10px auto; color: #445566; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .persona:hover .icon-circle { border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,242,255,0.2); cursor: pointer; }
+        .persona-name { font-size: 13px; font-weight: bold; letter-spacing: 1px; color: #778899; }
+        .persona-role { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+
+        /* ログ画面 */
+        .log-container { background: var(--panel-bg); border: 1px solid #1f2d45; border-radius: 8px; padding: 25px; margin-bottom: 30px; min-height: 350px; display: flex; flex-direction: column; }
+        .panel-title { color: var(--neon-cyan); font-size: 12px; letter-spacing: 2px; margin-top: 0; margin-bottom: 20px; font-weight: bold; display: flex; align-items: center; }
+        .panel-title::before { content: "●"; color: var(--neon-cyan); margin-right: 8px; font-size: 10px; }
+        
+        #output { flex: 1; white-space: pre-wrap; line-height: 1.8; color: #e0e0e0; font-size: 14.5px; overflow-y: auto; }
+        .loader { display: none; color: var(--neon-cyan); font-size: 13px; margin-bottom: 15px; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* 入力エリア */
+        .input-area { background: var(--panel-bg); border: 1px solid #1f2d45; border-radius: 8px; padding: 15px 25px; display: flex; gap: 20px; align-items: center; }
+        .input-wrapper { flex: 1; }
+        .input-wrapper input { width: 100%; background: transparent; border: none; color: white; padding: 10px 0; font-size: 16px; outline: none; }
+        .input-wrapper input::placeholder { color: #334455; }
+        .btn-execute { background: var(--neon-yellow); color: #000; border: none; border-radius: 20px; padding: 12px 35px; font-weight: bold; letter-spacing: 2px; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .btn-execute:hover { box-shadow: 0 0 15px rgba(255,204,0,0.4); transform: translateY(-1px); }
+        .btn-execute:disabled { background: #444; color: #222; cursor: not-allowed; box-shadow: none; transform: none; }
     </style>
 </head>
 <body>
-    <h2 style="letter-spacing: 2px;">SHONAN CENTRAL BEACON</h2>
-    <textarea id="userInput" placeholder="4月の戦略を考えて / CMO、集客について教えて"></textarea>
-    <button id="executeBtn" onclick="runAnalysis()">EXECUTE MISSION</button>
-    <div id="loader">マザー脳と通信中（AIが思考・入力中）...</div>
-    <div id="output"></div>
+
+    <div class="header">
+        <span style="font-size: 30px; margin-right: 20px; text-shadow: 0 0 10px red;">🏮</span>
+        <div>
+            <h1>SHONAN CENTRAL BEACON</h1>
+            <p>STRATEGIC BOARDROOM | PCDEPOT 湘南エリア 5店舗</p>
+        </div>
+    </div>
+
+    <div class="personas">
+        <div class="persona"><div class="icon-circle">💰</div><div class="persona-name">CFO</div><div class="persona-role">FINANCE</div></div>
+        <div class="persona"><div class="icon-circle">📢</div><div class="persona-name">CMO</div><div class="persona-role">MARKETING</div></div>
+        <div class="persona"><div class="icon-circle">⚙️</div><div class="persona-name">COO</div><div class="persona-role">OPERATIONS</div></div>
+        <div class="persona"><div class="icon-circle">⚖️</div><div class="persona-name">CLO</div><div class="persona-role">LEGAL</div></div>
+        <div class="persona"><div class="icon-circle">😈</div><div class="persona-name">DEVIL</div><div class="persona-role">ADVOCATE</div></div>
+    </div>
+
+    <div class="log-container">
+        <div class="panel-title">ANALYSIS LOG</div>
+        <div class="loader" id="loader">>> マザー脳と通信中... 参謀を招集しています...</div>
+        <div id="output">
+システムはオンラインです。
+画面下部のフォームから、ミッションや戦略のテーマを入力してください。
+特定の参謀を指名（例：「CFO、意見を頼む」）することも可能です。
+        </div>
+    </div>
+
+    <div class="input-area">
+        <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; width: 60px;">MISSION</div>
+        <div class="input-wrapper">
+            <input type="text" id="userInput" placeholder="例：4月の戦略を考えて / デビル、この案を批判して">
+        </div>
+        <button class="btn-execute" id="executeBtn" onclick="runAnalysis()">EXECUTE</button>
+    </div>
 
     <script>
-        // 【重要】もし先ほどGASで「新しいデプロイ」をしてURLが変わっていたら、ここに新しいURLを貼ってください。
-        // （同じURLのままであれば、このままで大丈夫です）
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwYYD01ewZTSTaF3RkdznHjh_509pTO93mljkdxngn1YMElkXFry6gyZyJZ3upZ8eAFlw/exec";
+        // ★代表の最新の「通信成功済み」のURLをセットしています！
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwlixzQ3Eul1c5ZTjLUcRY_jiFbzV-xEsABcp5gQ4qzntd7GbNEtdbDZGQoGg3hBXeyCw/exec";
 
         async function runAnalysis() {
             const input = document.getElementById('userInput').value;
@@ -36,41 +98,44 @@
 
             btn.disabled = true;
             loader.style.display = 'block';
-            output.innerText = "受信待機中...";
+            output.innerText = "";
 
             try {
-                // タイムアウト設定（90秒）
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 90000);
 
-                // ★魔法の通信設定（CORSの壁を抜け、リダイレクトを追跡する）
+                // CORSの壁をすり抜ける魔法の通信
                 const response = await fetch(GAS_URL, {
                     method: "POST",
                     body: JSON.stringify({ userInput: input }),
-                    redirect: "follow", // GASのリダイレクト仕様に必須
+                    redirect: "follow",
                     signal: controller.signal
                 });
 
-                // タイムアウト解除
                 clearTimeout(timeoutId);
-
-                // AIからの返事をしっかり受け取って解読する
                 const result = await response.json();
 
                 if (result.status === "success") {
-                    output.innerText = result.data; // 画面にAIの回答をドバッと表示！
+                    output.innerText = result.data; // AIの回答を表示！
                 } else {
                     output.innerText = "マザー脳内部エラー: " + result.message;
                 }
 
             } catch (err) {
-                // 通信エラーやタイムアウト時の表示
-                output.innerText = "通信エラー: " + err.message + "\n※GASのURLが最新のものか確認してください。";
+                output.innerText = "通信エラー: " + err.message + "\n再接続を試みてください。";
             } finally {
                 btn.disabled = false;
                 loader.style.display = 'none';
+                document.getElementById('userInput').value = ""; // 送信後に入力欄をクリア
             }
         }
+        
+        // Enterキーで送信できる便利機能
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                runAnalysis();
+            }
+        });
     </script>
 </body>
 </html>
