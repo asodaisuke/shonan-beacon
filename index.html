@@ -564,7 +564,6 @@ window.addEventListener('load', () => {
     // ★ google.script.run → fetch() に変更（GitHub Pages対応）
     fetch(GAS_API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'getAgentImage' })
     })
     .then(r => r.json())
@@ -699,7 +698,6 @@ async function startAnalysis() {
   // ★ google.script.run → fetch() に変更（GitHub Pages対応）
   fetch(GAS_API_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'runAnalysis', params: params })
   })
   .then(r => r.json())
