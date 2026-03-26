@@ -527,6 +527,23 @@ let inputMode = 'text';
 
 window.addEventListener('load', () => {
   tick(); setInterval(tick, 1000);
+
+  // ★イラスト復活の魔法（Googleドライブから直接読み込み）
+  const imageUrl = "https://drive.google.com/uc?export=view&id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI";
+  const topAdj = { CFO:'30px', CMO:'28px', COO:'30px', CLO:'25px', DEVIL:'30px' };
+  const leftPos = { CFO:'0', CMO:'-100%', COO:'-200%', CLO:'-300%', DEVIL:'-400%' };
+
+  ['CFO','CMO','COO','CLO','DEVIL'].forEach(k => {
+      let pw = document.getElementById('pw-' + k);
+      if(pw) {
+          let img = document.createElement('img');
+          img.src = imageUrl;
+          img.style.cssText = `position:absolute;width:500%;height:auto;min-height:120%;top:50%;transform:translateY(calc(-50% + ${topAdj[k]}));left:${leftPos[k]};pointer-events:none;`;
+          pw.appendChild(img);
+          let em = pw.querySelector('.portrait-emoji');
+          if(em) em.style.display = 'none'; // 絵文字と入れ替える
+      }
+  });
 });
 
 function tick() {
