@@ -437,7 +437,6 @@ let agentImageDataUrl = null;
 if (USE_IMAGE && GAS_API_URL !== 'YOUR_GAS_DEPLOYMENT_URL_HERE') {
   fetch(GAS_API_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'getAgentImage' })
   })
   .then(function(r) { return r.json(); })
@@ -611,7 +610,6 @@ async function sendToMotherBrain() {
   // ★ google.script.run → fetch() に変更（GitHub Pages対応）
   fetch(GAS_API_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: 'runAnalysis',
       params: {
