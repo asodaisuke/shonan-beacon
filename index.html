@@ -52,9 +52,7 @@
     display: flex; align-items: center; justify-content: center;
   }
   .portrait-emoji { font-size: 38px; line-height: 1; transition: opacity .4s; }
-  /* ★ スプライト画像の絶対配置 */
   .agent-sprite { position:absolute; width:500%; height:auto; min-height:120%; pointer-events:none; top:50%; transform:translateY(-50%); }
-  /* per-agent crop (背景画像方式のフォールバック用) */
   .portrait-wrap.p-secretary { background-position: 0% 50%; }
   .portrait-wrap.p-sales     { background-position: 25% 50%; }
   .portrait-wrap.p-planner   { background-position: 50% 50%; }
@@ -69,46 +67,49 @@
   .agent-slot.thinking .agent-id { color: var(--gold); }
   .agent-role { font-size: 9px; letter-spacing: .5px; color: rgba(255,255,255,.2); }
   .bar-divider { width: 1px; height: 64px; flex-shrink: 0; background: linear-gradient(to bottom, transparent, var(--border), transparent); }
-  .body-grid { flex: 1; display: grid; grid-template-columns: 1fr 360px; gap: 14px; padding: 14px 24px 0; min-height: 0; overflow: hidden; }
+  .body-grid { flex: 1; display: grid; grid-template-columns: 1fr; gap: 0; padding: 12px 24px 0; min-height: 0; overflow: hidden; }
   .chat-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
   .chat-hdr { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .chat-hdr-lbl { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; color: var(--gold); }
-  .chat-log { flex: 1; overflow-y: auto; padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-  .chat-log::-webkit-scrollbar { width: 3px; }
-  .chat-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .mission-banner { flex-shrink: 0; display: none; align-items: center; gap: 12px; padding: 8px 14px; border-bottom: 1px solid var(--border); background: rgba(201,162,39,.06); }
+  .mission-banner.show { display: flex; }
+  .mission-banner-lbl { font-size: 8px; font-weight: 700; letter-spacing: 2px; color: var(--gold); white-space: nowrap; }
+  .mission-banner-text { font-size: 11px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; line-height: 1.5; }
+  .chat-log { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 8px; min-height: 0; overflow: hidden; }
+  .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; background: rgba(255,255,255,.02); }
+  .agent-col-hdr { padding: 8px 10px; display: flex; align-items: center; gap: 7px; border-bottom: 1px solid rgba(255,255,255,.07); flex-shrink: 0; }
+  .col-hdr-emoji { font-size: 14px; flex-shrink: 0; }
+  .col-hdr-name { font-size: 9px; font-weight: 700; letter-spacing: 1px; }
+  .col-hdr-role { font-size: 7.5px; opacity: .35; letter-spacing: .5px; margin-top: 1px; }
+  .agent-col-body { flex: 1; overflow-y: auto; padding: 7px; display: flex; flex-direction: column; gap: 6px; }
+  .agent-col-body::-webkit-scrollbar { width: 2px; }
+  .agent-col-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+  .col-msg { background: rgba(255,255,255,.04); border-radius: 8px; padding: 8px 10px; font-size: 11px; line-height: 1.72; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; border-left: 2px solid; white-space: pre-wrap; word-break: break-word; animation: msg-drop .4s ease both; }
+  @keyframes msg-drop { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+  .col-msg-ts { font-size: 7.5px; opacity: .35; margin-bottom: 3px; letter-spacing: .5px; }
+  .col-secretary .agent-col-hdr { border-top: 2px solid var(--secretary); }
+  .col-secretary .col-hdr-name  { color: var(--secretary); }
+  .col-secretary .col-msg       { border-color: var(--secretary); }
+  .col-sales .agent-col-hdr     { border-top: 2px solid var(--sales); }
+  .col-sales .col-hdr-name      { color: var(--sales); }
+  .col-sales .col-msg           { border-color: var(--sales); }
+  .col-planner .agent-col-hdr   { border-top: 2px solid var(--planner); }
+  .col-planner .col-hdr-name    { color: var(--planner); }
+  .col-planner .col-msg         { border-color: var(--planner); }
+  .col-marketing .agent-col-hdr { border-top: 2px solid var(--marketing); }
+  .col-marketing .col-hdr-name  { color: var(--marketing); }
+  .col-marketing .col-msg       { border-color: var(--marketing); }
+  .col-devil .agent-col-hdr     { border-top: 2px solid var(--devil); }
+  .col-devil .col-hdr-name      { color: var(--devil); }
+  .col-devil .col-msg           { border-color: var(--devil); }
+  .col-interrogation .agent-col-hdr { border-top: 2px solid var(--cyan); background: rgba(0,242,255,.04); }
+  .col-interrogation .col-hdr-name  { color: var(--cyan); }
+  .col-interrogation .col-msg       { border-color: var(--cyan); }
   .chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--muted); padding: 40px; text-align: center; }
   .empty-icon { font-size: 38px; opacity: .3; }
   .empty-lbl { font-size: 11px; letter-spacing: 1.2px; line-height: 1.9; }
-  .chat-msg { display: flex; gap: 11px; align-items: flex-start; animation: msg-drop .4s ease both; }
-  @keyframes msg-drop { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
-  .msg-avatar {
-    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
-    border: 1px solid; display: flex; align-items: center; justify-content: center;
-    font-size: 19px; background: var(--bg2) center/500% no-repeat; position: relative;
-  }
-  .msg-avatar.a-user      { border-color: var(--gold); }
-  .msg-avatar.a-secretary { border-color: var(--secretary); background-position: 0% 50%; }
-  .msg-avatar.a-sales     { border-color: var(--sales);     background-position: 25% 50%; }
-  .msg-avatar.a-planner   { border-color: var(--planner);   background-position: 50% 50%; }
-  .msg-avatar.a-marketing { border-color: var(--marketing); background-position: 75% 50%; }
-  .msg-avatar.a-devil     { border-color: var(--devil);     background-position: 100% 50%; }
-  .msg-body { flex: 1; min-width: 0; }
-  .msg-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
-  .msg-name { font-size: 10px; font-weight: 700; letter-spacing: 1px; }
-  .msg-ts { font-size: 9px; color: var(--muted); }
-  .msg-bubble { font-size: 13px; line-height: 1.82; background: rgba(255,255,255,.038); border-radius: 0 10px 10px 10px; padding: 10px 14px; border-left: 2px solid; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; white-space: pre-wrap; word-break: break-word; }
-  .chat-msg.a-user      .msg-bubble { border-color: var(--gold);      background: rgba(201,162,39,.07); }
-  .chat-msg.a-secretary .msg-bubble { border-color: var(--secretary); }
-  .chat-msg.a-sales     .msg-bubble { border-color: var(--sales); }
-  .chat-msg.a-planner   .msg-bubble { border-color: var(--planner); }
-  .chat-msg.a-marketing .msg-bubble { border-color: var(--marketing); }
-  .chat-msg.a-devil     .msg-bubble { border-color: var(--devil); }
-  .right-col { display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow-y: auto; }
-  .right-col::-webkit-scrollbar { width: 3px; }
-  .right-col::-webkit-scrollbar-thumb { background: var(--border); }
-  .r-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; flex-shrink: 0; }
-  .r-card-title { font-size: 9px; font-weight: 700; letter-spacing: 2.5px; color: var(--cyan); margin-bottom: 12px; }
-  .r-placeholder { font-size: 11px; color: var(--muted); line-height: 1.8; letter-spacing: .5px; }
+  .col-placeholder { font-size: 10px; color: var(--muted); line-height: 1.8; letter-spacing: .3px; padding: 4px 2px; }
   .input-footer { flex-shrink: 0; padding: 10px 24px 14px; border-top: 1px solid var(--border); }
   .input-top-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
   .mission-lbl { font-size: 9px; letter-spacing: 2px; color: var(--muted); white-space: nowrap; }
@@ -178,17 +179,61 @@
 <div class="body-grid z1">
   <div class="chat-wrap">
     <div class="chat-hdr"><span class="live-dot"></span><span class="chat-hdr-lbl">ANALYSIS LOG</span></div>
+    <div class="mission-banner" id="missionBanner">
+      <span class="mission-banner-lbl">MISSION</span>
+      <span class="mission-banner-text" id="missionText"></span>
+    </div>
     <div class="chat-log" id="chatLog">
       <div class="chat-empty" id="chatEmpty">
         <div class="empty-icon">⚡</div>
         <div class="empty-lbl">MISSION INPUT 待機中<br>5名のAI参謀が命令を待っています</div>
       </div>
-    </div>
-  </div>
-  <div class="right-col">
-    <div class="r-card">
-      <div class="r-card-title">▸ INTERROGATION LOG</div>
-      <div class="r-placeholder">AIからの逆質問がここに表示されます</div>
+      <div class="agent-cols" id="agentCols" style="display:none">
+        <div class="agent-col col-secretary">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">📋</span>
+            <div><div class="col-hdr-name">秘書</div><div class="col-hdr-role">SECRETARY</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-SECRETARY"></div>
+        </div>
+        <div class="agent-col col-sales">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">📈</span>
+            <div><div class="col-hdr-name">営業部長</div><div class="col-hdr-role">SALES</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-SALES"></div>
+        </div>
+        <div class="agent-col col-planner">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">💡</span>
+            <div><div class="col-hdr-name">プランナー</div><div class="col-hdr-role">PLANNER</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-PLANNER"></div>
+        </div>
+        <div class="agent-col col-marketing">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">📱</span>
+            <div><div class="col-hdr-name">マーケSNS</div><div class="col-hdr-role">MARKETING</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-MARKETING"></div>
+        </div>
+        <div class="agent-col col-devil">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">😈</span>
+            <div><div class="col-hdr-name">デビル</div><div class="col-hdr-role">ADVOCATE</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-DEVIL"></div>
+        </div>
+        <div class="agent-col col-interrogation">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">▸</span>
+            <div><div class="col-hdr-name">INTERROGATION</div><div class="col-hdr-role">LOG</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-INTERROGATION">
+            <div class="col-placeholder">AIからの逆質問がここに表示されます</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -260,7 +305,11 @@ async function startAnalysis() {
   const input = document.getElementById('textField').value.trim();
   if (!input) { toast('入力してください', 'err'); return; }
 
-  addMsg('user', '👤', 'YOU', input, '#c9a227');
+  document.getElementById('chatEmpty').style.display = 'none';
+  document.getElementById('agentCols').style.display = 'grid';
+  document.getElementById('missionBanner').classList.add('show');
+  document.getElementById('missionText').textContent = input;
+
   AGENT_KEYS.forEach(k => setState(k, 'thinking'));
   setLoading(true);
   document.getElementById('execBtn').disabled = true;
@@ -298,7 +347,7 @@ function onSuccess(aiText) {
       setState(k, 'active');
       const match = aiText.match(regexMap[k]);
       const text = match ? match[1].trim() : (aiText.length > 0 && k === 'SECRETARY' ? aiText : '');
-      if (text) addMsg(k.toLowerCase(), AGENT_EMOJI[k], AGENT_LABELS[k], text, AGENT_COLORS[k]);
+      if (text) addColMsg(k, text);
       setTimeout(() => setState(k, 'idle'), 3000);
     }, i * 1200);
   });
@@ -322,30 +371,16 @@ function setState(key, state) {
   if (state === 'thinking') el.classList.add('thinking');
 }
 
-function addMsg(cls, emoji, name, text, color) {
-  document.getElementById('chatEmpty').style.display = 'none';
-  const log = document.getElementById('chatLog');
+function addColMsg(agentKey, text) {
+  const colBody = document.getElementById('colbody-' + agentKey);
+  if (!colBody) return;
+  const now = new Date();
+  const ts = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
   const div = document.createElement('div');
-  div.className = 'chat-msg a-' + cls;
-
-  const agentKey = cls.toUpperCase();
-  const hasSprite = spriteLoaded && SPRITE_LEFT[agentKey] !== undefined;
-
-  const bgPosMap = { SECRETARY:'0%', SALES:'25%', PLANNER:'50%', MARKETING:'75%', DEVIL:'100%' };
-  const avatarBg = hasSprite
-    ? 'background-image:url(\'' + AGENT_SPRITE_URL + '\');background-position:' + (bgPosMap[agentKey] || '0%') + ' 50%;'
-    : '';
-
-  div.innerHTML =
-    '<div class="msg-avatar a-' + cls + '" style="' + avatarBg + '">' +
-    (hasSprite ? '' : emoji) +
-    '</div>' +
-    '<div class="msg-body">' +
-    '<div class="msg-meta"><span class="msg-name" style="color:' + color + '">' + name + '</span></div>' +
-    '<div class="msg-bubble">' + text.replace(/\n/g, '<br>') + '</div>' +
-    '</div>';
-  log.appendChild(div);
-  log.scrollTop = log.scrollHeight;
+  div.className = 'col-msg';
+  div.innerHTML = '<div class="col-msg-ts">' + ts + '</div>' + text.replace(/\n/g, '<br>');
+  colBody.appendChild(div);
+  colBody.scrollTop = colBody.scrollHeight;
 }
 
 function setLoading(on) {
