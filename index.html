@@ -638,27 +638,50 @@ function tick() {
 }
 
 // ══ メイン分析 ══
+// ══ メイン分析（戦略モード対応版） ══
 async function startAnalysis() {
   const input = document.getElementById('textField').value.trim();
-  if (!input) { toast('入力してください', 'err'); return; }
+  
+  // モーニングモード以外は入力が必須
+  if (currentMode !== 'MORNING' && !input) { 
+    toast('経営課題を入力してください', 'err'); 
+    return; 
+  }
 
   document.getElementById('chatEmpty').style.display = 'none';
   document.getElementById('agentCols').style.display = 'grid';
   document.getElementById('missionBanner').classList.add('show');
-  document.getElementById('missionText').textContent = input;
+  
+  // 表示テキストの切り替え
+  document.getElementById('missionText').textContent = 
+    currentMode === 'MORNING' ? '☀️ モーニング・ブリーフィング実行中...' : input;
 
   AGENT_KEYS.forEach(k => setState(k, 'thinking'));
   setLoading(true);
   document.getElementById('execBtn').disabled = true;
 
   try {
+    // GASに「どのモードか」と「入力内容」をセットで送る
+    const payload = {
+      mode: currentMode,
+      userInput: input
+    };
+
     const res = await fetch(GAS_API_URL, {
-      method: 'POST', body: JSON.stringify({ userInput: input }), redirect: 'follow'
+      method: 'POST', 
+      body: JSON.stringify(payload), 
+      redirect: 'follow'
     });
     const result = await res.json();
-    if (result.status === 'success') onSuccess(result.data);
-    else throw new Error(result.message);
-  } catch (err) { onErr(err); }
+    
+    if (result.status === 'success') {
+      onSuccess(result.data);
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) { 
+    onErr(err); 
+  }
 }
 
 function onSuccess(aiText) {
