@@ -448,12 +448,12 @@
       <span class="mission-banner-text" id="missionText"></span>
     </div>
     <div class="strategy-mode-container">
-  <div class="mode-tabs">
-    <button class="mode-tab active" onclick="setStrategyMode('CHATTING')">💬 通常対話</button>
-    <button class="mode-tab" onclick="setStrategyMode('MORNING')">☀️ モーニング</button>
-    <button class="mode-tab" onclick="setStrategyMode('WAR_ROOM')">🌙 深夜討議</button>
-    <button class="mode-tab" onclick="setStrategyMode('ON_DEMAND')">🔥 オンデマンド</button>
-  </div>
+<div class="mode-tabs">
+  <button class="mode-tab active" onclick="setStrategyMode(this, 'CHATTING')">💬 通常対話</button>
+  <button class="mode-tab" onclick="setStrategyMode(this, 'MORNING')">☀️ モーニング</button>
+  <button class="mode-tab" onclick="setStrategyMode(this, 'WAR_ROOM')">🌙 深夜討議</button>
+  <button class="mode-tab" onclick="setStrategyMode(this, 'ON_DEMAND')">🔥 オンデマンド</button>
+</div>
   <p id="mode-description" class="mode-desc">参謀たちと自由にチャット形式で議論します。</p>
 </div>
     <div class="chat-log" id="chatLog">
