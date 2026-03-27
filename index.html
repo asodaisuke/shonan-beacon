@@ -83,7 +83,55 @@
   .mission-banner.show { display: flex; }
   .mission-banner-lbl { font-size: 8px; font-weight: 700; letter-spacing: 2px; color: var(--gold); white-space: nowrap; }
   .mission-banner-text { font-size: 11px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; line-height: 1.5; }
+/* ── 戦略モード・セレクター（追加分） ── */
+.strategy-mode-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(201,162,39,0.03);
+  border-bottom: 1px solid var(--border);
+}
 
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.mode-tab {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 5px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 1px;
+  border-radius: 2px;
+}
+
+/* アクティブなタブ：ゴールドに光る */
+.mode-tab.active {
+  background: rgba(201, 162, 39, 0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 0 15px rgba(201, 162, 39, 0.2);
+  text-shadow: 0 0 5px rgba(201, 162, 39, 0.5);
+}
+
+.mode-tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+.mode-desc {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: 'Noto Sans JP', sans-serif;
+  margin: 0;
+  opacity: 0.8;
+}
   /* ── カラムグリッド ── */
   .chat-log { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
   .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 8px; min-height: 0; overflow: hidden; }
@@ -393,6 +441,15 @@
       <span class="mission-banner-lbl">MISSION</span>
       <span class="mission-banner-text" id="missionText"></span>
     </div>
+    <div class="strategy-mode-container">
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="setStrategyMode('CHATTING')">💬 通常対話</button>
+    <button class="mode-tab" onclick="setStrategyMode('MORNING')">☀️ モーニング</button>
+    <button class="mode-tab" onclick="setStrategyMode('WAR_ROOM')">🌙 深夜討議</button>
+    <button class="mode-tab" onclick="setStrategyMode('ON_DEMAND')">🔥 オンデマンド</button>
+  </div>
+  <p id="mode-description" class="mode-desc">参謀たちと自由にチャット形式で議論します。</p>
+</div>
     <div class="chat-log" id="chatLog">
       <div class="chat-empty" id="chatEmpty">
         <div class="empty-icon">⚡</div>
