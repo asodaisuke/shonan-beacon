@@ -135,7 +135,7 @@
 }
   /* ── カラムグリッド ── */
   .chat-log { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 8px; min-height: 0; overflow: hidden; }
+  .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; min-height: 0; overflow: hidden; }
 
   /* ── 各エージェント列 ── */
   .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; background: rgba(255,255,255,.02); }
@@ -434,6 +434,11 @@
     <div class="portrait-wrap p-devil" id="pw-DEVIL"><span class="portrait-emoji">😈</span></div>
     <div class="agent-id">デビル</div><div class="agent-role">ADVOCATE</div>
   </div>
+  <div class="bar-divider"></div>
+  <div class="agent-slot" id="slot-ADVISOR" data-key="ADVISOR">
+    <div class="portrait-wrap p-advisor" id="pw-ADVISOR"><span class="portrait-emoji">👴</span></div>
+    <div class="agent-id">齋藤相談役</div><div class="agent-role">ADVISOR</div>
+  </div>
 </div>
 <div class="body-grid z1">
   <div class="chat-wrap">
@@ -491,6 +496,13 @@
             <div><div class="col-hdr-name">デビル</div><div class="col-hdr-role">ADVOCATE</div></div>
           </div>
           <div class="agent-col-body" id="colbody-DEVIL"></div>
+        </div>
+        <div class="agent-col col-advisor">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">👴</span>
+            <div><div class="col-hdr-name">齋藤相談役</div><div class="col-hdr-role">ADVISOR</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-ADVISOR"></div>
         </div>
         <div class="agent-col col-interrogation">
           <div class="agent-col-hdr">
@@ -581,20 +593,21 @@
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
 
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w500';
-const SPRITE_LEFT = { SECRETARY:'0', SALES:'-100%', PLANNER:'-200%', MARKETING:'-300%', DEVIL:'-400%' };
-const SPRITE_TOP  = { SECRETARY:'30px', SALES:'28px', PLANNER:'30px', MARKETING: '25px', DEVIL:'30px' };
+const SPRITE_LEFT = { SECRETARY:'0', SALES:'-100%', PLANNER:'-200%', MARKETING:'-300%', DEVIL:'-400%', ADVISOR:'0' };
+const SPRITE_TOP  = { SECRETARY:'30px', SALES:'28px', PLANNER:'30px', MARKETING: '25px', DEVIL:'30px', ADVISOR:'30px' };
 let spriteLoaded = false;
 
-const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL'];
-const AGENT_COLORS = { SECRETARY:'#3b82f6', SALES:'#22c55e', PLANNER:'#c9a227', MARKETING:'#a855f7', DEVIL:'#ef4444' };
-const AGENT_LABELS = { SECRETARY:'秘書', SALES:'営業部長', PLANNER:'プランナー', MARKETING:'マーケ・SNS', DEVIL:'デビル' };
-const AGENT_EMOJI  = { SECRETARY:'📋', SALES:'📈', PLANNER:'💡', MARKETING:'📱', DEVIL:'😈' };
+const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL', 'ADVISOR'];
+const AGENT_COLORS = { SECRETARY:'#3b82f6', SALES:'#22c55e', PLANNER:'#c9a227', MARKETING:'#a855f7', DEVIL:'#ef4444', ADVISOR:'#94a3b8' };
+const AGENT_LABELS = { SECRETARY:'秘書', SALES:'営業部長', PLANNER:'プランナー', MARKETING:'マーケ・SNS', DEVIL:'デビル', ADVISOR:'齋藤相談役' };
+const AGENT_EMOJI  = { SECRETARY:'📋', SALES:'📈', PLANNER:'💡', MARKETING:'📱', DEVIL:'😈', ADVISOR:'👴' };
 const AGENT_REGEX  = {
   SECRETARY: /\[秘書\]:?\s*([\s\S]*?)(?=\[営業部長\]|\[プランナー\]|\[マーケ|\[デビル\]|$)/i,
   SALES:     /\[営業部長\]:?\s*([\s\S]*?)(?=\[秘書\]|\[プランナー\]|\[マーケ|\[デビル\]|$)/i,
   PLANNER:   /\[プランナー\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[マーケ|\[デビル\]|$)/i,
   MARKETING: /\[マーケ.*?担当\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[デビル\]|$)/i,
   DEVIL:     /\[デビル\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[マーケ|$)/i
+  ADVISOR:   /\[(?:齋藤相談役|ADVISOR)\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[マーケ|\[デビル\]|$)/i
 };
 
 // 壁打ちモード
