@@ -938,14 +938,19 @@ function handleExpandOverlayClick(e) {
 }
   let currentMode = 'CHATTING';
 
-function setStrategyMode(mode) {
+// スクリプトの末尾にある function setStrategyMode をこれに差し替え
+function setStrategyMode(el, mode) {
   currentMode = mode;
   
-  // 全タブからactiveクラスを消し、クリックされたものに付ける
-  document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
-  event.target.classList.add('active');
+  // 1. 全てのタブから光（activeクラス）を消す
+  document.querySelectorAll('.mode-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
   
-  // モード説明文の更新
+  // 2. 今押したボタン(el)だけを光らせる
+  el.classList.add('active');
+  
+  // 3. モード説明文の更新
   const desc = document.getElementById('mode-description');
   const descriptions = {
     'CHATTING': '参謀たちと自由にチャット形式で議論します。',
@@ -953,7 +958,7 @@ function setStrategyMode(mode) {
     'WAR_ROOM': '深夜に行われた参謀たちの議論ログと答申書を読み込みます。',
     'ON_DEMAND': '入力したテーマについて、5人がその場で徹底討論を開始します。'
   };
-  desc.innerText = descriptions[mode];
+  if (desc) desc.innerText = descriptions[mode];
   
   console.log("Strategic Mode Switched to:", mode);
 }
