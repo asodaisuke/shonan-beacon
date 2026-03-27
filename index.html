@@ -148,14 +148,40 @@
   const AGENT_SPRITE_URL = `https://drive.google.com/thumbnail?id=${DRIVE_FILE_ID}&sz=w1000`;
 
   // 画像の切り出し位置（左から 0%, -100%, -200%...）
-  const SPRITE_OFFSETS = {
-    SECRETARY: '0%',    // 1番目: CMO
-    SALES:     '-100%', // 2番目: CFO
-    PLANNER:   '-200%', // 3番目: COO
-    MARKETING: '-300%', // 4番目: CLO
-    DEVIL:     '-400%', // 5番目: Devil
-    ADVISOR:   '-500%'  // 6番目: 齋藤相談役
+// ── イラストの切り出し位置をミリ単位で調整 ──
+  // left: 横位置の微調整 / top: 縦位置の微調整（Devilは少し低いので個別に設定）
+  const SPRITE_CONFIG = {
+    SECRETARY: { left: '-5%',   top: '50%' },  // 1番目: CMO
+    SALES:     { left: '-95%',  top: '50%' },  // 2番目: CFO
+    PLANNER:   { left: '-205%', top: '50%' },  // 3番目: COO
+    MARKETING: { left: '-380%', top: '50%' },  // 4番目: CLO
+    DEVIL:     { left: '-315%', top: '75%' },  // 5番目: Devil (位置が低いので下げる)
+    ADVISOR:   { left: '-495%', top: '50%' }   // 6番目: 齋藤相談役
   };
+
+  // ── イラスト読み込みロジックの修正版 ──
+  window.addEventListener('load', () => {
+    AGENT_KEYS.forEach(key => {
+      const wrap = document.getElementById('pw-' + key);
+      if (!wrap) return;
+
+      const img = document.createElement('img');
+      img.className = 'agent-sprite';
+      img.src = AGENT_SPRITE_URL;
+      
+      // 個別の座標を適用
+      const config = SPRITE_CONFIG[key];
+      img.style.left = config.left;
+      img.style.top = `calc(50% + ${config.top === '50%' ? '0px' : '20px'})`; // 縦位置の補正
+      
+      // 画像が読み込まれたら絵文字を消す
+      img.onload = () => {
+        const emoji = wrap.querySelector('.portrait-emoji');
+        if (emoji) emoji.style.display = 'none';
+      };
+      wrap.appendChild(img);
+    });
+  });
 
   let currentMode = 'CHATTING';
   const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL', 'ADVISOR'];
