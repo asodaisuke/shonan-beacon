@@ -7,7 +7,7 @@
   <script>
     if (window.self !== window.top) { window.top.location.href = window.location.href; }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -18,8 +18,7 @@
       --marketing: #a855f7; --devil: #ef4444; --advisor: #94a3b8;
       --text-dim: rgba(226, 232, 240, 0.6);
     }
-    html, body { height: 100%; overflow: hidden; background: var(--bg); }
-    body { font-family: 'Montserrat', 'Noto Sans JP', sans-serif; color: var(--text); display: flex; flex-direction: column; }
+    html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: 'Montserrat', 'Noto Sans JP', sans-serif; color: var(--text); }
     body::before {
       content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background-image: linear-gradient(rgba(0,200,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,255,.035) 1px, transparent 1px);
@@ -31,50 +30,48 @@
     .hdr { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px 10px; border-bottom: 1px solid var(--border); }
     .logo-name { font-size: 15px; font-weight: 900; letter-spacing: 3px; background: linear-gradient(120deg, #a37a15, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200%; animation: gold-shift 4s linear infinite; }
     @keyframes gold-shift { 0%{background-position:0%} 100%{background-position:200%} }
-    .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; color: var(--text); }
+    .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; }
 
     /* ── エージェントバー ── */
-    .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 0; padding: 12px 24px 10px; border-bottom: 1px solid var(--border); }
-    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 6px 20px; cursor: pointer; transition: transform .35s ease; }
-    .portrait-wrap { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2) center/600% no-repeat; display: flex; align-items: center; justify-content: center; }
-    .agent-sprite { position: absolute; width: 600%; height: auto; top: 50%; transform: translateY(-50%); pointer-events: none; }
-    .portrait-emoji { font-size: 32px; }
-    .agent-id { font-size: 10px; font-weight: 700; color: var(--muted); }
+    .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 12px 24px 10px; border-bottom: 1px solid var(--border); }
+    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 6px 20px; cursor: pointer; transition: transform .35s; }
+    .portrait-wrap { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2); display: flex; align-items: center; justify-content: center; }
+    .agent-sprite { position: absolute; width: 630%; height: auto; transition: opacity 0.3s; } /* 横幅を少し広げて調整 */
+    .portrait-emoji { font-size: 30px; }
+    .agent-id { font-size: 10px; font-weight: 900; color: var(--muted); letter-spacing: 1px; font-family: 'Montserrat', sans-serif; }
     .agent-slot.active .agent-id { color: var(--cyan); }
     .agent-slot.active .portrait-wrap { border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
     .agent-slot.thinking .portrait-wrap { animation: think-glow 1s ease-in-out infinite; }
     @keyframes think-glow { 0%,100% { box-shadow: 0 0 10px rgba(201,162,39,.5); } 50% { box-shadow: 0 0 25px rgba(201,162,39,.9); } }
-    .bar-divider { width: 1px; height: 50px; background: var(--border); }
 
     /* ── 戦略モード ── */
-    .strategy-mode-container { position: relative; z-index: 100; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: rgba(201,162,39,0.05); border-bottom: 1px solid var(--border); }
-    .mode-tabs { display: flex; gap: 8px; }
-    .mode-tab { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-dim); padding: 6px 14px; font-size: 10px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: all 0.3s; }
-    .mode-tab.active { background: rgba(201, 162, 39, 0.2); border-color: var(--gold); color: var(--gold); box-shadow: 0 0 10px rgba(201, 162, 39, 0.3); }
-    .mode-desc { font-size: 10px; color: var(--text-dim); margin: 0; opacity: 0.8; }
+    .strategy-mode-container { position: relative; z-index: 100; padding: 12px 24px; background: rgba(201,162,39,0.05); border-bottom: 1px solid var(--border); }
+    .mode-tabs { display: flex; gap: 8px; margin-bottom: 6px; }
+    .mode-tab { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-dim); padding: 6px 14px; font-size: 10px; font-weight: 700; cursor: pointer; border-radius: 4px; }
+    .mode-tab.active { background: rgba(201, 162, 39, 0.2); border-color: var(--gold); color: var(--gold); }
+    .mode-desc { font-size: 10px; opacity: 0.7; }
 
     /* ── メイングリッド ── */
-    .body-grid { flex: 1; display: grid; grid-template-columns: 1fr; padding: 12px 24px 0; overflow: hidden; }
+    .body-grid { flex: 1; display: grid; padding: 12px 24px 0; overflow: hidden; }
     .chat-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
     .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; overflow: hidden; }
     .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; background: rgba(255,255,255,.02); }
-    .agent-col-hdr { padding: 8px; border-bottom: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 6px; }
-    .col-hdr-name { font-size: 9px; font-weight: 700; }
+    .agent-col-hdr { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
     .agent-col-body { flex: 1; overflow-y: auto; padding: 6px; display: flex; flex-direction: column; gap: 6px; }
-    .col-msg { background: rgba(255,255,255,.04); border-radius: 8px; padding: 8px; font-size: 11px; line-height: 1.6; border-left: 2px solid; cursor: pointer; }
+    .col-msg { background: rgba(255,255,255,.04); border-radius: 8px; padding: 10px; font-size: 11px; line-height: 1.6; border-left: 3px solid; cursor: pointer; font-weight: 300; }
     
-    .col-secretary .agent-col-hdr { border-top: 2px solid var(--secretary); } .col-secretary .col-msg { border-color: var(--secretary); }
-    .col-sales .agent-col-hdr { border-top: 2px solid var(--sales); } .col-sales .col-msg { border-color: var(--sales); }
-    .col-planner .agent-col-hdr { border-top: 2px solid var(--planner); } .col-planner .col-msg { border-color: var(--planner); }
-    .col-marketing .agent-col-hdr { border-top: 2px solid var(--marketing); } .col-marketing .col-msg { border-color: var(--marketing); }
-    .col-devil .agent-col-hdr { border-top: 2px solid var(--devil); } .col-devil .col-msg { border-color: var(--devil); }
-    .col-advisor .agent-col-hdr { border-top: 2px solid var(--advisor); } .col-advisor .col-msg { border-color: var(--advisor); }
-    .col-interrogation .agent-col-hdr { border-top: 2px solid var(--cyan); } .col-interrogation .col-msg { border-color: var(--cyan); }
+    .col-secretary .agent-col-hdr { border-top: 3px solid var(--secretary); color: var(--secretary); } .col-secretary .col-msg { border-color: var(--secretary); }
+    .col-sales .agent-col-hdr { border-top: 3px solid var(--sales); color: var(--sales); } .col-sales .col-msg { border-color: var(--sales); }
+    .col-planner .agent-col-hdr { border-top: 3px solid var(--planner); color: var(--planner); } .col-planner .col-msg { border-color: var(--planner); }
+    .col-marketing .agent-col-hdr { border-top: 3px solid var(--marketing); color: var(--marketing); } .col-marketing .col-msg { border-color: var(--marketing); }
+    .col-devil .agent-col-hdr { border-top: 3px solid var(--devil); color: var(--devil); } .col-devil .col-msg { border-color: var(--devil); }
+    .col-advisor .agent-col-hdr { border-top: 3px solid var(--advisor); color: var(--advisor); } .col-advisor .col-msg { border-color: var(--advisor); }
+    .col-interrogation .agent-col-hdr { border-top: 3px solid var(--cyan); color: var(--cyan); } .col-interrogation .col-msg { border-color: var(--cyan); }
 
     .input-footer { padding: 14px 24px; border-top: 1px solid var(--border); }
     .input-main { display: flex; gap: 10px; }
-    .text-field { flex: 1; background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 12px; padding: 12px; color: var(--text); outline: none; resize: none; min-height: 44px; }
-    .exec-btn { width: 120px; background: var(--gold); border: none; border-radius: 12px; font-weight: 900; cursor: pointer; transition: 0.3s; }
+    .text-field { flex: 1; background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 12px; padding: 12px; color: var(--text); outline: none; resize: none; min-height: 48px; font-family: inherit; }
+    .exec-btn { width: 120px; background: var(--gold); border: none; border-radius: 12px; font-weight: 900; cursor: pointer; color: #000; letter-spacing: 1px; }
     .loading-veil { display: none; position: fixed; inset: 0; background: rgba(7,13,26,0.9); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
     .loading-veil.on { display: flex; }
     .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; background: #1a2a5e; border: 1px solid var(--cyan); transform: translateX(150%); transition: 0.4s; z-index: 2000; }
@@ -86,19 +83,19 @@
 <header class="hdr z1">
   <div class="logo">
     <div class="logo-name">SHONAN CENTRAL BEACON</div>
-    <div style="font-size: 9px; color: var(--muted); letter-spacing: 1px;">STRATEGIC BOARDROOM | PCDEPOT 湘南エリア</div>
+    <div style="font-size: 8px; color: var(--muted); letter-spacing: 1px;">STRATEGIC BOARDROOM | PCDEPOT 湘南エリア</div>
   </div>
   <div class="clock" id="clock">--:--</div>
 </header>
 
 <div class="agent-bar z1">
-  <div class="agent-slot" id="slot-SECRETARY"><div class="portrait-wrap" id="pw-SECRETARY"><span class="portrait-emoji">📋</span></div><div class="agent-id">CMO</div></div>
+  <div class="agent-slot" id="slot-SECRETARY"><div class="portrait-wrap" id="pw-SECRETARY"><span class="portrait-emoji">📱</span></div><div class="agent-id">CMO</div></div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-SALES"><div class="portrait-wrap" id="pw-SALES"><span class="portrait-emoji">📈</span></div><div class="agent-id">CFO</div></div>
+  <div class="agent-slot" id="slot-SALES"><div class="portrait-wrap" id="pw-SALES"><span class="portrait-emoji">📊</span></div><div class="agent-id">CFO</div></div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-PLANNER"><div class="portrait-wrap" id="pw-PLANNER"><span class="portrait-emoji">💡</span></div><div class="agent-id">COO</div></div>
+  <div class="agent-slot" id="slot-PLANNER"><div class="portrait-wrap" id="pw-PLANNER"><span class="portrait-emoji">⚙️</span></div><div class="agent-id">COO</div></div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-MARKETING"><div class="portrait-wrap" id="pw-MARKETING"><span class="portrait-emoji">📱</span></div><div class="agent-id">CLO</div></div>
+  <div class="agent-slot" id="slot-MARKETING"><div class="portrait-wrap" id="pw-MARKETING"><span class="portrait-emoji">📜</span></div><div class="agent-id">CLO</div></div>
   <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-DEVIL"><div class="portrait-wrap" id="pw-DEVIL"><span class="portrait-emoji">😈</span></div><div class="agent-id">Devil</div></div>
   <div class="bar-divider"></div>
@@ -107,7 +104,6 @@
 
 <div class="body-grid z1">
   <div class="chat-wrap">
-    <div class="mission-banner" id="missionBanner"><b style="color:var(--gold)">MISSION:</b> <span id="missionText"></span></div>
     <div class="strategy-mode-container">
       <div class="mode-tabs">
         <button class="mode-tab active" onclick="setStrategyMode(this, 'CHATTING')">💬 通常対話</button>
@@ -118,10 +114,10 @@
       <p id="mode-description" class="mode-desc">参謀たちと自由にチャット形式で議論します。</p>
     </div>
     <div class="agent-cols" id="agentCols">
-      <div class="agent-col col-secretary"><div class="agent-col-hdr">📋 CMO</div><div class="agent-col-body" id="colbody-SECRETARY"></div></div>
-      <div class="agent-col col-sales"><div class="agent-col-hdr">📈 CFO</div><div class="agent-col-body" id="colbody-SALES"></div></div>
-      <div class="agent-col col-planner"><div class="agent-col-hdr">💡 COO</div><div class="agent-col-body" id="colbody-PLANNER"></div></div>
-      <div class="agent-col col-marketing"><div class="agent-col-hdr">📱 CLO</div><div class="agent-col-body" id="colbody-MARKETING"></div></div>
+      <div class="agent-col col-secretary"><div class="agent-col-hdr">📱 CMO</div><div class="agent-col-body" id="colbody-SECRETARY"></div></div>
+      <div class="agent-col col-sales"><div class="agent-col-hdr">📊 CFO</div><div class="agent-col-body" id="colbody-SALES"></div></div>
+      <div class="agent-col col-planner"><div class="agent-col-hdr">⚙️ COO</div><div class="agent-col-body" id="colbody-PLANNER"></div></div>
+      <div class="agent-col col-marketing"><div class="agent-col-hdr">📜 CLO</div><div class="agent-col-body" id="colbody-MARKETING"></div></div>
       <div class="agent-col col-devil"><div class="agent-col-hdr">😈 Devil</div><div class="agent-col-body" id="colbody-DEVIL"></div></div>
       <div class="agent-col col-advisor"><div class="agent-col-hdr">👴 齋藤相談役</div><div class="agent-col-body" id="colbody-ADVISOR"></div></div>
       <div class="agent-col col-interrogation"><div class="agent-col-hdr">▸ INTERROGATION</div><div class="agent-col-body" id="colbody-INTERROGATION"></div></div>
@@ -140,68 +136,42 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ──【設定エリア】──
+  // ──【設定】──
   const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
-  
-  // ★ここに新しい画像のGoogleドライブIDを入れてください
   const DRIVE_FILE_ID = '1RtTNCmLyT3Wt85tHgor95DBGTECnWSAH'; 
-  const AGENT_SPRITE_URL = `https://drive.google.com/thumbnail?id=${DRIVE_FILE_ID}&sz=w1000`;
+  const AGENT_SPRITE_URL = `https://drive.google.com/thumbnail?id=${DRIVE_FILE_ID}&sz=w1200`;
 
-  // 画像の切り出し位置（左から 0%, -100%, -200%...）
-// ── イラストの切り出し位置をミリ単位で調整 ──
-  // left: 横位置の微調整 / top: 縦位置の微調整（Devilは少し低いので個別に設定）
+  // ★イラスト座標の精密調整（実測値）
   const SPRITE_CONFIG = {
-    SECRETARY: { left: '-50%',  top: '100%' },  // 1番目: CMO
-    SALES:     { left: '-95%',  top: '100%' },  // 2番目: CFO
-    PLANNER:   { left: '-205%', top: '100%' },  // 3番目: COO
-    MARKETING: { left: '-380%', top: '100%' },  // 4番目: CLO
-    DEVIL:     { left: '-315%', top: '75%' },  // 5番目: Devil (位置が低いので下げる)
-    ADVISOR:   { left: '-495%', top: '100%' }   // 6番目: 齋藤相談役
+    SECRETARY: { left: '-45%',  top: '20px' }, // CMO
+    SALES:     { left: '-148%', top: '20px' }, // CFO
+    PLANNER:   { left: '-250%', top: '20px' }, // COO
+    MARKETING: { left: '-352%', top: '20px' }, // CLO
+    DEVIL:     { left: '-418%', top: '45px' }, // Devil (少し下げる)
+    ADVISOR:   { left: '-515%', top: '20px' }  // Advisor
   };
 
-  // ── イラスト読み込みロジックの修正版 ──
-  window.addEventListener('load', () => {
-    AGENT_KEYS.forEach(key => {
-      const wrap = document.getElementById('pw-' + key);
-      if (!wrap) return;
-
-      const img = document.createElement('img');
-      img.className = 'agent-sprite';
-      img.src = AGENT_SPRITE_URL;
-      
-      // 個別の座標を適用
-      const config = SPRITE_CONFIG[key];
-      img.style.left = config.left;
-      img.style.top = `calc(50% + ${config.top === '50%' ? '0px' : '20px'})`; // 縦位置の補正
-      
-      // 画像が読み込まれたら絵文字を消す
-      img.onload = () => {
-        const emoji = wrap.querySelector('.portrait-emoji');
-        if (emoji) emoji.style.display = 'none';
-      };
-      wrap.appendChild(img);
-    });
-  });
-
-  let currentMode = 'CHATTING';
-  const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL', 'ADVISOR'];
-  const AGENT_REGEX  = {
-    SECRETARY: /\[(?:秘書|CMO)\]:?\s*([\s\S]*?)(?=\[CFO\]|\[COO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
-    SALES:     /\[(?:営業部長|CFO)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[COO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
-    PLANNER:   /\[(?:プランナー|COO)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
-    MARKETING: /\[(?:マーケ|CLO)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
-    DEVIL:     /\[(?:デビル|Devil)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[CLO\]|\[齋藤相談役\]|$)/i,
+  const AGENT_KEYS = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL', 'ADVISOR'];
+  const AGENT_REGEX = {
+    SECRETARY: /\[(?:CMO|秘書)\]:?\s*([\s\S]*?)(?=\[CFO\]|\[COO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
+    SALES:     /\[(?:CFO|営業部長)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[COO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
+    PLANNER:   /\[(?:COO|プランナー)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
+    MARKETING: /\[(?:CLO|マーケ)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
+    DEVIL:     /\[(?:Devil|デビル)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[CLO\]|\[齋藤相談役\]|$)/i,
     ADVISOR:   /\[(?:齋藤相談役|ADVISOR)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[CLO\]|\[Devil\]|$)/i
   };
 
-  // イラストの読み込み
+  let currentMode = 'CHATTING';
+
+  // イラスト初期化
   window.addEventListener('load', () => {
     AGENT_KEYS.forEach(key => {
       const wrap = document.getElementById('pw-' + key);
       const img = document.createElement('img');
       img.className = 'agent-sprite';
       img.src = AGENT_SPRITE_URL;
-      img.style.left = SPRITE_OFFSETS[key];
+      img.style.left = SPRITE_CONFIG[key].left;
+      img.style.marginTop = SPRITE_CONFIG[key].top;
       img.onload = () => wrap.querySelector('.portrait-emoji').style.display = 'none';
       wrap.appendChild(img);
     });
@@ -217,21 +187,17 @@
     currentMode = mode;
     document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
     el.classList.add('active');
-    const desc = document.getElementById('mode-description');
-    const descriptions = {
+    document.getElementById('mode-description').innerText = {
       'CHATTING': '参謀たちと自由にチャット形式で議論します。',
       'MORNING': '本日の朝礼に最適な3つの要点をブリーフィングします。',
       'WAR_ROOM': '深夜に行われた参謀たちの議論ログと答申書を読み込みます。',
       'ON_DEMAND': '入力したテーマについて、6人がその場で徹底討論を開始します。'
-    };
-    desc.innerText = descriptions[mode];
+    }[mode];
   }
 
   async function startAnalysis() {
     const input = document.getElementById('textField').value.trim();
     if (currentMode !== 'MORNING' && !input) { toast('課題を入力してください', 'err'); return; }
-    document.getElementById('missionBanner').classList.add('show');
-    document.getElementById('missionText').textContent = currentMode === 'MORNING' ? '☀️ モーニング実行中' : input;
     AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.add('thinking'));
     document.getElementById('loadVeil').classList.add('on');
     try {
@@ -241,7 +207,7 @@
       });
       const result = await res.json();
       if (result.status === 'success') { renderResult(result.data); } else { throw new Error(result.message); }
-    } catch (err) { toast('エラー発生', 'err'); }
+    } catch (err) { toast('エラー発生: ' + err.message, 'err'); }
     document.getElementById('loadVeil').classList.remove('on');
     AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.remove('thinking'));
   }
