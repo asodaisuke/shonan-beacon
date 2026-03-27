@@ -767,6 +767,8 @@ function addColMsg(agentKey, text) {
   
   colBody.appendChild(div);
   colBody.scrollTop = colBody.scrollHeight;
+
+  saveState(); // ◀ ここを追加！
 }
 
 function setLoading(on) {
@@ -900,6 +902,8 @@ function wlAddMsg(role, name, text, color) {
 
   log.appendChild(wrap);
   log.scrollTop = log.scrollHeight;
+
+  saveState(); // ◀ ここを追加！
 }
 
 function openExpand(agentKey, text, ts) {
