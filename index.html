@@ -35,7 +35,6 @@
   /* ── ヘッダー ── */
   .hdr { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px 10px; border-bottom: 1px solid var(--border); }
   .logo { display: flex; align-items: center; gap: 12px; }
-  .logo-icon { font-size: 26px; }
   .logo-name { font-size: 15px; font-weight: 900; letter-spacing: 3px; background: linear-gradient(120deg, #a37a15, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200%; animation: gold-shift 4s linear infinite; }
   @keyframes gold-shift { 0%{background-position:0%} 100%{background-position:200%} }
   .logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-top: 2px; }
@@ -530,14 +529,17 @@
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby_9-PpbPSWv6RCQovjzjaUyVRpadsPb5on_Koa6dKqqugZBmIP5t0btCwAid2fs7zBXg/exec';
 
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
+
+// ★代表、渋い眼鏡の相談役の画像IDをここに貼り付けてください！
 const ADVISOR_IMG_URL = 'https://drive.google.com/thumbnail?id=1OWUIx87NwSr8AxEIONmpMIdxqZwSMS6C&sz=w1200';
+
 const SPRITE_CONFIG = {
   SECRETARY: { left: '-145%', top: '-65px', hide: false },
-  MANAGER:   { left: '-15%',  top: '-65px', hide: false },
-  PLANNER:   { left: '-275%', top: '-65px', hide: false },
+  MANAGER:   { left: '-15%',  top: '-90px', hide: false }, // ▽ 修正！顔を下へ
+  PLANNER:   { left: '-275%', top: '-90px', hide: false }, // ▽ 修正！顔を下へ
   SNS:       { left: '-405%', top: '-65px', hide: false },
   DEVIL:     { left: '-535%', top: '-50px', hide: false },
-  ADVISOR:   { left: '0%', top: '-20px', hide: false } // hideをfalseにし、topを調整
+  ADVISOR:   { left: '0%',    top: '-30px', hide: false }  // ▽ 修正！画像を下げ、顔を上へ
 };
 
 let spriteLoaded = false;
@@ -548,24 +550,24 @@ const AGENT_COLORS = {
   MANAGER:   '#22c55e',
   PLANNER:   '#c9a227',
   SNS:       '#a855f7',
-  DEVIL:     '#ef4444',
-  ADVISOR:   '#94a3b8'
+  DEVIL: '#ef4444',
+  ADVISOR: '#94a3b8'
 };
 const AGENT_LABELS = {
   SECRETARY: '秘書',
   MANAGER:   'マネージャー',
   PLANNER:   'プランナー',
   SNS:       'SNS',
-  DEVIL:     'Devil',
-  ADVISOR:   '相談役'
+  DEVIL: 'Devil',
+  ADVISOR: '相談役'
 };
 const AGENT_EMOJI = {
   SECRETARY: '📋',
   MANAGER:   '📊',
   PLANNER:   '💡',
   SNS:       '📱',
-  DEVIL:     '😈',
-  ADVISOR:   '👴'
+  DEVIL: '😈',
+  ADVISOR: '👴'
 };
 
 const OTHER_TAGS = '(?=\\[秘書\\]|\\[SECRETARY\\]|\\[マネージャー\\]|\\[MANAGER\\]|\\[プランナー\\]|\\[PLANNER\\]|\\[SNS\\]|\\[Devil\\]|\\[デビル\\]|\\[相談役\\]|\\[ADVISOR\\]|\\[逆質問\\]|\\[INTERROGATION\\]|$)';
@@ -610,6 +612,7 @@ window.addEventListener('load', () => {
       if (em) em.style.display = 'none';
     };
     img.onerror = function() { console.warn('Sprite load error: ' + k); };
+    // ▽ ここを修正！相談役だけは独立画像から読み込む
     img.src = (k === 'ADVISOR') ? ADVISOR_IMG_URL : AGENT_SPRITE_URL;
     pw.appendChild(img);
   });
@@ -625,19 +628,16 @@ function tick() {
     String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
 
-// ▽ 実行ロジックを改修。選択されたモードを読み取り、GASに送る
 async function startAnalysis() {
   const mode = document.getElementById('missionMode').value;
   const input = document.getElementById('textField').value.trim();
 
-  // MORNINGモード以外は入力が必須
   if (mode !== 'MORNING' && !input) { toast('課題やテーマを入力してください', 'err'); return; }
 
   document.getElementById('chatEmpty').style.display = 'none';
   document.getElementById('agentCols').style.display = 'grid';
   document.getElementById('missionBanner').classList.add('show');
   
-  // バナーの表示テキストをモードに合わせて変更
   let displayText = input;
   if (mode === 'MORNING') displayText = "【MORNING】本日の朝礼ブリーフィングを生成中...";
   else if (mode === 'ON_DEMAND') displayText = "【ON DEMAND】戦略徹底討論＆答申書作成: " + input;
@@ -656,7 +656,6 @@ async function startAnalysis() {
     
     if (result.status === 'success') {
       if (mode === 'ON_DEMAND') {
-        // ON_DEMANDは「Google DocsのURL」だけが返ってくるので、秘書の発言として包み込む
         const msg = `[秘書]\n代表、指定されたテーマでの徹底討論が完了し、答申書を出力いたしました。\n以下のリンクよりご確認ください。\n\n${result.data}`;
         onSuccess(msg);
       } else {
@@ -707,7 +706,6 @@ function setState(key, state) {
   if (state === 'thinking') el.classList.add('thinking');
 }
 
-// ▽ URLを自動で青色リンクにする改修を追加
 function addColMsg(agentKey, text) {
   const colBody = document.getElementById('colbody-' + agentKey);
   if (!colBody) return;
@@ -715,7 +713,6 @@ function addColMsg(agentKey, text) {
   const ts = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
   
   let formattedText = text.replace(/\n/g, '<br>');
-  // URLをクリッカブルにする
   formattedText = formattedText.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" style="color: var(--cyan); text-decoration: underline;">$1</a>');
 
   const div = document.createElement('div');
@@ -725,7 +722,6 @@ function addColMsg(agentKey, text) {
     formattedText +
     '<div class="col-msg-expand-hint">▸ クリックで全文表示</div>';
   
-  // リンクがクリックされた場合はモーダルを開かないように制御
   div.addEventListener('click', function(e) {
     if(e.target.tagName === 'A') return; 
     openExpand(agentKey, text, ts);
