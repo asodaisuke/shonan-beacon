@@ -531,12 +531,12 @@ const ADVISOR_IMG_URL = 'https://drive.google.com/thumbnail?id=1OWUIx87NwSr8AxEI
 
 // ▽ ここは代表の最新設定（Turn 27）を完全にコピーしました。一切いじっていません。
 const SPRITE_CONFIG = {
-  SECRETARY: { left: '-145%', top: '-65px', hide: false },
-  MANAGER:   { left: '-15%',  top: '-55px', hide: false },
-  PLANNER:   { left: '-275%', top: '-55px', hide: false },
-  SNS:       { left: '-405%', top: '-65px', hide: false },
-  DEVIL:     { left: '-535%', top: '-50px', hide: false },
-  ADVISOR:   { left: '-275%', top: '-50px', hide: false }
+  SECRETARY: { left: '-145%', top: '-35px', hide: false },
+  MANAGER:   { left: '-150%', top: '-35px', hide: false }, // ▽ -15%から-150%に修正（これで男性が戻ります）
+  PLANNER:   { left: '-275%', top: '-35px', hide: false }, // ▽ topを-55から-35へ（顔を下げました）
+  SNS:       { left: '-405%', top: '-35px', hide: false },
+  DEVIL:     { left: '-535%', top: '-35px', hide: false },
+  ADVISOR:   { left: '-275%', top: '-35px', hide: false }  // ▽ 代表の成功値-275%を維持しつつ下げました
 };
 
 const AGENT_KEYS   = ['SECRETARY', 'MANAGER', 'PLANNER', 'SNS', 'DEVIL', 'ADVISOR'];
