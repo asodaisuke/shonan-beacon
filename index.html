@@ -599,22 +599,26 @@ function tick() {
   document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
 
-// ══ 2. 保存・復元ロジック（外側に出しました） ══
+// ══ 保存・復元ロジック（最新版） ══
 function saveState() {
   const state = {
     agentColsHtml: document.getElementById('agentCols').innerHTML,
     wlLogHtml: document.getElementById('wlLog').innerHTML,
     missionText: document.getElementById('missionText').textContent,
-    showCols: document.getElementById('agentCols').style.display === 'grid'
+    showCols: document.getElementById('agentCols').style.display === 'grid',
+    // ▽ 追加：壁打ちが「開いていたか」と「誰を選んでいたか」
+    isWlOpen: document.getElementById('wlOverlay').classList.contains('open'),
+    wlAgent: wlSelectedAgent
   };
   localStorage.setItem('BEACON_V4_SAVE', JSON.stringify(state));
-  console.log("✔ オートセーブ完了");
 }
 
 function loadState() {
   const saved = localStorage.getItem('BEACON_V4_SAVE');
   if (!saved) return;
   const state = JSON.parse(saved);
+
+  // 1. メイングリッドの復元
   if (state.showCols) {
     document.getElementById('chatEmpty').style.display = 'none';
     const cols = document.getElementById('agentCols');
@@ -624,7 +628,7 @@ function loadState() {
     document.getElementById('missionText').textContent = state.missionText;
     document.getElementById('missionBanner').classList.add('show');
     
-    // 復元したカードにクリックイベントを付け直す
+    // カードのクリックイベント再登録
     cols.querySelectorAll('.col-msg').forEach(msgEl => {
       msgEl.onclick = () => {
         const text = msgEl.innerHTML.split('</div>')[1].replace(/<br>/g, '\n').replace(/<div.*$/,'');
@@ -635,8 +639,14 @@ function loadState() {
       };
     });
   }
-}
 
+  // 2. ▽ 追加：壁打ちモードの復元
+  if (state.isWlOpen) {
+    // 窓を開き、選択していたエージェントを再セット
+    openWalluchi(state.wlAgent);
+    document.getElementById('wlEmpty').style.display = 'none';
+  }
+}
 // ══ 3. メイン分析 ══
 async function startAnalysis() {
   const mode = document.getElementById('missionMode').value;
