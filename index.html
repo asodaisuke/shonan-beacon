@@ -539,7 +539,7 @@ const SPRITE_CONFIG = {
   PLANNER:   { left: '-275%', top: '-65px', hide: false }, // ▽ 修正！顔を下、左へ
   SNS:       { left: '-405%', top: '-65px', hide: false }, // ▽ 修正！顔を下、左へ
   DEVIL:     { left: '-535%', top: '-65px', hide: false }, // ▽ 修正！topを秘書と同じにして顔全体を中央に（顔を下へ）
-  ADVISOR:   { left: '-545%', top: '-60px', hide: false }  // ▽ 修正！画像を上げ、枠内へ戻す（顔を上、右へ）
+  ADVISOR:   { left: '0%',    top: '-60px', hide: false }  // ▽ 修正！画像を上げ、枠内へ戻す（顔を上へ）
 };
 
 let spriteLoaded = false;
@@ -612,7 +612,7 @@ window.addEventListener('load', () => {
       if (em) em.style.display = 'none';
     };
     img.onerror = function() { console.warn('Sprite load error: ' + k); };
-    // ▽ ここを修正！相談役だけは独立画像から読み込む
+    // ▽ ここを修正！元の img.src = AGENT_SPRITE_URL; を以下に書き換え
     img.src = (k === 'ADVISOR') ? ADVISOR_IMG_URL : AGENT_SPRITE_URL;
     pw.appendChild(img);
   });
