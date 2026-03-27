@@ -524,7 +524,7 @@
 </div>
 
 <script>
-// ══ 1. 定数・グローバル（代表のTurn 27の設定を完全に維持） ══
+// ══ 1. 定数・グローバル ══
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby_9-PpbPSWv6RCQovjzjaUyVRpadsPb5on_Koa6dKqqugZBmIP5t0btCwAid2fs7zBXg/exec';
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
 const ADVISOR_IMG_URL = 'https://drive.google.com/thumbnail?id=1OWUIx87NwSr8AxEIONmpMIdxqZwSMS6C&sz=w1200';
@@ -556,24 +556,28 @@ const AGENT_REGEX = {
 
 let wlSelectedAgent = null;
 
-// ══ 2. 起動・復元処理 ══
+// ══ 2. 起動・復元処理（順序を修正） ══
 window.addEventListener('load', () => {
-  loadState(); // 記憶を復元
-  tick(); setInterval(tick, 1000);
+  // ① まずUIの土台（ボタンなど）を作る
   buildWlChips();
+  tick(); 
+  setInterval(tick, 1000);
 
+  // ② ヘッダーのイラスト（スプライト）を描画
   AGENT_KEYS.forEach(k => {
     const pw = document.getElementById('pw-' + k);
     if (!pw) return;
     const cfg = SPRITE_CONFIG[k];
     const img = document.createElement('img');
     img.className = 'agent-sprite';
-    // ▽ scale削除、Turn 27の座標をそのまま反映
     img.style.cssText = `position:absolute;width:650%;height:auto;top:${cfg.top};left:${cfg.left};pointer-events:none;`;
     img.onload = () => { pw.querySelector('.portrait-emoji').style.display = 'none'; };
     img.src = (k === 'ADVISOR') ? ADVISOR_IMG_URL : AGENT_SPRITE_URL;
     pw.appendChild(img);
   });
+
+  // ③ 最後に記憶を復元（ボタンや画像が準備された後に行う）
+  loadState();
 
   document.getElementById('textField').addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') startAnalysis(); });
   document.getElementById('wlInput').addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') sendWalluchi(); });
@@ -584,7 +588,7 @@ function tick() {
   document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
 
-// ══ 3. 保存・復元ロジック（窓の状態も記憶） ══
+// ══ 3. 保存・復元ロジック ══
 function saveState() {
   const state = {
     agentColsHtml: document.getElementById('agentCols').innerHTML,
@@ -602,15 +606,26 @@ function loadState() {
   if (!saved) return;
   const state = JSON.parse(saved);
 
+  // A. 壁打ちログの復元（メイン画面とは独立して復元）
+  if (state.wlLogHtml) {
+    const wlLog = document.getElementById('wlLog');
+    wlLog.innerHTML = state.wlLogHtml;
+    // メッセージがあれば空状態の表示を消す
+    if (wlLog.querySelector('.wl-msg')) {
+      document.getElementById('wlEmpty').style.display = 'none';
+    }
+  }
+
+  // B. メイン分析画面の復元
   if (state.showCols) {
     document.getElementById('chatEmpty').style.display = 'none';
     const cols = document.getElementById('agentCols');
     cols.style.display = 'grid';
     cols.innerHTML = state.agentColsHtml;
-    document.getElementById('wlLog').innerHTML = state.wlLogHtml;
     document.getElementById('missionText').textContent = state.missionText;
     document.getElementById('missionBanner').classList.add('show');
     
+    // イベント再バインド
     cols.querySelectorAll('.col-msg').forEach(msgEl => {
       msgEl.onclick = () => {
         const text = msgEl.innerHTML.split('</div>')[1].replace(/<br>/g, '\n').replace(/<div.*$/,'');
@@ -621,9 +636,10 @@ function loadState() {
       };
     });
   }
+
+  // C. 壁打ちモーダルの状態復元
   if (state.isWlOpen) {
     openWalluchi(state.wlAgent);
-    if(state.wlAgent) document.getElementById('wlEmpty').style.display = 'none';
   }
 }
 
@@ -677,6 +693,7 @@ function addColMsg(k, t) {
 // ══ 5. 壁打ち ══
 function buildWlChips() {
   const container = document.getElementById('wlChips');
+  if (!container) return;
   container.innerHTML = '';
   AGENT_KEYS.forEach(k => {
     const chip = document.createElement('button');
@@ -686,16 +703,36 @@ function buildWlChips() {
     container.appendChild(chip);
   });
 }
-function openWalluchi(pre) { document.getElementById('wlOverlay').classList.add('open'); if(pre) wlSelectAgent(pre); else document.getElementById('wlInput').focus(); saveState(); }
-function closeWalluchi() { document.getElementById('wlOverlay').classList.remove('open'); saveState(); }
+
+function openWalluchi(pre) { 
+  document.getElementById('wlOverlay').classList.add('open'); 
+  if(pre) wlSelectAgent(pre); 
+  else document.getElementById('wlInput').focus(); 
+  saveState(); 
+}
+
+function closeWalluchi() { 
+  document.getElementById('wlOverlay').classList.remove('open'); 
+  saveState(); 
+}
 
 function wlSelectAgent(k) {
+  if (!k) return;
   wlSelectedAgent = k;
   const color = AGENT_COLORS[k];
   AGENT_KEYS.forEach(key => {
     const chip = document.getElementById('wl-chip-'+key);
-    if(key === k) { chip.classList.add('selected'); chip.style.background = color; chip.style.color = '#000'; }
-    else { chip.classList.remove('selected'); chip.style.background = ''; chip.style.color = ''; }
+    if (chip) {
+      if(key === k) { 
+        chip.classList.add('selected'); 
+        chip.style.background = color; 
+        chip.style.color = '#000'; 
+      } else { 
+        chip.classList.remove('selected'); 
+        chip.style.background = ''; 
+        chip.style.color = ''; 
+      }
+    }
   });
   const ind = document.getElementById('wlAgentIndicator');
   if(ind) {
@@ -729,8 +766,9 @@ function wlAddMsg(r, n, t, c) {
   const log = document.getElementById('wlLog');
   const div = document.createElement('div');
   div.className = 'wl-msg '+(r==='user'?'user':'');
-  div.innerHTML = `<div class="wl-msg-avatar" style="border-color:${c}">${r==='user'?'👤':AGENT_EMOJI[wlSelectedAgent]}</div><div class="wl-msg-bubble" style="border-color:${c}">${t.replace(/\n/g,'<br>')}</div>`;
-  log.appendChild(div); log.scrollTop = log.scrollHeight;
+  div.innerHTML = `<div class="wl-msg-avatar" style="border-color:${c}">${r==='user'?'👤':(AGENT_EMOJI[wlSelectedAgent]||'')}</div><div class="wl-msg-bubble" style="border-color:${c}">${t.replace(/\n/g,'<br>')}</div>`;
+  log.appendChild(div); 
+  log.scrollTop = log.scrollHeight;
   saveState();
 }
 
@@ -746,7 +784,7 @@ function openExpand(k, t, ts) {
 function closeExpand() { document.getElementById('expandOverlay').classList.remove('open'); }
 function handleExpandOverlayClick(e) { if(e.target.id === 'expandOverlay') closeExpand(); }
 function handleWlOverlayClick(e) { if(e.target.id === 'wlOverlay') closeWalluchi(); }
-function setState(k, s) { const el = document.getElementById('slot-'+k); el.classList.remove('active','thinking'); if(s==='active') el.classList.add('active'); if(s==='thinking') el.classList.add('thinking'); }
+function setState(k, s) { const el = document.getElementById('slot-'+k); if(!el) return; el.classList.remove('active','thinking'); if(s==='active') el.classList.add('active'); if(s==='thinking') el.classList.add('thinking'); }
 function setLoading(n) { document.getElementById('loadVeil').style.display = n?'flex':'none'; }
 function toast(m,t) { const el=document.getElementById('toast'); el.innerText=m; el.className='toast show '+t; setTimeout(()=>el.classList.remove('show'),3000); }
 </script>
