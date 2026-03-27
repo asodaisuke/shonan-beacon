@@ -7,7 +7,7 @@
   <script>
     if (window.self !== window.top) { window.top.location.href = window.location.href; }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -34,32 +34,34 @@
 
     /* ── エージェントバー ── */
     .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 12px 24px 10px; border-bottom: 1px solid var(--border); }
-    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 6px 20px; cursor: pointer; transition: transform .35s; }
-    .portrait-wrap { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2); display: flex; align-items: center; justify-content: center; }
-    .agent-sprite { position: absolute; width: 630%; height: auto; transition: opacity 0.3s; } /* 横幅を少し広げて調整 */
-    .portrait-emoji { font-size: 30px; }
-    .agent-id { font-size: 10px; font-weight: 900; color: var(--muted); letter-spacing: 1px; font-family: 'Montserrat', sans-serif; }
+    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0 15px; cursor: pointer; transition: transform .35s; }
+    .portrait-wrap { width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2); display: flex; align-items: center; justify-content: center; }
+    .agent-sprite { position: absolute; width: 630%; height: auto; pointer-events: none; }
+    .portrait-emoji { font-size: 30px; display: block; }
+    .agent-id { font-size: 10px; font-weight: 900; color: var(--muted); letter-spacing: 1px; }
     .agent-slot.active .agent-id { color: var(--cyan); }
     .agent-slot.active .portrait-wrap { border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
     .agent-slot.thinking .portrait-wrap { animation: think-glow 1s ease-in-out infinite; }
     @keyframes think-glow { 0%,100% { box-shadow: 0 0 10px rgba(201,162,39,.5); } 50% { box-shadow: 0 0 25px rgba(201,162,39,.9); } }
+    .bar-divider { width: 1px; height: 50px; background: var(--border); margin: 0 5px; }
 
     /* ── 戦略モード ── */
-    .strategy-mode-container { position: relative; z-index: 100; padding: 12px 24px; background: rgba(201,162,39,0.05); border-bottom: 1px solid var(--border); }
+    .strategy-mode-container { position: relative; z-index: 100; padding: 12px 24px; background: rgba(201,162,39,0.06); border-bottom: 1px solid var(--border); }
     .mode-tabs { display: flex; gap: 8px; margin-bottom: 6px; }
-    .mode-tab { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-dim); padding: 6px 14px; font-size: 10px; font-weight: 700; cursor: pointer; border-radius: 4px; }
-    .mode-tab.active { background: rgba(201, 162, 39, 0.2); border-color: var(--gold); color: var(--gold); }
-    .mode-desc { font-size: 10px; opacity: 0.7; }
+    .mode-tab { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-dim); padding: 5px 12px; font-size: 10px; font-weight: 700; cursor: pointer; border-radius: 3px; }
+    .mode-tab.active { background: rgba(201, 162, 39, 0.15); border-color: var(--gold); color: var(--gold); }
+    .mode-desc { font-size: 10px; opacity: 0.6; }
 
-    /* ── メイングリッド ── */
-    .body-grid { flex: 1; display: grid; padding: 12px 24px 0; overflow: hidden; }
-    .chat-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
-    .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; overflow: hidden; }
-    .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; background: rgba(255,255,255,.02); }
-    .agent-col-hdr { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
-    .agent-col-body { flex: 1; overflow-y: auto; padding: 6px; display: flex; flex-direction: column; gap: 6px; }
-    .col-msg { background: rgba(255,255,255,.04); border-radius: 8px; padding: 10px; font-size: 11px; line-height: 1.6; border-left: 3px solid; cursor: pointer; font-weight: 300; }
+    /* ── ボディグリッド ── */
+    .body-grid { flex: 1; display: flex; padding: 12px 24px 0; overflow: hidden; min-height: 0; }
+    .chat-wrap { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
+    .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 10px; overflow: hidden; min-height: 0; }
+    .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; background: rgba(255,255,255,.01); }
+    .agent-col-hdr { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; flex-shrink: 0; }
+    .agent-col-body { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; scrollbar-width: thin; }
+    .col-msg { background: rgba(255,255,255,.03); border-radius: 8px; padding: 12px; font-size: 11px; line-height: 1.7; border-left: 3px solid; font-weight: 300; }
     
+    /* エージェント色分け */
     .col-secretary .agent-col-hdr { border-top: 3px solid var(--secretary); color: var(--secretary); } .col-secretary .col-msg { border-color: var(--secretary); }
     .col-sales .agent-col-hdr { border-top: 3px solid var(--sales); color: var(--sales); } .col-sales .col-msg { border-color: var(--sales); }
     .col-planner .agent-col-hdr { border-top: 3px solid var(--planner); color: var(--planner); } .col-planner .col-msg { border-color: var(--planner); }
@@ -68,13 +70,16 @@
     .col-advisor .agent-col-hdr { border-top: 3px solid var(--advisor); color: var(--advisor); } .col-advisor .col-msg { border-color: var(--advisor); }
     .col-interrogation .agent-col-hdr { border-top: 3px solid var(--cyan); color: var(--cyan); } .col-interrogation .col-msg { border-color: var(--cyan); }
 
-    .input-footer { padding: 14px 24px; border-top: 1px solid var(--border); }
-    .input-main { display: flex; gap: 10px; }
-    .text-field { flex: 1; background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 12px; padding: 12px; color: var(--text); outline: none; resize: none; min-height: 48px; font-family: inherit; }
-    .exec-btn { width: 120px; background: var(--gold); border: none; border-radius: 12px; font-weight: 900; cursor: pointer; color: #000; letter-spacing: 1px; }
-    .loading-veil { display: none; position: fixed; inset: 0; background: rgba(7,13,26,0.9); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
+    /* ── 入力エリア ── */
+    .input-footer { padding: 16px 24px 20px; border-top: 1px solid var(--border); }
+    .input-main { display: flex; gap: 12px; }
+    .text-field { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); outline: none; resize: none; min-height: 50px; font-family: inherit; font-size: 14px; }
+    .exec-btn { width: 130px; background: linear-gradient(135deg, var(--gold), var(--gold-lt)); border: none; border-radius: 12px; font-weight: 900; cursor: pointer; color: #000; letter-spacing: 2px; transition: 0.3s; }
+    .exec-btn:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(201,162,39,0.4); }
+
+    .loading-veil { display: none; position: fixed; inset: 0; background: rgba(7,13,26,0.92); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
     .loading-veil.on { display: flex; }
-    .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; background: #1a2a5e; border: 1px solid var(--cyan); transform: translateX(150%); transition: 0.4s; z-index: 2000; }
+    .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; background: #1a2a5e; border: 1px solid var(--cyan); transform: translateX(150%); transition: 0.4s; z-index: 2000; font-size: 13px; }
     .toast.show { transform: translateX(0); }
   </style>
 </head>
@@ -83,7 +88,7 @@
 <header class="hdr z1">
   <div class="logo">
     <div class="logo-name">SHONAN CENTRAL BEACON</div>
-    <div style="font-size: 8px; color: var(--muted); letter-spacing: 1px;">STRATEGIC BOARDROOM | PCDEPOT 湘南エリア</div>
+    <div style="font-size: 8px; color: var(--muted); letter-spacing: 1.5px; margin-top: 2px;">STRATEGIC BOARDROOM | PCDEPOT 湘南エリア</div>
   </div>
   <div class="clock" id="clock">--:--</div>
 </header>
@@ -136,18 +141,18 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ──【設定】──
+  // ──【定数・設定】──
   const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
   const DRIVE_FILE_ID = '1RtTNCmLyT3Wt85tHgor95DBGTECnWSAH'; 
   const AGENT_SPRITE_URL = `https://drive.google.com/thumbnail?id=${DRIVE_FILE_ID}&sz=w1200`;
 
-  // ★イラスト座標の精密調整（実測値）
+  // 精密座標
   const SPRITE_CONFIG = {
     SECRETARY: { left: '-45%',  top: '20px' }, // CMO
     SALES:     { left: '-148%', top: '20px' }, // CFO
     PLANNER:   { left: '-250%', top: '20px' }, // COO
     MARKETING: { left: '-352%', top: '20px' }, // CLO
-    DEVIL:     { left: '-418%', top: '45px' }, // Devil (少し下げる)
+    DEVIL:     { left: '-418%', top: '45px' }, // Devil
     ADVISOR:   { left: '-515%', top: '20px' }  // Advisor
   };
 
@@ -161,9 +166,6 @@
     ADVISOR:   /\[(?:齋藤相談役|ADVISOR)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[CLO\]|\[Devil\]|$)/i
   };
 
-  let currentMode = 'CHATTING';
-
-  // イラスト初期化
   window.addEventListener('load', () => {
     AGENT_KEYS.forEach(key => {
       const wrap = document.getElementById('pw-' + key);
@@ -172,7 +174,7 @@
       img.src = AGENT_SPRITE_URL;
       img.style.left = SPRITE_CONFIG[key].left;
       img.style.marginTop = SPRITE_CONFIG[key].top;
-      img.onload = () => wrap.querySelector('.portrait-emoji').style.display = 'none';
+      img.onload = () => { if(wrap.querySelector('.portrait-emoji')) wrap.querySelector('.portrait-emoji').style.opacity = '0'; };
       wrap.appendChild(img);
     });
   });
@@ -195,9 +197,11 @@
     }[mode];
   }
 
+  let currentMode = 'CHATTING';
+
   async function startAnalysis() {
     const input = document.getElementById('textField').value.trim();
-    if (currentMode !== 'MORNING' && !input) { toast('課題を入力してください', 'err'); return; }
+    if (currentMode !== 'MORNING' && !input) { toast('経営課題を入力してください', 'err'); return; }
     AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.add('thinking'));
     document.getElementById('loadVeil').classList.add('on');
     try {
@@ -207,7 +211,7 @@
       });
       const result = await res.json();
       if (result.status === 'success') { renderResult(result.data); } else { throw new Error(result.message); }
-    } catch (err) { toast('エラー発生: ' + err.message, 'err'); }
+    } catch (err) { toast('エラー: ' + err.message, 'err'); }
     document.getElementById('loadVeil').classList.remove('on');
     AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.remove('thinking'));
   }
@@ -225,7 +229,7 @@
           body.appendChild(div);
           body.scrollTop = body.scrollHeight;
         }
-      }, i * 800);
+      }, i * 600);
     });
   }
 
