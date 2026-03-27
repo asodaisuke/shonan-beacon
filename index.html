@@ -525,7 +525,7 @@ const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyZE4HUKCEzNvdQWEpu
 
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w500';
 const SPRITE_LEFT = { SECRETARY:'0', SALES:'-100%', PLANNER:'-200%', MARKETING:'-300%', DEVIL:'-400%' };
-const SPRITE_TOP  = { SECRETARY:'30px', SALES:'28px', PLANNER:'30px', MARKETING: 25px', DEVIL:'30px' };
+const SPRITE_TOP  = { SECRETARY:'30px', SALES:'28px', PLANNER:'30px', MARKETING: '25px', DEVIL:'30px' };
 let spriteLoaded = false;
 
 const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL'];
@@ -829,7 +829,7 @@ function openExpand(agentKey, text, ts) {
   // 壁打ちボタン
   const wlBtn = document.getElementById('expandWlBtn');
   wlBtn.onclick = function() { closeExpand(); openWalluchi(agentKey); };
-  wlBtn.style.borderColor = color + '66+;
+  wlBtn.style.borderColor = color + '66';
   wlBtn.style.color = color;
 
   document.getElementById('expandOverlay').classList.add('open');
