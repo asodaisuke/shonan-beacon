@@ -587,6 +587,44 @@ let wlSelectedAgent = null;
 window.addEventListener('load', () => {
   tick(); setInterval(tick, 1000);
   buildWlChips();
+  
+  loadState(); // ◀ ここを追加！
+  // ══ 保存・復元ロジック（ここを貼り付け） ══
+function saveState() {
+  const state = {
+    agentColsHtml: document.getElementById('agentCols').innerHTML,
+    wlLogHtml: document.getElementById('wlLog').innerHTML,
+    missionText: document.getElementById('missionText').textContent,
+    showCols: document.getElementById('agentCols').style.display === 'grid'
+  };
+  localStorage.setItem('BEACON_V4_SAVE', JSON.stringify(state));
+}
+
+function loadState() {
+  const saved = localStorage.getItem('BEACON_V4_SAVE');
+  if (!saved) return;
+  const state = JSON.parse(saved);
+  if (state.showCols) {
+    document.getElementById('chatEmpty').style.display = 'none';
+    const cols = document.getElementById('agentCols');
+    cols.style.display = 'grid';
+    cols.innerHTML = state.agentColsHtml;
+    document.getElementById('wlLog').innerHTML = state.wlLogHtml;
+    document.getElementById('missionText').textContent = state.missionText;
+    document.getElementById('missionBanner').classList.add('show');
+    
+    // 復元したカードに「拡大クリック」を再登録
+    cols.querySelectorAll('.col-msg').forEach(msgEl => {
+      msgEl.onclick = () => {
+        const text = msgEl.innerHTML.split('</div>')[1].replace(/<br>/g, '\n').replace(/<div.*$/,'');
+        const ts = msgEl.querySelector('.col-msg-ts').innerText;
+        // エージェント名は親要素のクラスから判定
+        const agentKey = Array.from(msgEl.closest('.agent-col').classList).find(c => c.startsWith('col-')).split('-')[1].toUpperCase();
+        openExpand(agentKey, text, ts);
+      };
+    });
+  }
+}
 
   AGENT_KEYS.forEach(function(k) {
     var pw = document.getElementById('pw-' + k);
