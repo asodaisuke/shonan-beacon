@@ -7,7 +7,7 @@
   <script>
   if (window.self !== window.top) { window.top.location.href = window.location.href; }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght=0,200;0,300;0,400;0,600;0,700;0,900;1,300&family=Noto+Sans+JP:wght=300;400;700&display=swap" rel="stylesheet">
   <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -46,7 +46,8 @@
   .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; color: var(--text); }
 
   /* ── エージェントバー ── */
-  .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 0; padding: 12px 24px 10px; border-bottom: 1px solid var(--border); }
+  /* ①指示：イラストをもっと下にズラして。ヘッダー（🏮アイコン）とアイコンバーの間にスペースを確保。 */
+  .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 0; padding: 24px 24px 10px; border-bottom: 1px solid var(--border); } /* padding-topを24pxに増やす */
   .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 6px 20px; cursor: pointer; transition: transform .35s ease; }
   .agent-slot:hover { transform: translateY(-2px); }
   .portrait-wrap {
@@ -526,15 +527,16 @@ const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1
 // ▽代表から提供された最新の5人分画像IDに差し替え
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
 
-// ▽画像の拡大率を650%に再設定し、CMO(茶髪)とCOO(黒髪)の配属を物理的に入れ替え
-// ※画像上の並び順(1=CFO, 2=CMO, 3=COO, 4=CLO, 5=Devil)
+// 各キャラクターの精密座標（顔が丸枠中央に来るよう個別調整）
+// ※代表の指示：一番左の男性（CFO眼鏡男）と、左から2番目の女性（CMO茶髪女）をチェンジ！
+//   (1番目：茶髪女、2番目：眼鏡男、3番目：黒髪男、4番目：中国服女、5番目：赤髪男)
 const SPRITE_CONFIG = {
-  SECRETARY: { left: '-15%',  top: '25px', hide: false }, // 1人目: CFO(眼鏡)
-  MANAGER:   { left: '-275%', top: '25px', hide: false }, // 3人目: COO(黒髪) ←代表のご指示通り入れ替え済！
-  PLANNER:   { left: '-145%', top: '25px', hide: false }, // 2人目: CMO(茶髪) ←代表のご指示通り入れ替え済！
-  SNS:       { left: '-405%', top: '25px', hide: false }, // 4人目: CLO(チャイナ)
-  DEVIL:     { left: '-535%', top: '25px', hide: false }, // 5人目: Devil(赤髪)
-  ADVISOR:   { left: '0%',    top: '0%',   hide: true }   // 6人目: 相談役(未定のため枠と絵文字のみ)
+  SECRETARY: { left: '-145%', top: '25px', hide: false }, // 茶髪女性(CMO)を秘書(1番目)に配属
+  MANAGER:   { left: '-15%',  top: '25px', hide: false }, // 眼鏡男性(CFO)をマネージャー(2番目)に配属
+  PLANNER:   { left: '-275%', top: '25px', hide: false }, // 黒髪男性(COO)をプランナー(3番目)に配属
+  SNS:       { left: '-405%', top: '25px', hide: false }, // 中国服女性(CLO)をSNS(4番目)に配属
+  DEVIL:     { left: '-535%', top: '25px', hide: false }, // 赤髪男性(Devil)をDevil(5番目)に配属
+  ADVISOR:   { left: '0%',    top: '0%',   hide: true }   // 6人目：相談役（未定のため枠と絵文字のみ）
 };
 
 let spriteLoaded = false;
