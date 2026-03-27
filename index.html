@@ -7,7 +7,7 @@
   <script>
   if (window.self !== window.top) { window.top.location.href = window.location.href; }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght=0,200;0,300;0,400;0,600;0,700;0,900;1,300&family=Noto+Sans+JP:wght=300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -523,20 +523,17 @@
 // ══ 定数・グローバル ══
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
 
-// ▽代表から提供された最新の5人分画像ID
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
 
-// 各キャラクターの精密座標（顔が丸枠中央に来るよう個別調整）
-// ※代表の指示：順番は image_4.png でOK。イラストを下へ下げ、顔全体を表示。
-// 　(1番目：茶髪女、2番目：眼鏡男、3番目：黒髪男、4番目：中国服女、5番目：赤髪男)
-//   全体的に 'top' の数値を下（マイナス方向）に大きく調整しました。
+// ▽ 画像を「天井基準(top:0)」で配置し、文字を隠して顔だけ見せるよう修正！
+// 　（マイナス値にすると画像が上にスライドし、顔が丸枠に入ってきます）
 const SPRITE_CONFIG = {
-  SECRETARY: { left: '-145%', top: '-15px', hide: false }, // 茶髪女性(CMO)
-  MANAGER:   { left: '-15%',  top: '-15px', hide: false }, // 眼鏡男性(CFO)
-  PLANNER:   { left: '-275%', top: '-15px', hide: false }, // 黒髪男性(COO)
-  SNS:       { left: '-405%', top: '-15px', hide: false }, // 中国服女性(CLO)
-  DEVIL:     { left: '-535%', top: '-25px', hide: false }, // 赤髪男性(Devil) ※髪が立っているため、さらに下げる
-  ADVISOR:   { left: '0%',    top: '0%',   hide: true }   // 6人目：相談役（未定のため枠と絵文字のみ）
+  SECRETARY: { left: '-145%', top: '-20px', hide: false }, // 茶髪女性(CMO)
+  MANAGER:   { left: '-15%',  top: '-20px', hide: false }, // 眼鏡男性(CFO)
+  PLANNER:   { left: '-275%', top: '-20px', hide: false }, // 黒髪男性(COO)
+  SNS:       { left: '-405%', top: '-20px', hide: false }, // 中国服女性(CLO)
+  DEVIL:     { left: '-535%', top: '-5px',  hide: false }, // 赤髪男性(Devil) ※髪が上に逆立っているので少し下げる
+  ADVISOR:   { left: '0%',    top: '0%',    hide: true }   // 6人目：相談役
 };
 
 let spriteLoaded = false;
@@ -567,7 +564,6 @@ const AGENT_EMOJI = {
   ADVISOR:   '👴'
 };
 
-// 他エージェントタグのパターン（終端検出用）
 const OTHER_TAGS = '(?=\\[秘書\\]|\\[SECRETARY\\]|\\[マネージャー\\]|\\[MANAGER\\]|\\[プランナー\\]|\\[PLANNER\\]|\\[SNS\\]|\\[Devil\\]|\\[デビル\\]|\\[相談役\\]|\\[ADVISOR\\]|\\[逆質問\\]|\\[INTERROGATION\\]|$)';
 
 const AGENT_REGEX = {
@@ -580,10 +576,8 @@ const AGENT_REGEX = {
   INTERROGATION: new RegExp('\\[(?:逆質問|INTERROGATION)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i')
 };
 
-// 壁打ちモード
 let wlSelectedAgent = null;
 
-// ══ 起動時 ══
 window.addEventListener('load', () => {
   tick(); setInterval(tick, 1000);
   buildWlChips();
@@ -593,7 +587,6 @@ window.addEventListener('load', () => {
     if (!pw) return;
     
     var cfg = SPRITE_CONFIG[k];
-    // 相談役(hide: true)の場合は画像を読み込まず絵文字を残す
     if (cfg.hide) return; 
 
     var old = pw.querySelector('img.agent-sprite');
@@ -602,11 +595,12 @@ window.addEventListener('load', () => {
     var img = document.createElement('img');
     img.className = 'agent-sprite';
     
-    // 画像を650%に拡大し、顔にズーム
+    // ▽ ここを修正！ translateYによる複雑な計算を廃止し、シンプルに上部から配置
     img.style.cssText =
       'position:absolute;width:650%;height:auto;' +
-      'top:50%;transform:translateY(calc(-50% + ' + cfg.top + '));' +
+      'top:' + cfg.top + ';' +
       'left:' + cfg.left + ';pointer-events:none;';
+      
     img.onload = function() {
       spriteLoaded = true;
       var em = pw.querySelector('.portrait-emoji');
@@ -617,7 +611,6 @@ window.addEventListener('load', () => {
     pw.appendChild(img);
   });
 
-  // Ctrl+Enter で壁打ち送信
   document.getElementById('wlInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); sendWalluchi(); }
   });
@@ -629,7 +622,6 @@ function tick() {
     String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
 
-// ══ メイン分析 ══
 async function startAnalysis() {
   const input = document.getElementById('textField').value.trim();
   if (!input) { toast('入力してください', 'err'); return; }
@@ -665,7 +657,6 @@ function onSuccess(aiText) {
       const text = match ? match[1].trim() : (aiText.length > 0 && k === 'SECRETARY' ? aiText : '');
       if (text) addColMsg(k, text);
 
-      // INTERROGATION列チェック
       if (i === AGENT_KEYS.length - 1) {
         const intMatch = aiText.match(AGENT_REGEX['INTERROGATION']);
         if (intMatch && intMatch[1].trim()) addColMsg('INTERROGATION', intMatch[1].trim());
@@ -680,7 +671,7 @@ function onSuccess(aiText) {
 }
 
 function onErr(e) {
-  setLoading(false)
+  setLoading(false);
   document.getElementById('execBtn').disabled = false;
   AGENT_KEYS.forEach(k => setState(k, 'idle'));
   toast('エラー: ' + e.message, 'err');
@@ -694,7 +685,6 @@ function setState(key, state) {
   if (state === 'thinking') el.classList.add('thinking');
 }
 
-// カラムにメッセージ追加 + クリックで拡大
 function addColMsg(agentKey, text) {
   const colBody = document.getElementById('colbody-' + agentKey);
   if (!colBody) return;
@@ -724,9 +714,6 @@ function toast(msg, type) {
   setTimeout(() => el.classList.remove('show'), 4000);
 }
 
-// ══════════════════════════════════════
-// 壁打ちモーダル
-// ══════════════════════════════════════
 function buildWlChips() {
   const container = document.getElementById('wlChips');
   AGENT_KEYS.forEach(k => {
@@ -849,9 +836,6 @@ function wlAddMsg(role, name, text, color) {
   log.scrollTop = log.scrollHeight;
 }
 
-// ══════════════════════════════════════
-// コメント拡大モーダル
-// ══════════════════════════════════════
 function openExpand(agentKey, text, ts) {
   const color = AGENT_COLORS[agentKey] || 'var(--cyan)';
   const label = AGENT_LABELS[agentKey] || agentKey;
