@@ -610,7 +610,7 @@ window.addEventListener('load', () => {
       if (em) em.style.display = 'none';
     };
     img.onerror = function() { console.warn('Sprite load error: ' + k); };
-    img.src = AGENT_SPRITE_URL;
+    img.src = (k === 'ADVISOR') ? ADVISOR_IMG_URL : AGENT_SPRITE_URL;
     pw.appendChild(img);
   });
 
