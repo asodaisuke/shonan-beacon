@@ -557,14 +557,14 @@ const AGENT_REGEX = {
 
 let wlSelectedAgent = null;
 
-// ══ 1. 起動時の処理 ══
+// ══ 起動時の処理（ここを最新の状態に更新） ══
 window.addEventListener('load', () => {
-  loadState(); // ◀ 記憶を真っ先に読み込む
+  loadState(); 
   tick(); 
   setInterval(tick, 1000);
   buildWlChips();
 
-  // イラストの描画
+  // ▽ イラスト描画（ここは既存のまま）
   AGENT_KEYS.forEach(k => {
     const pw = document.getElementById('pw-' + k);
     if (!pw) return;
@@ -577,8 +577,20 @@ window.addEventListener('load', () => {
     pw.appendChild(img);
   });
 
+  // ▽ 1. メイン入力欄のショートカット
+  document.getElementById('textField').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { 
+      e.preventDefault(); 
+      startAnalysis(); 
+    }
+  });
+
+  // ▽ 2. 壁打ち入力欄のショートカット
   document.getElementById('wlInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); sendWalluchi(); }
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { 
+      e.preventDefault(); 
+      sendWalluchi(); 
+    }
   });
 });
 
