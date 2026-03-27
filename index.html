@@ -532,11 +532,11 @@ const ADVISOR_IMG_URL = 'https://drive.google.com/thumbnail?id=1OWUIx87NwSr8AxEI
 // ▽ ここは代表の最新設定（Turn 27）を完全にコピーしました。一切いじっていません。
 const SPRITE_CONFIG = {
   SECRETARY: { left: '-145%', top: '-65px', hide: false },
-  MANAGER:   { left: '-15%',  top: '-55px', hide: false },
+  MANAGER:   { left: '-15%',  top: '-55px', hide: false }, // ▽ -15%に戻しました
   PLANNER:   { left: '-275%', top: '-55px', hide: false },
   SNS:       { left: '-405%', top: '-65px', hide: false },
   DEVIL:     { left: '-535%', top: '-50px', hide: false },
-  ADVISOR:   { left: '-275%', top: '-50px', hide: false } // ▽ 巨大画像を中央へ寄せ、数値を増やして「上」へ
+  ADVISOR:   { left: '-275%', top: '-50px', hide: false }  // ▽ 代表が「きれいに出ていた」数値に戻しました
 };
 
 const AGENT_KEYS   = ['SECRETARY', 'MANAGER', 'PLANNER', 'SNS', 'DEVIL', 'ADVISOR'];
@@ -569,7 +569,8 @@ window.addEventListener('load', () => {
     const cfg = SPRITE_CONFIG[k];
     const img = document.createElement('img');
     img.className = 'agent-sprite';
-    img.style.cssText = `position:absolute;width:650%;height:auto;top:${cfg.top};left:${cfg.left};pointer-events:none;transform:scale(0.85);transform-origin:center;`;
+    // AGENT_KEYS.forEach 内の img.style.cssText をこの一行に差し替え
+  img.style.cssText = 'position:absolute;width:650%;height:auto;top:' + cfg.top + ';' + 'left:' + cfg.left + ';pointer-events:none;';
     img.onload = () => { pw.querySelector('.portrait-emoji').style.display = 'none'; };
     img.src = (k === 'ADVISOR') ? ADVISOR_IMG_URL : AGENT_SPRITE_URL;
     pw.appendChild(img);
