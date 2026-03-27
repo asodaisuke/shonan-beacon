@@ -57,7 +57,7 @@
     display: flex; align-items: center; justify-content: center;
   }
   .portrait-emoji { font-size: 34px; line-height: 1; transition: opacity .4s; }
-  .agent-sprite { position: absolute; width: 630%; height: auto; pointer-events: none; }
+  .agent-sprite { position: absolute; width: 650%; height: auto; pointer-events: none; }
   .agent-slot .portrait-wrap { filter: grayscale(85%); opacity: .4; }
   .agent-slot.active .portrait-wrap { filter: grayscale(0%); opacity: 1; border-color: var(--cyan); box-shadow: 0 0 22px var(--cyan), 0 0 50px rgba(0,242,255,.28); transform: scale(1.07); }
   .agent-slot.thinking .portrait-wrap { filter: grayscale(40%); opacity: .75; border-color: var(--gold); animation: think-glow 1s ease-in-out infinite; }
@@ -357,7 +357,7 @@
   </div>
   <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-MANAGER" data-key="MANAGER">
-    <div class="portrait-wrap" id="pw-MANAGER"><span class="portrait-emoji">🍊</span></div>
+    <div class="portrait-wrap" id="pw-MANAGER"><span class="portrait-emoji">📊</span></div>
     <div class="agent-id">マネージャー</div><div class="agent-role">MANAGER</div>
   </div>
   <div class="bar-divider"></div>
@@ -466,14 +466,12 @@
   </div>
 </div>
 
-<!-- ローディング -->
 <div class="loading-veil" id="loadVeil">
   <div class="radar"><div class="r-ring"></div><div class="r-ring"></div><div class="r-core"></div></div>
   <div class="l-title">ANALYZING MISSION</div>
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- ══════════ 壁打ちモーダル ══════════ -->
 <div class="wl-overlay" id="wlOverlay" onclick="handleWlOverlayClick(event)">
   <div class="wl-modal" id="wlModal">
     <div class="wl-hdr">
@@ -505,7 +503,6 @@
   </div>
 </div>
 
-<!-- ══════════ コメント拡大モーダル ══════════ -->
 <div class="expand-overlay" id="expandOverlay" onclick="handleExpandOverlayClick(event)">
   <div class="expand-modal" id="expandModal">
     <div class="expand-hdr">
@@ -526,16 +523,18 @@
 // ══ 定数・グローバル ══
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
 
-const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1RtTNCmLyT3Wt85tHgor95DBGTECnWSAH&sz=w1200';
+// ▽代表から提供された最新の5人分画像IDに差し替え
+const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
 
-// 各キャラクターの精密座標（顔が丸枠中央に来るよう個別調整）
+// ▽画像の拡大率を650%に再設定し、CMO(茶髪)とCOO(黒髪)の配属を物理的に入れ替え
+// ※画像上の並び順(1=CFO, 2=CMO, 3=COO, 4=CLO, 5=Devil)
 const SPRITE_CONFIG = {
-  SECRETARY: { left: '-165%', top: '48px' },
-  MANAGER:   { left: '-110%', top: '48px' },
-  PLANNER:   { left: '-233%', top: '48px' },
-  SNS:       { left: '-370%', top: '48px' },
-  DEVIL:     { left: '-287%', top: '-15px' },
-  ADVISOR:   { left: '-490%', top: '48px' }
+  SECRETARY: { left: '-15%',  top: '25px', hide: false }, // 1人目: CFO(眼鏡)
+  MANAGER:   { left: '-275%', top: '25px', hide: false }, // 3人目: COO(黒髪) ←代表のご指示通り入れ替え済！
+  PLANNER:   { left: '-145%', top: '25px', hide: false }, // 2人目: CMO(茶髪) ←代表のご指示通り入れ替え済！
+  SNS:       { left: '-405%', top: '25px', hide: false }, // 4人目: CLO(チャイナ)
+  DEVIL:     { left: '-535%', top: '25px', hide: false }, // 5人目: Devil(赤髪)
+  ADVISOR:   { left: '0%',    top: '0%',   hide: true }   // 6人目: 相談役(未定のため枠と絵文字のみ)
 };
 
 let spriteLoaded = false;
@@ -590,13 +589,20 @@ window.addEventListener('load', () => {
   AGENT_KEYS.forEach(function(k) {
     var pw = document.getElementById('pw-' + k);
     if (!pw) return;
+    
+    var cfg = SPRITE_CONFIG[k];
+    // 相談役(hide: true)の場合は画像を読み込まず絵文字を残す
+    if (cfg.hide) return; 
+
     var old = pw.querySelector('img.agent-sprite');
     if (old) pw.removeChild(old);
+    
     var img = document.createElement('img');
     img.className = 'agent-sprite';
-    var cfg = SPRITE_CONFIG[k];
+    
+    // 画像を650%に拡大し、顔にズーム
     img.style.cssText =
-      'position:absolute;width:630%;height:auto;' +
+      'position:absolute;width:650%;height:auto;' +
       'top:50%;transform:translateY(calc(-50% + ' + cfg.top + '));' +
       'left:' + cfg.left + ';pointer-events:none;';
     img.onload = function() {
@@ -686,7 +692,7 @@ function setState(key, state) {
   if (state === 'thinking') el.classList.add('thinking');
 }
 
-// カラムc��メッセージ追加 + クリックで拡大
+// カラムにメッセージ追加 + クリックで拡大
 function addColMsg(agentKey, text) {
   const colBody = document.getElementById('colbody-' + agentKey);
   if (!colBody) return;
