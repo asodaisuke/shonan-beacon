@@ -46,8 +46,7 @@
   .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; color: var(--text); }
 
   /* ── エージェントバー ── */
-  /* ①指示：イラストをもっと下にズラして。ヘッダー（🏮アイコン）とアイコンバーの間にスペースを確保。 */
-  .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 0; padding: 24px 24px 10px; border-bottom: 1px solid var(--border); } /* padding-topを24pxに増やす */
+  .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 0; padding: 24px 24px 10px; border-bottom: 1px solid var(--border); }
   .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 6px 20px; cursor: pointer; transition: transform .35s ease; }
   .agent-slot:hover { transform: translateY(-2px); }
   .portrait-wrap {
@@ -524,18 +523,19 @@
 // ══ 定数・グローバル ══
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
 
-// ▽代表から提供された最新の5人分画像IDに差し替え
+// ▽代表から提供された最新の5人分画像ID
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
 
 // 各キャラクターの精密座標（顔が丸枠中央に来るよう個別調整）
-// ※代表の指示：一番左の男性（CFO眼鏡男）と、左から2番目の女性（CMO茶髪女）をチェンジ！
-//   (1番目：茶髪女、2番目：眼鏡男、3番目：黒髪男、4番目：中国服女、5番目：赤髪男)
+// ※代表の指示：順番は image_4.png でOK。イラストを下へ下げ、顔全体を表示。
+// 　(1番目：茶髪女、2番目：眼鏡男、3番目：黒髪男、4番目：中国服女、5番目：赤髪男)
+//   全体的に 'top' の数値を下（マイナス方向）に大きく調整しました。
 const SPRITE_CONFIG = {
-  SECRETARY: { left: '-145%', top: '25px', hide: false }, // 茶髪女性(CMO)を秘書(1番目)に配属
-  MANAGER:   { left: '-15%',  top: '25px', hide: false }, // 眼鏡男性(CFO)をマネージャー(2番目)に配属
-  PLANNER:   { left: '-275%', top: '25px', hide: false }, // 黒髪男性(COO)をプランナー(3番目)に配属
-  SNS:       { left: '-405%', top: '25px', hide: false }, // 中国服女性(CLO)をSNS(4番目)に配属
-  DEVIL:     { left: '-535%', top: '25px', hide: false }, // 赤髪男性(Devil)をDevil(5番目)に配属
+  SECRETARY: { left: '-145%', top: '-15px', hide: false }, // 茶髪女性(CMO)
+  MANAGER:   { left: '-15%',  top: '-15px', hide: false }, // 眼鏡男性(CFO)
+  PLANNER:   { left: '-275%', top: '-15px', hide: false }, // 黒髪男性(COO)
+  SNS:       { left: '-405%', top: '-15px', hide: false }, // 中国服女性(CLO)
+  DEVIL:     { left: '-535%', top: '-25px', hide: false }, // 赤髪男性(Devil) ※髪が立っているため、さらに下げる
   ADVISOR:   { left: '0%',    top: '0%',   hide: true }   // 6人目：相談役（未定のため枠と絵文字のみ）
 };
 
@@ -680,7 +680,7 @@ function onSuccess(aiText) {
 }
 
 function onErr(e) {
-  setLoading(false);
+  setLoading(false)
   document.getElementById('execBtn').disabled = false;
   AGENT_KEYS.forEach(k => setState(k, 'idle'));
   toast('エラー: ' + e.message, 'err');
