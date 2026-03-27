@@ -525,12 +525,8 @@
 
 <script>
 // ══ 定数・グローバル ══
-// ★代表の最新のGAS URLに変更してください！
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby_9-PpbPSWv6RCQovjzjaUyVRpadsPb5on_Koa6dKqqugZBmIP5t0btCwAid2fs7zBXg/exec';
-
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
-
-// ★代表、渋い眼鏡の相談役の画像IDをここに貼り付けてください！
 const ADVISOR_IMG_URL = 'https://drive.google.com/thumbnail?id=1OWUIx87NwSr8AxEIONmpMIdxqZwSMS6C&sz=w1200';
 
 const SPRITE_CONFIG = {
@@ -539,57 +535,59 @@ const SPRITE_CONFIG = {
   PLANNER:   { left: '-275%', top: '-55px', hide: false },
   SNS:       { left: '-405%', top: '-65px', hide: false },
   DEVIL:     { left: '-535%', top: '-50px', hide: false },
-  ADVISOR:   { left: '-275%', top: '-50px', hide: false } // ▽ 巨大画像を中央へ寄せ、数値を増やして「上」へ
+  // ▽ 相談役は独立画像なので、以前うまくいった座標（0% / -120px）を推奨します
+  ADVISOR:   { left: '0%',    top: '-120px', hide: false } 
 };
-
-let spriteLoaded = false;
 
 const AGENT_KEYS   = ['SECRETARY', 'MANAGER', 'PLANNER', 'SNS', 'DEVIL', 'ADVISOR'];
-const AGENT_COLORS = {
-  SECRETARY: '#3b82f6',
-  MANAGER:   '#22c55e',
-  PLANNER:   '#c9a227',
-  SNS:       '#a855f7',
-  DEVIL: '#ef4444',
-  ADVISOR: '#94a3b8'
-};
-const AGENT_LABELS = {
-  SECRETARY: '秘書',
-  MANAGER:   'マネージャー',
-  PLANNER:   'プランナー',
-  SNS:       'SNS',
-  DEVIL: 'Devil',
-  ADVISOR: '相談役'
-};
-const AGENT_EMOJI = {
-  SECRETARY: '📋',
-  MANAGER:   '📊',
-  PLANNER:   '💡',
-  SNS:       '📱',
-  DEVIL: '😈',
-  ADVISOR: '👴'
-};
+const AGENT_COLORS = { SECRETARY:'#3b82f6', MANAGER:'#22c55e', PLANNER:'#c9a227', SNS:'#a855f7', DEVIL:'#ef4444', ADVISOR:'#94a3b8' };
+const AGENT_LABELS = { SECRETARY:'秘書', MANAGER:'マネージャー', PLANNER:'プランナー', SNS:'SNS', DEVIL:'Devil', ADVISOR:'相談役' };
+const AGENT_EMOJI  = { SECRETARY:'📋', MANAGER:'📊', PLANNER:'💡', SNS:'📱', DEVIL:'😈', ADVISOR:'👴' };
 
 const OTHER_TAGS = '(?=\\[秘書\\]|\\[SECRETARY\\]|\\[マネージャー\\]|\\[MANAGER\\]|\\[プランナー\\]|\\[PLANNER\\]|\\[SNS\\]|\\[Devil\\]|\\[デビル\\]|\\[相談役\\]|\\[ADVISOR\\]|\\[逆質問\\]|\\[INTERROGATION\\]|$)';
-
 const AGENT_REGEX = {
-  SECRETARY:     new RegExp('\\[(?:秘書|SECRETARY)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  MANAGER:       new RegExp('\\[(?:マネージャー|MANAGER)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  PLANNER:       new RegExp('\\[(?:プランナー|PLANNER)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  SNS:           new RegExp('\\[SNS\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  DEVIL:         new RegExp('\\[(?:Devil|デビル)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  ADVISOR:       new RegExp('\\[(?:相談役|ADVISOR)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  SECRETARY: new RegExp('\\[(?:秘書|SECRETARY)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  MANAGER:   new RegExp('\\[(?:マネージャー|MANAGER)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  PLANNER:   new RegExp('\\[(?:プランナー|PLANNER)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  SNS:       new RegExp('\\[SNS\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  DEVIL:     new RegExp('\\[(?:Devil|デビル)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  ADVISOR:   new RegExp('\\[(?:相談役|ADVISOR)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
   INTERROGATION: new RegExp('\\[(?:逆質問|INTERROGATION)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i')
 };
 
 let wlSelectedAgent = null;
 
+// ══ 1. 起動時の処理 ══
 window.addEventListener('load', () => {
-  tick(); setInterval(tick, 1000);
+  loadState(); // ◀ 記憶を真っ先に読み込む
+  tick(); 
+  setInterval(tick, 1000);
   buildWlChips();
-  
-  loadState(); // ◀ ここを追加！
-// ══ 保存・復元ロジック ══
+
+  // イラストの描画
+  AGENT_KEYS.forEach(k => {
+    const pw = document.getElementById('pw-' + k);
+    if (!pw) return;
+    const cfg = SPRITE_CONFIG[k];
+    const img = document.createElement('img');
+    img.className = 'agent-sprite';
+    img.style.cssText = `position:absolute;width:650%;height:auto;top:${cfg.top};left:${cfg.left};pointer-events:none;`;
+    img.onload = () => { pw.querySelector('.portrait-emoji').style.display = 'none'; };
+    img.src = (k === 'ADVISOR') ? ADVISOR_IMG_URL : AGENT_SPRITE_URL;
+    pw.appendChild(img);
+  });
+
+  document.getElementById('wlInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); sendWalluchi(); }
+  });
+});
+
+function tick() {
+  const n = new Date();
+  document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+}
+
+// ══ 2. 保存・復元ロジック（外側に出しました） ══
 function saveState() {
   const state = {
     agentColsHtml: document.getElementById('agentCols').innerHTML,
@@ -614,12 +612,11 @@ function loadState() {
     document.getElementById('missionText').textContent = state.missionText;
     document.getElementById('missionBanner').classList.add('show');
     
-    // 復元したメッセージに「拡大表示」機能を付け直す
+    // 復元したカードにクリックイベントを付け直す
     cols.querySelectorAll('.col-msg').forEach(msgEl => {
       msgEl.onclick = () => {
         const text = msgEl.innerHTML.split('</div>')[1].replace(/<br>/g, '\n').replace(/<div.*$/,'');
         const ts = msgEl.querySelector('.col-msg-ts').innerText;
-        // エージェント名を特定
         const colClass = Array.from(msgEl.closest('.agent-col').classList).find(c => c.startsWith('col-'));
         const key = colClass.split('-')[1].toUpperCase();
         openExpand(key, text, ts);
@@ -628,106 +625,25 @@ function loadState() {
   }
 }
 
-function loadState() {
-  const saved = localStorage.getItem('BEACON_V4_SAVE');
-  if (!saved) return;
-  const state = JSON.parse(saved);
-  if (state.showCols) {
-    document.getElementById('chatEmpty').style.display = 'none';
-    const cols = document.getElementById('agentCols');
-    cols.style.display = 'grid';
-    cols.innerHTML = state.agentColsHtml;
-    document.getElementById('wlLog').innerHTML = state.wlLogHtml;
-    document.getElementById('missionText').textContent = state.missionText;
-    document.getElementById('missionBanner').classList.add('show');
-    
-    // 復元したカードに「拡大クリック」を再登録
-    cols.querySelectorAll('.col-msg').forEach(msgEl => {
-      msgEl.onclick = () => {
-        const text = msgEl.innerHTML.split('</div>')[1].replace(/<br>/g, '\n').replace(/<div.*$/,'');
-        const ts = msgEl.querySelector('.col-msg-ts').innerText;
-        // エージェント名は親要素のクラスから判定
-        const agentKey = Array.from(msgEl.closest('.agent-col').classList).find(c => c.startsWith('col-')).split('-')[1].toUpperCase();
-        openExpand(agentKey, text, ts);
-      };
-    });
-  }
-}
-
-  AGENT_KEYS.forEach(function(k) {
-    var pw = document.getElementById('pw-' + k);
-    if (!pw) return;
-    
-    var cfg = SPRITE_CONFIG[k];
-    if (cfg.hide) return; 
-
-    var old = pw.querySelector('img.agent-sprite');
-    if (old) pw.removeChild(old);
-    
-    var img = document.createElement('img');
-    img.className = 'agent-sprite';
-    
-    img.style.cssText =
-      'position:absolute;width:650%;height:auto;' +
-      'top:' + cfg.top + ';' +
-      'left:' + cfg.left + ';pointer-events:none;';
-      
-    img.onload = function() {
-      spriteLoaded = true;
-      var em = pw.querySelector('.portrait-emoji');
-      if (em) em.style.display = 'none';
-    };
-    img.onerror = function() { console.warn('Sprite load error: ' + k); };
-    // ▽ ここを修正！元の img.src = AGENT_SPRITE_URL; を以下に書き換え
-    img.src = (k === 'ADVISOR') ? ADVISOR_IMG_URL : AGENT_SPRITE_URL;
-    pw.appendChild(img);
-  });
-
-  document.getElementById('wlInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); sendWalluchi(); }
-  });
-});
-
-function tick() {
-  const n = new Date();
-  document.getElementById('clock').textContent =
-    String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
-}
-
+// ══ 3. メイン分析 ══
 async function startAnalysis() {
   const mode = document.getElementById('missionMode').value;
   const input = document.getElementById('textField').value.trim();
-
-  if (mode !== 'MORNING' && !input) { toast('課題やテーマを入力してください', 'err'); return; }
+  if (mode !== 'MORNING' && !input) return;
 
   document.getElementById('chatEmpty').style.display = 'none';
   document.getElementById('agentCols').style.display = 'grid';
   document.getElementById('missionBanner').classList.add('show');
-  
-  let displayText = input;
-  if (mode === 'MORNING') displayText = "【MORNING】本日の朝礼ブリーフィングを生成中...";
-  else if (mode === 'ON_DEMAND') displayText = "【ON DEMAND】戦略徹底討論＆答申書作成: " + input;
-  
-  document.getElementById('missionText').textContent = displayText;
+  document.getElementById('missionText').textContent = input || "MISSION START";
 
   AGENT_KEYS.forEach(k => setState(k, 'thinking'));
   setLoading(true);
   document.getElementById('execBtn').disabled = true;
 
   try {
-    const res = await fetch(GAS_API_URL, {
-      method: 'POST', body: JSON.stringify({ userInput: input, mode: mode }), redirect: 'follow'
-    });
+    const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ userInput: input, mode: mode }), redirect: 'follow' });
     const result = await res.json();
-    
-    if (result.status === 'success') {
-      if (mode === 'ON_DEMAND') {
-        const msg = `[秘書]\n代表、指定されたテーマでの徹底討論が完了し、答申書を出力いたしました。\n以下のリンクよりご確認ください。\n\n${result.data}`;
-        onSuccess(msg);
-      } else {
-        onSuccess(result.data);
-      }
-    }
+    if (result.status === 'success') onSuccess(result.data);
     else throw new Error(result.message);
   } catch (err) { onErr(err); }
 }
@@ -742,225 +658,80 @@ function onSuccess(aiText) {
       setState(k, 'active');
       const match = aiText.match(AGENT_REGEX[k]);
       const text = match ? match[1].trim() : (aiText.length > 0 && k === 'SECRETARY' ? aiText : '');
-      if (text) addColMsg(k, text);
-
-      if (i === AGENT_KEYS.length - 1) {
-        const intMatch = aiText.match(AGENT_REGEX['INTERROGATION']);
-        if (intMatch && intMatch[1].trim()) addColMsg('INTERROGATION', intMatch[1].trim());
-      }
-
+      if (text) { addColMsg(k, text); saveState(); } 
       setTimeout(() => setState(k, 'idle'), 3000);
-    }, i * 1200);
+    }, i * 1000);
   });
-
-  toast('✓ 分析完了', 'ok');
-  document.getElementById('textField').value = '';
-}
-
-function onErr(e) {
-  setLoading(false);
-  document.getElementById('execBtn').disabled = false;
-  AGENT_KEYS.forEach(k => setState(k, 'idle'));
-  toast('エラー: ' + e.message, 'err');
-}
-
-function setState(key, state) {
-  const el = document.getElementById('slot-' + key);
-  if (!el) return;
-  el.classList.remove('active', 'thinking');
-  if (state === 'active')   el.classList.add('active');
-  if (state === 'thinking') el.classList.add('thinking');
 }
 
 function addColMsg(agentKey, text) {
   const colBody = document.getElementById('colbody-' + agentKey);
   if (!colBody) return;
-  const now = new Date();
-  const ts = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  
-  let formattedText = text.replace(/\n/g, '<br>');
-  formattedText = formattedText.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" style="color: var(--cyan); text-decoration: underline;">$1</a>');
-
+  const ts = String(new Date().getHours()).padStart(2,'0') + ':' + String(new Date().getMinutes()).padStart(2,'0');
   const div = document.createElement('div');
   div.className = 'col-msg';
-  div.innerHTML =
-    '<div class="col-msg-ts">' + ts + '</div>' +
-    formattedText +
-    '<div class="col-msg-expand-hint">▸ クリックで全文表示</div>';
-  
-  div.addEventListener('click', function(e) {
-    if(e.target.tagName === 'A') return; 
-    openExpand(agentKey, text, ts);
-  });
-  
+  div.innerHTML = `<div class="col-msg-ts">${ts}</div>${text.replace(/\n/g, '<br>')}<div class="col-msg-expand-hint">▸ 拡大</div>`;
+  div.onclick = () => openExpand(agentKey, text, ts);
   colBody.appendChild(div);
   colBody.scrollTop = colBody.scrollHeight;
-
-  saveState(); // ◀ ここを追加！
+  saveState(); 
 }
 
-function setLoading(on) {
-  document.getElementById('loadVeil').classList.toggle('on', on);
-}
-
-function toast(msg, type) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast ' + (type || '') + ' show';
-  setTimeout(() => el.classList.remove('show'), 4000);
-}
+// ══ 4. その他UI処理 ══
+function onErr(e) { setLoading(false); document.getElementById('execBtn').disabled = false; toast('Err:' + e.message, 'err'); }
+function setState(k, s) { const el = document.getElementById('slot-' + k); if(el) { el.classList.remove('active', 'thinking'); if(s==='active') el.classList.add('active'); if(s==='thinking') el.classList.add('thinking'); } }
+function setLoading(on) { document.getElementById('loadVeil').style.display = on ? 'flex' : 'none'; }
+function toast(m, t) { const el = document.getElementById('toast'); el.innerText = m; el.className = 'toast show ' + t; setTimeout(() => el.classList.remove('show'), 3000); }
 
 function buildWlChips() {
   const container = document.getElementById('wlChips');
   AGENT_KEYS.forEach(k => {
     const chip = document.createElement('button');
-    chip.className = 'wl-chip';
-    chip.id = 'wl-chip-' + k;
-    chip.innerHTML = '<span class="wl-chip-emoji">' + AGENT_EMOJI[k] + '</span>' + AGENT_LABELS[k];
-    chip.addEventListener('click', () => wlSelectAgent(k));
+    chip.className = 'wl-chip'; chip.id = 'wl-chip-' + k;
+    chip.innerHTML = AGENT_EMOJI[k] + ' ' + AGENT_LABELS[k];
+    chip.onclick = () => wlSelectAgent(k);
     container.appendChild(chip);
   });
 }
-
-function openWalluchi(preselect) {
-  document.getElementById('wlOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  if (preselect) wlSelectAgent(preselect);
-  else document.getElementById('wlInput').focus();
-}
-
-function closeWalluchi() {
-  document.getElementById('wlOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function handleWlOverlayClick(e) {
-  if (e.target === document.getElementById('wlOverlay')) closeWalluchi();
-}
-
-function wlSelectAgent(key) {
-  wlSelectedAgent = key;
-  const color = AGENT_COLORS[key];
-
-  AGENT_KEYS.forEach(k => {
-    const chip = document.getElementById('wl-chip-' + k);
-    if (!chip) return;
-    if (k === key) {
-      chip.classList.add('selected');
-      chip.style.background = color;
-      chip.style.borderColor = color;
-      chip.style.boxShadow = '0 0 14px ' + color + '55';
-    } else {
-      chip.classList.remove('selected');
-      chip.style.background = '';
-      chip.style.borderColor = '';
-      chip.style.boxShadow = '';
-    }
-  });
-
-  document.getElementById('wlAgentIndicator').style.display = 'flex';
-  document.getElementById('wlAgentDot').style.background = color;
-  document.getElementById('wlAgentName').textContent = AGENT_LABELS[key];
-  document.getElementById('wlAgentName').style.color = color;
-  document.getElementById('wlInput').focus();
-  document.getElementById('wlModal').style.borderColor = color + '55';
-}
+function openWalluchi(pre) { document.getElementById('wlOverlay').classList.add('open'); if(pre) wlSelectAgent(pre); }
+function closeWalluchi() { document.getElementById('wlOverlay').classList.remove('open'); }
+function wlSelectAgent(k) { wlSelectedAgent = k; AGENT_KEYS.forEach(key => document.getElementById('wl-chip-'+key).classList.toggle('selected', key===k)); document.getElementById('wlInput').focus(); }
 
 async function sendWalluchi() {
-  if (!wlSelectedAgent) { toast('エージェントを選択してください', 'err'); return; }
+  if(!wlSelectedAgent) return;
   const input = document.getElementById('wlInput').value.trim();
-  if (!input) return;
-
-  const color = AGENT_COLORS[wlSelectedAgent];
-
+  if(!input) return;
   wlAddMsg('user', 'YOU', input, '#c9a227');
   document.getElementById('wlInput').value = '';
   document.getElementById('wlEmpty').style.display = 'none';
-
-  const thinkingEl = document.createElement('div');
-  thinkingEl.className = 'wl-thinking';
-  thinkingEl.innerHTML =
-    AGENT_EMOJI[wlSelectedAgent] + '&nbsp;' + AGENT_LABELS[wlSelectedAgent] + ' が考えています' +
-    '<span class="wl-thinking-dots"><span></span><span></span><span></span></span>';
-  document.getElementById('wlLog').appendChild(thinkingEl);
-  document.getElementById('wlLog').scrollTop = document.getElementById('wlLog').scrollHeight;
-  document.getElementById('wlSendBtn').disabled = true;
-
   try {
-    const res = await fetch(GAS_API_URL, {
-      method: 'POST', body: JSON.stringify({ userInput: input, agent: wlSelectedAgent }), redirect: 'follow'
-    });
+    const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ userInput: input, agent: wlSelectedAgent }), redirect: 'follow' });
     const result = await res.json();
-    thinkingEl.remove();
-    document.getElementById('wlSendBtn').disabled = false;
-
-    if (result.status === 'success') {
+    if(result.status === 'success') {
       const match = result.data.match(AGENT_REGEX[wlSelectedAgent]);
-      const text = match ? match[1].trim() : result.data;
-      if (text) wlAddMsg('agent', AGENT_LABELS[wlSelectedAgent], text, color);
-      else wlAddMsg('agent', AGENT_LABELS[wlSelectedAgent], '（応答が取得できませんでした）', color);
-    } else {
-      throw new Error(result.message);
+      wlAddMsg('agent', AGENT_LABELS[wlSelectedAgent], match ? match[1].trim() : result.data, AGENT_COLORS[wlSelectedAgent]);
     }
-  } catch (err) {
-    thinkingEl.remove();
-    document.getElementById('wlSendBtn').disabled = false;
-    toast('エラー: ' + err.message, 'err');
-  }
+  } catch(e) { toast('Err','err'); }
 }
 
 function wlAddMsg(role, name, text, color) {
   const log = document.getElementById('wlLog');
-  const now = new Date();
-  const ts = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-
-  const wrap = document.createElement('div');
-  wrap.className = 'wl-msg' + (role === 'user' ? ' user' : '');
-
-  const avatarEmoji = role === 'user' ? '👤' : (AGENT_EMOJI[wlSelectedAgent] || '');
-  const avatarStyle = 'border-color:' + color + ';';
-
-  wrap.innerHTML =
-    '<div class="wl-msg-avatar" style="' + avatarStyle + '">' + avatarEmoji + '</div>' +
-    '<div class="wl-msg-body">' +
-    '<div class="wl-msg-name" style="color:' + color + '">' + name +
-    ' <span style="color:var(--muted);font-weight:300;font-size:8px">' + ts + '</span></div>' +
-    '<div class="wl-msg-bubble" style="border-color:' + color + '">' + text.replace(/\n/g, '<br>') + '</div>' +
-    '</div>';
-
-  log.appendChild(wrap);
+  const div = document.createElement('div');
+  div.className = 'wl-msg' + (role === 'user' ? ' user' : '');
+  div.innerHTML = `<div class="wl-msg-avatar" style="border-color:${color}">${role==='user'?'👤':AGENT_EMOJI[wlSelectedAgent]}</div><div class="wl-msg-bubble" style="border-color:${color}">${text.replace(/\n/g, '<br>')}</div>`;
+  log.appendChild(div);
   log.scrollTop = log.scrollHeight;
-
-  saveState(); // ◀ ここを追加！
+  saveState();
 }
 
-function openExpand(agentKey, text, ts) {
-  const color = AGENT_COLORS[agentKey] || 'var(--cyan)';
-  const label = AGENT_LABELS[agentKey] || agentKey;
-  const emoji = AGENT_EMOJI[agentKey] || '';
-
-  document.getElementById('expandAgentTag').textContent = emoji + '  ' + label;
-  document.getElementById('expandAgentTag').style.color = color;
-  document.getElementById('expandTs').textContent = ts;
-  document.getElementById('expandBody').textContent = text;
-  document.getElementById('expandBody').style.borderLeftColor = color;
-  document.getElementById('expandModal').style.borderColor = color + '44';
-
-  const wlBtn = document.getElementById('expandWlBtn');
-  wlBtn.onclick = function() { closeExpand(); openWalluchi(agentKey); };
-  wlBtn.style.borderColor = color + '66';
-  wlBtn.style.color = color;
-
+function openExpand(k, t, ts) {
+  document.getElementById('expandAgentTag').innerText = (AGENT_EMOJI[k]||'')+' '+(AGENT_LABELS[k]||k);
+  document.getElementById('expandBody').innerText = t;
   document.getElementById('expandOverlay').classList.add('open');
 }
-
-function closeExpand() {
-  document.getElementById('expandOverlay').classList.remove('open');
-}
-
-function handleExpandOverlayClick(e) {
-  if (e.target === document.getElementById('expandOverlay')) closeExpand();
-}
+function closeExpand() { document.getElementById('expandOverlay').classList.remove('open'); }
+function handleExpandOverlayClick(e) { if(e.target.classList.contains('expand-overlay')) closeExpand(); }
+function handleWlOverlayClick(e) { if(e.target.classList.contains('wl-overlay')) closeWalluchi(); }
 </script>
 </body>
 </html>
