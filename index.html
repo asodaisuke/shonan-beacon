@@ -357,7 +357,7 @@
   </div>
   <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-MANAGER" data-key="MANAGER">
-    <div class="portrait-wrap" id="pw-MANAGER"><span class="portrait-emoji">📊</span></div>
+    <div class="portrait-wrap" id="pw-MANAGER"><span class="portrait-emoji">🍊</span></div>
     <div class="agent-id">マネージャー</div><div class="agent-role">MANAGER</div>
   </div>
   <div class="bar-divider"></div>
@@ -474,7 +474,7 @@
 <div class="toast" id="toast"></div>
 
 <!-- ══════════ 壁打ちモーダル ══════════ -->
-<div class="wl-overlay" id="wlOverlay" onclick="handleWlOverlayClich(event)">
+<div class="wl-overlay" id="wlOverlay" onclick="handleWlOverlayClick(event)">
   <div class="wl-modal" id="wlModal">
     <div class="wl-hdr">
       <div class="wl-hdr-label">
@@ -530,12 +530,12 @@ const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1RtTNCmLyT3Wt85t
 
 // 各キャラクターの精密座標（顔が丸枠中央に来るよう個別調整）
 const SPRITE_CONFIG = {
-  SECRETARY: { left: '-45%',  top: '20px' },
-  MANAGER:   { left: '-148%', top: '20px' },
-  PLANNER:   { left: '-250%', top: '20px' },
-  SNS:       { left: '-352%', top: '20px' },
-  DEVIL:     { left: '-418%', top: '45px' },
-  ADVISOR:   { left: '-515%', top: '20px' }
+  SECRETARY: { left: '-165%', top: '48px' },
+  MANAGER:   { left: '-110%', top: '48px' },
+  PLANNER:   { left: '-233%', top: '48px' },
+  SNS:       { left: '-370%', top: '48px' },
+  DEVIL:     { left: '-287%', top: '-15px' },
+  ADVISOR:   { left: '-490%', top: '48px' }
 };
 
 let spriteLoaded = false;
@@ -686,7 +686,7 @@ function setState(key, state) {
   if (state === 'thinking') el.classList.add('thinking');
 }
 
-// カラムにメッセージ追加 + クリックで拡大
+// カラムc��メッセージ追加 + クリックで拡大
 function addColMsg(agentKey, text) {
   const colBody = document.getElementById('colbody-' + agentKey);
   if (!colBody) return;
