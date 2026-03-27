@@ -525,14 +525,13 @@ const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1
 
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
 
-// ▽ 画像を「天井基準(top:0)」で配置し、文字を隠して顔だけ見せるよう修正！
-// 　（マイナス値にすると画像が上にスライドし、顔が丸枠に入ってきます）
+// ▽ 画像を大幅に上へ引き上げ（マイナス値を大きく）、役職名の文字を枠外に追い出しました！
 const SPRITE_CONFIG = {
-  SECRETARY: { left: '-145%', top: '-16px', hide: false }, // 茶髪女性(CMO)
-  MANAGER:   { left: '-15%',  top: '-16px', hide: false }, // 眼鏡男性(CFO)
-  PLANNER:   { left: '-275%', top: '-16px', hide: false }, // 黒髪男性(COO)
-  SNS:       { left: '-405%', top: '-16px', hide: false }, // 中国服女性(CLO)
-  DEVIL:     { left: '-535%', top: '-10px',  hide: false }, // 赤髪男性(Devil) ※髪が上に逆立っているので少し下げる
+  SECRETARY: { left: '-145%', top: '-65px', hide: false }, // 茶髪女性(CMO)
+  MANAGER:   { left: '-15%',  top: '-65px', hide: false }, // 眼鏡男性(CFO)
+  PLANNER:   { left: '-275%', top: '-65px', hide: false }, // 黒髪男性(COO)
+  SNS:       { left: '-405%', top: '-65px', hide: false }, // 中国服女性(CLO)
+  DEVIL:     { left: '-535%', top: '-50px', hide: false }, // 赤髪男性(Devil)
   ADVISOR:   { left: '0%',    top: '0%',    hide: true }   // 6人目：相談役
 };
 
@@ -595,7 +594,7 @@ window.addEventListener('load', () => {
     var img = document.createElement('img');
     img.className = 'agent-sprite';
     
-    // ▽ ここを修正！ translateYによる複雑な計算を廃止し、シンプルに上部から配置
+    // 画像を配置
     img.style.cssText =
       'position:absolute;width:650%;height:auto;' +
       'top:' + cfg.top + ';' +
