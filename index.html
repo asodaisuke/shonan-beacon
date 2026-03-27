@@ -524,19 +524,18 @@
 </div>
 
 <script>
-// ══ 1. 定数・グローバル（代表のTurn 27の設定をそのまま維持） ══
+// ══ 1. 定数・グローバル（代表のTurn 27の設定を完全に維持） ══
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby_9-PpbPSWv6RCQovjzjaUyVRpadsPb5on_Koa6dKqqugZBmIP5t0btCwAid2fs7zBXg/exec';
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
 const ADVISOR_IMG_URL = 'https://drive.google.com/thumbnail?id=1OWUIx87NwSr8AxEIONmpMIdxqZwSMS6C&sz=w1200';
 
-// ▽ ここは代表の最新設定（Turn 27）を完全にコピーしました。一切いじっていません。
 const SPRITE_CONFIG = {
   SECRETARY: { left: '-145%', top: '-65px', hide: false },
-  MANAGER:   { left: '-15%',  top: '-55px', hide: false }, // ▽ -15%に戻しました
+  MANAGER:   { left: '-15%',  top: '-55px', hide: false },
   PLANNER:   { left: '-275%', top: '-55px', hide: false },
   SNS:       { left: '-405%', top: '-65px', hide: false },
   DEVIL:     { left: '-535%', top: '-50px', hide: false },
-  ADVISOR:   { left: '-275%', top: '-50px', hide: false }  // ▽ 代表が「きれいに出ていた」数値に戻しました
+  ADVISOR:   { left: '-275%', top: '-50px', hide: false }
 };
 
 const AGENT_KEYS   = ['SECRETARY', 'MANAGER', 'PLANNER', 'SNS', 'DEVIL', 'ADVISOR'];
@@ -559,7 +558,7 @@ let wlSelectedAgent = null;
 
 // ══ 2. 起動・復元処理 ══
 window.addEventListener('load', () => {
-  loadState(); // ◀ ここで記憶を呼び出す
+  loadState(); // 記憶を復元
   tick(); setInterval(tick, 1000);
   buildWlChips();
 
@@ -569,8 +568,8 @@ window.addEventListener('load', () => {
     const cfg = SPRITE_CONFIG[k];
     const img = document.createElement('img');
     img.className = 'agent-sprite';
-    // AGENT_KEYS.forEach 内の img.style.cssText をこの一行に差し替え
-  img.style.cssText = 'position:absolute;width:650%;height:auto;top:' + cfg.top + ';' + 'left:' + cfg.left + ';pointer-events:none;';
+    // ▽ scale削除、Turn 27の座標をそのまま反映
+    img.style.cssText = `position:absolute;width:650%;height:auto;top:${cfg.top};left:${cfg.left};pointer-events:none;`;
     img.onload = () => { pw.querySelector('.portrait-emoji').style.display = 'none'; };
     img.src = (k === 'ADVISOR') ? ADVISOR_IMG_URL : AGENT_SPRITE_URL;
     pw.appendChild(img);
@@ -585,7 +584,7 @@ function tick() {
   document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
 
-// ══ 3. 保存・復元ロジック（壁打ちの状態も記憶） ══
+// ══ 3. 保存・復元ロジック（窓の状態も記憶） ══
 function saveState() {
   const state = {
     agentColsHtml: document.getElementById('agentCols').innerHTML,
@@ -612,7 +611,6 @@ function loadState() {
     document.getElementById('missionText').textContent = state.missionText;
     document.getElementById('missionBanner').classList.add('show');
     
-    // イベント再登録
     cols.querySelectorAll('.col-msg').forEach(msgEl => {
       msgEl.onclick = () => {
         const text = msgEl.innerHTML.split('</div>')[1].replace(/<br>/g, '\n').replace(/<div.*$/,'');
@@ -629,7 +627,7 @@ function loadState() {
   }
 }
 
-// ══ 4. メイン分析 ══
+// ══ 4. 分析実行 ══
 async function startAnalysis() {
   const mode = document.getElementById('missionMode').value;
   const input = document.getElementById('textField').value.trim();
@@ -676,7 +674,7 @@ function addColMsg(k, t) {
   saveState();
 }
 
-// ══ 5. 1 ON 1 壁打ち ══
+// ══ 5. 壁打ち ══
 function buildWlChips() {
   const container = document.getElementById('wlChips');
   container.innerHTML = '';
