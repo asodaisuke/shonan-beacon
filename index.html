@@ -16,6 +16,7 @@
     --card: rgba(255,255,255,0.032); --border: rgba(201,162,39,0.18);
     --secretary: #3b82f6; --sales: #22c55e; --planner: #c9a227;
     --marketing: #a855f7; --devil: #ef4444;
+    --text-dim: rgba(226, 232, 240, 0.6); /* ←これを一番最後に追加！ */
   }
   html, body { height: 100%; overflow: hidden; background: var(--bg); }
   body { font-family: 'Montserrat', 'Noto Sans JP', sans-serif; color: var(--text); display: flex; flex-direction: column; }
@@ -639,10 +640,11 @@ function tick() {
 
 // ══ メイン分析 ══
 // ══ メイン分析（戦略モード対応版） ══
+// ══ メイン分析（戦略モード対応版） ══
 async function startAnalysis() {
   const input = document.getElementById('textField').value.trim();
   
-  // モーニングモード以外は入力が必須
+  // モーニングモード以外は入力が必須（モーニングは空でもOKにする）
   if (currentMode !== 'MORNING' && !input) { 
     toast('経営課題を入力してください', 'err'); 
     return; 
