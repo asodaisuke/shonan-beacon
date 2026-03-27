@@ -5,239 +5,872 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SHONAN CENTRAL BEACON | BOARDROOM</title>
   <script>
-    if (window.self !== window.top) { window.top.location.href = window.location.href; }
+  if (window.self !== window.top) { window.top.location.href = window.location.href; }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #070d1a; --bg2: #0d1829; --gold: #c9a227; --gold-lt: #f0d060;
-      --cyan: #00f2ff; --navy: #1a2a5e; --text: #e2e8f0; --muted: #4a5568;
-      --card: rgba(255,255,255,0.032); --border: rgba(201,162,39,0.18);
-      --secretary: #3b82f6; --sales: #22c55e; --planner: #c9a227;
-      --marketing: #a855f7; --devil: #ef4444; --advisor: #94a3b8;
-      --text-dim: rgba(226, 232, 240, 0.6);
-    }
-    html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: 'Montserrat', 'Noto Sans JP', sans-serif; color: var(--text); }
-    body::before {
-      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background-image: linear-gradient(rgba(0,200,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,255,.035) 1px, transparent 1px);
-      background-size: 44px 44px;
-    }
-    .z1 { position: relative; z-index: 1; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #070d1a; --bg2: #0d1829; --gold: #c9a227; --gold-lt: #f0d060;
+    --cyan: #00f2ff; --navy: #1a2a5e; --text: #e2e8f0; --muted: #4a5568;
+    --card: rgba(255,255,255,0.032); --border: rgba(201,162,39,0.18);
+    --secretary: #3b82f6; --manager: #22c55e; --planner: #c9a227;
+    --sns: #a855f7; --devil: #ef4444; --advisor: #94a3b8;
+    --text-dim: rgba(226,232,240,0.6);
+  }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); }
+  body { font-family: 'Montserrat', 'Noto Sans JP', sans-serif; color: var(--text); display: flex; flex-direction: column; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: linear-gradient(rgba(0,200,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,255,.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  body::after {
+    content: ''; position: fixed; bottom: 0; left: 0; right: 0; height: 35vh;
+    background: radial-gradient(ellipse at 50% 110%, rgba(0,90,200,.14) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
+  }
+  .z1 { position: relative; z-index: 1; }
 
-    /* ── ヘッダー ── */
-    .hdr { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px 10px; border-bottom: 1px solid var(--border); }
-    .logo-name { font-size: 15px; font-weight: 900; letter-spacing: 3px; background: linear-gradient(120deg, #a37a15, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200%; animation: gold-shift 4s linear infinite; }
-    @keyframes gold-shift { 0%{background-position:0%} 100%{background-position:200%} }
-    .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; }
+  /* ── ヘッダー ── */
+  .hdr { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px 10px; border-bottom: 1px solid var(--border); }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon { font-size: 26px; }
+  .logo-name { font-size: 15px; font-weight: 900; letter-spacing: 3px; background: linear-gradient(120deg, #a37a15, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200%; animation: gold-shift 4s linear infinite; }
+  @keyframes gold-shift { 0%{background-position:0%} 100%{background-position:200%} }
+  .logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-top: 2px; }
+  .hdr-right { display: flex; align-items: center; gap: 16px; }
+  .sys-badge { font-size: 10px; letter-spacing: 1.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); animation: dot-blink 2s ease-in-out infinite; }
+  @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+  .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; color: var(--text); }
 
-    /* ── エージェントバー ── */
-    .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 12px 24px 10px; border-bottom: 1px solid var(--border); }
-    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0 15px; cursor: pointer; transition: transform .35s; }
-    .portrait-wrap { width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2); display: flex; align-items: center; justify-content: center; }
-    .agent-sprite { position: absolute; width: 630%; height: auto; pointer-events: none; }
-    .portrait-emoji { font-size: 30px; display: block; }
-    .agent-id { font-size: 10px; font-weight: 900; color: var(--muted); letter-spacing: 1px; }
-    .agent-slot.active .agent-id { color: var(--cyan); }
-    .agent-slot.active .portrait-wrap { border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
-    .agent-slot.thinking .portrait-wrap { animation: think-glow 1s ease-in-out infinite; }
-    @keyframes think-glow { 0%,100% { box-shadow: 0 0 10px rgba(201,162,39,.5); } 50% { box-shadow: 0 0 25px rgba(201,162,39,.9); } }
-    .bar-divider { width: 1px; height: 50px; background: var(--border); margin: 0 5px; }
+  /* ── エージェントバー ── */
+  .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 0; padding: 12px 24px 10px; border-bottom: 1px solid var(--border); }
+  .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 6px 20px; cursor: pointer; transition: transform .35s ease; }
+  .agent-slot:hover { transform: translateY(-2px); }
+  .portrait-wrap {
+    width: 85px; height: 85px; border-radius: 50%;
+    border: 2px solid var(--border); overflow: hidden;
+    position: relative; transition: all .5s ease;
+    background: var(--bg2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .portrait-emoji { font-size: 34px; line-height: 1; transition: opacity .4s; }
+  .agent-sprite { position: absolute; width: 630%; height: auto; pointer-events: none; }
+  .agent-slot .portrait-wrap { filter: grayscale(85%); opacity: .4; }
+  .agent-slot.active .portrait-wrap { filter: grayscale(0%); opacity: 1; border-color: var(--cyan); box-shadow: 0 0 22px var(--cyan), 0 0 50px rgba(0,242,255,.28); transform: scale(1.07); }
+  .agent-slot.thinking .portrait-wrap { filter: grayscale(40%); opacity: .75; border-color: var(--gold); animation: think-glow 1s ease-in-out infinite; }
+  @keyframes think-glow { 0%,100% { box-shadow: 0 0 12px rgba(201,162,39,.5); } 50% { box-shadow: 0 0 28px rgba(201,162,39,.9), 0 0 48px rgba(201,162,39,.25); } }
+  .agent-id { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted); transition: color .3s; }
+  .agent-slot.active .agent-id { color: var(--cyan); }
+  .agent-slot.thinking .agent-id { color: var(--gold); }
+  .agent-role { font-size: 8px; letter-spacing: .5px; color: rgba(255,255,255,.2); }
+  .bar-divider { width: 1px; height: 60px; flex-shrink: 0; background: linear-gradient(to bottom, transparent, var(--border), transparent); }
 
-    /* ── 戦略モード ── */
-    .strategy-mode-container { position: relative; z-index: 100; padding: 12px 24px; background: rgba(201,162,39,0.06); border-bottom: 1px solid var(--border); }
-    .mode-tabs { display: flex; gap: 8px; margin-bottom: 6px; }
-    .mode-tab { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-dim); padding: 5px 12px; font-size: 10px; font-weight: 700; cursor: pointer; border-radius: 3px; }
-    .mode-tab.active { background: rgba(201, 162, 39, 0.15); border-color: var(--gold); color: var(--gold); }
-    .mode-desc { font-size: 10px; opacity: 0.6; }
+  /* ── ボディグリッド ── */
+  .body-grid { flex: 1; display: grid; grid-template-columns: 1fr; gap: 0; padding: 12px 24px 0; min-height: 0; overflow: hidden; }
+  .chat-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+  .chat-hdr { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .chat-hdr-lbl { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; color: var(--gold); }
 
-    /* ── ボディグリッド ── */
-    .body-grid { flex: 1; display: flex; padding: 12px 24px 0; overflow: hidden; min-height: 0; }
-    .chat-wrap { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
-    .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 10px; overflow: hidden; min-height: 0; }
-    .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; background: rgba(255,255,255,.01); }
-    .agent-col-hdr { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; flex-shrink: 0; }
-    .agent-col-body { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; scrollbar-width: thin; }
-    .col-msg { background: rgba(255,255,255,.03); border-radius: 8px; padding: 12px; font-size: 11px; line-height: 1.7; border-left: 3px solid; font-weight: 300; }
-    
-    /* エージェント色分け */
-    .col-secretary .agent-col-hdr { border-top: 3px solid var(--secretary); color: var(--secretary); } .col-secretary .col-msg { border-color: var(--secretary); }
-    .col-sales .agent-col-hdr { border-top: 3px solid var(--sales); color: var(--sales); } .col-sales .col-msg { border-color: var(--sales); }
-    .col-planner .agent-col-hdr { border-top: 3px solid var(--planner); color: var(--planner); } .col-planner .col-msg { border-color: var(--planner); }
-    .col-marketing .agent-col-hdr { border-top: 3px solid var(--marketing); color: var(--marketing); } .col-marketing .col-msg { border-color: var(--marketing); }
-    .col-devil .agent-col-hdr { border-top: 3px solid var(--devil); color: var(--devil); } .col-devil .col-msg { border-color: var(--devil); }
-    .col-advisor .agent-col-hdr { border-top: 3px solid var(--advisor); color: var(--advisor); } .col-advisor .col-msg { border-color: var(--advisor); }
-    .col-interrogation .agent-col-hdr { border-top: 3px solid var(--cyan); color: var(--cyan); } .col-interrogation .col-msg { border-color: var(--cyan); }
+  /* ── ミッションバナー ── */
+  .mission-banner { flex-shrink: 0; display: none; align-items: center; gap: 12px; padding: 8px 14px; border-bottom: 1px solid var(--border); background: rgba(201,162,39,.06); }
+  .mission-banner.show { display: flex; }
+  .mission-banner-lbl { font-size: 8px; font-weight: 700; letter-spacing: 2px; color: var(--gold); white-space: nowrap; }
+  .mission-banner-text { font-size: 11px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; line-height: 1.5; }
 
-    /* ── 入力エリア ── */
-    .input-footer { padding: 16px 24px 20px; border-top: 1px solid var(--border); }
-    .input-main { display: flex; gap: 12px; }
-    .text-field { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); outline: none; resize: none; min-height: 50px; font-family: inherit; font-size: 14px; }
-    .exec-btn { width: 130px; background: linear-gradient(135deg, var(--gold), var(--gold-lt)); border: none; border-radius: 12px; font-weight: 900; cursor: pointer; color: #000; letter-spacing: 2px; transition: 0.3s; }
-    .exec-btn:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(201,162,39,0.4); }
+  /* ── カラムグリッド ── */
+  .chat-log { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+  .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; min-height: 0; overflow: hidden; }
 
-    .loading-veil { display: none; position: fixed; inset: 0; background: rgba(7,13,26,0.92); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
-    .loading-veil.on { display: flex; }
-    .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; background: #1a2a5e; border: 1px solid var(--cyan); transform: translateX(150%); transition: 0.4s; z-index: 2000; font-size: 13px; }
-    .toast.show { transform: translateX(0); }
+  /* ── 各エージェント列 ── */
+  .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; background: rgba(255,255,255,.02); }
+  .agent-col-hdr { padding: 8px 10px; display: flex; align-items: center; gap: 7px; border-bottom: 1px solid rgba(255,255,255,.07); flex-shrink: 0; }
+  .col-hdr-emoji { font-size: 13px; flex-shrink: 0; }
+  .col-hdr-name { font-size: 9px; font-weight: 700; letter-spacing: 1px; }
+  .col-hdr-role { font-size: 7px; opacity: .35; letter-spacing: .5px; margin-top: 1px; }
+  .agent-col-body { flex: 1; overflow-y: auto; padding: 7px; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+  .agent-col-body::-webkit-scrollbar { width: 2px; }
+  .agent-col-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+
+  /* ── カラムメッセージカード ── */
+  .col-msg {
+    background: rgba(255,255,255,.04); border-radius: 8px; padding: 8px 10px;
+    font-size: 11px; line-height: 1.72; font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300; border-left: 2px solid; white-space: pre-wrap; word-break: break-word;
+    animation: msg-drop .4s ease both;
+    cursor: pointer; transition: background .2s, transform .15s;
+  }
+  .col-msg:hover { background: rgba(255,255,255,.09); transform: translateY(-1px); }
+  .col-msg-ts { font-size: 7.5px; opacity: .35; margin-bottom: 3px; letter-spacing: .5px; }
+  .col-msg-expand-hint { font-size: 7.5px; opacity: 0; color: var(--cyan); margin-top: 4px; letter-spacing: .5px; transition: opacity .2s; }
+  .col-msg:hover .col-msg-expand-hint { opacity: .7; }
+  @keyframes msg-drop { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+  /* per-agent colors */
+  .col-secretary .agent-col-hdr   { border-top: 2px solid var(--secretary); }
+  .col-secretary .col-hdr-name    { color: var(--secretary); }
+  .col-secretary .col-msg         { border-color: var(--secretary); }
+  .col-manager .agent-col-hdr     { border-top: 2px solid var(--manager); }
+  .col-manager .col-hdr-name      { color: var(--manager); }
+  .col-manager .col-msg           { border-color: var(--manager); }
+  .col-planner .agent-col-hdr     { border-top: 2px solid var(--planner); }
+  .col-planner .col-hdr-name      { color: var(--planner); }
+  .col-planner .col-msg           { border-color: var(--planner); }
+  .col-sns .agent-col-hdr         { border-top: 2px solid var(--sns); }
+  .col-sns .col-hdr-name          { color: var(--sns); }
+  .col-sns .col-msg               { border-color: var(--sns); }
+  .col-devil .agent-col-hdr       { border-top: 2px solid var(--devil); }
+  .col-devil .col-hdr-name        { color: var(--devil); }
+  .col-devil .col-msg             { border-color: var(--devil); }
+  .col-advisor .agent-col-hdr     { border-top: 2px solid var(--advisor); }
+  .col-advisor .col-hdr-name      { color: var(--advisor); }
+  .col-advisor .col-msg           { border-color: var(--advisor); }
+  .col-interrogation .agent-col-hdr { border-top: 2px solid var(--cyan); background: rgba(0,242,255,.04); }
+  .col-interrogation .col-hdr-name  { color: var(--cyan); }
+  .col-interrogation .col-msg       { border-color: var(--cyan); }
+
+  /* ── 空状態 ── */
+  .chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--muted); padding: 40px; text-align: center; }
+  .empty-icon { font-size: 38px; opacity: .3; }
+  .empty-lbl { font-size: 11px; letter-spacing: 1.2px; line-height: 1.9; }
+  .col-placeholder { font-size: 10px; color: var(--muted); line-height: 1.8; letter-spacing: .3px; padding: 4px 2px; }
+
+  /* ── フッター入力 ── */
+  .input-footer { flex-shrink: 0; padding: 10px 24px 14px; border-top: 1px solid var(--border); }
+  .input-top-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .mission-lbl { font-size: 9px; letter-spacing: 2px; color: var(--muted); white-space: nowrap; }
+  .mission-sel { background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 5px 10px; font-size: 12px; font-family: inherit; outline: none; cursor: pointer; }
+  .mode-pills { display: flex; gap: 5px; margin-left: auto; }
+  .pill { padding: 5px 13px; border: 1px solid var(--border); border-radius: 20px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 1px; cursor: pointer; }
+  .pill.on { border-color: var(--gold); color: var(--gold); background: rgba(201,162,39,.09); }
+  .input-main { display: flex; gap: 10px; align-items: flex-end; }
+  .text-field { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 12px; padding: 11px 15px; color: var(--text); font-size: 14px; outline: none; resize: none; line-height: 1.55; font-family: 'Noto Sans JP', sans-serif; font-weight: 300; min-height: 44px; max-height: 110px; }
+  .exec-btn { width: 110px; height: 44px; border: none; border-radius: 12px; background: linear-gradient(135deg, #8a6210, var(--gold), var(--gold-lt), var(--gold)); background-size: 300%; background-position: 0%; color: #050505; font-size: 11px; font-weight: 900; letter-spacing: 2.5px; cursor: pointer; flex-shrink: 0; transition: all .35s; }
+  .exec-btn:hover { background-position: 100%; box-shadow: 0 4px 24px rgba(201,162,39,.55); transform: translateY(-1px); }
+  .exec-btn:disabled { background: #1e2a3a; color: var(--muted); cursor: not-allowed; }
+
+  /* ── 壁打ちボタン ── */
+  .walluchi-trigger {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border: 1px solid rgba(0,242,255,.35);
+    border-radius: 20px; background: rgba(0,242,255,.06);
+    color: var(--cyan); font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; cursor: pointer; transition: all .25s;
+    white-space: nowrap;
+  }
+  .walluchi-trigger:hover { background: rgba(0,242,255,.14); box-shadow: 0 0 14px rgba(0,242,255,.25); }
+
+  /* ── 壁打ちモーダル ── */
+  .wl-overlay {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    background: rgba(4,9,18,.82); backdrop-filter: blur(12px);
+    align-items: center; justify-content: center;
+  }
+  .wl-overlay.open { display: flex; }
+  .wl-modal {
+    width: 80vw; height: 84vh;
+    background: linear-gradient(160deg, #0b1424 0%, #07101f 100%);
+    border: 1px solid rgba(0,242,255,.22);
+    border-radius: 20px; display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 0 80px rgba(0,242,255,.08), 0 0 0 1px rgba(255,255,255,.04), 0 24px 80px rgba(0,0,0,.7);
+    animation: wl-pop .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes wl-pop { from{opacity:0;transform:scale(.93)} to{opacity:1;transform:scale(1)} }
+  .wl-hdr {
+    flex-shrink: 0; padding: 14px 20px 12px;
+    border-bottom: 1px solid rgba(0,242,255,.12);
+    display: flex; align-items: center; gap: 16px;
+    background: rgba(0,242,255,.03);
+  }
+  .wl-hdr-label { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+  .wl-hdr-title { font-size: 11px; font-weight: 900; letter-spacing: 3px; color: var(--cyan); }
+  .wl-hdr-sub { font-size: 8px; color: var(--muted); letter-spacing: 2px; }
+  .wl-agent-chips { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
+  .wl-chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.04); cursor: pointer;
+    font-size: 10px; font-weight: 700; letter-spacing: .8px; color: var(--muted);
+    transition: all .2s;
+  }
+  .wl-chip:hover { border-color: rgba(255,255,255,.25); color: var(--text); }
+  .wl-chip.selected { color: #000; font-weight: 900; }
+  .wl-chip-emoji { font-size: 13px; }
+  .wl-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05);
+    color: var(--muted); font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s; flex-shrink: 0;
+  }
+  .wl-close:hover { border-color: var(--devil); color: var(--devil); background: rgba(239,68,68,.1); }
+  .wl-log {
+    flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px;
+    scroll-behavior: smooth;
+  }
+  .wl-log::-webkit-scrollbar { width: 3px; }
+  .wl-log::-webkit-scrollbar-thumb { background: rgba(0,242,255,.2); border-radius: 2px; }
+  .wl-empty {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; color: var(--muted); text-align: center;
+  }
+  .wl-empty-icon { font-size: 44px; opacity: .2; }
+  .wl-empty-lbl { font-size: 11px; letter-spacing: 1px; line-height: 1.9; }
+  .wl-msg { display: flex; gap: 12px; align-items: flex-start; animation: msg-drop .35s ease both; max-width: 86%; }
+  .wl-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .wl-msg-avatar {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; border: 1px solid; background: var(--bg2);
+  }
+  .wl-msg-body { display: flex; flex-direction: column; gap: 4px; }
+  .wl-msg-name { font-size: 9px; font-weight: 700; letter-spacing: 1px; }
+  .wl-msg.user .wl-msg-name { text-align: right; color: var(--gold); }
+  .wl-msg-bubble {
+    font-size: 13px; line-height: 1.82; padding: 12px 16px;
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+    white-space: pre-wrap; word-break: break-word;
+    border-radius: 4px 16px 16px 16px;
+    background: rgba(255,255,255,.05); border-left: 3px solid;
+  }
+  .wl-msg.user .wl-msg-bubble {
+    border-radius: 16px 4px 16px 16px; border-left: none;
+    border-right: 3px solid var(--gold); background: rgba(201,162,39,.08);
+    color: var(--text);
+  }
+  .wl-footer {
+    flex-shrink: 0; padding: 14px 20px 16px;
+    border-top: 1px solid rgba(0,242,255,.1);
+    background: rgba(0,242,255,.02);
+    display: flex; gap: 12px; align-items: flex-end;
+  }
+  .wl-footer-left { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .wl-agent-indicator {
+    font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .wl-agent-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .wl-textarea {
+    width: 100%; background: rgba(255,255,255,.05);
+    border: 1px solid rgba(0,242,255,.2); border-radius: 12px;
+    padding: 12px 16px; color: var(--text); font-size: 13px;
+    outline: none; resize: none; line-height: 1.65;
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+    min-height: 110px; max-height: 220px;
+    transition: border-color .2s;
+  }
+  .wl-textarea:focus { border-color: rgba(0,242,255,.5); box-shadow: 0 0 0 2px rgba(0,242,255,.08); }
+  .wl-textarea::placeholder { color: var(--muted); }
+  .wl-send {
+    width: 120px; align-self: flex-end; height: 50px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #006a80, #00c8e0, #00f2ff, #00c8e0);
+    background-size: 300%; background-position: 0%;
+    color: #030d14; font-size: 11px; font-weight: 900; letter-spacing: 2.5px;
+    cursor: pointer; flex-shrink: 0; transition: all .3s;
+  }
+  .wl-send:hover { background-position: 100%; box-shadow: 0 4px 24px rgba(0,242,255,.5); transform: translateY(-1px); }
+  .wl-send:disabled { background: #1e2a3a; color: var(--muted); cursor: not-allowed; transform: none; box-shadow: none; }
+  .wl-shortcut-hint { font-size: 8px; color: var(--muted); text-align: right; letter-spacing: .5px; margin-top: 2px; }
+  .wl-thinking { display: flex; align-items: center; gap: 8px; padding: 10px 16px; font-size: 11px; color: var(--muted); font-style: italic; }
+  .wl-thinking-dots span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); animation: dot-blink 1.2s ease-in-out infinite; }
+  .wl-thinking-dots span:nth-child(2) { animation-delay: .2s; }
+  .wl-thinking-dots span:nth-child(3) { animation-delay: .4s; }
+
+  /* ── コメント拡大モーダル ── */
+  .expand-overlay {
+    display: none; position: fixed; inset: 0; z-index: 600;
+    background: rgba(4,9,18,.78); backdrop-filter: blur(10px);
+    align-items: center; justify-content: center;
+  }
+  .expand-overlay.open { display: flex; }
+  .expand-modal {
+    width: min(64vw, 900px); max-height: 75vh;
+    background: linear-gradient(160deg, #0c1628 0%, #07101f 100%);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 18px; display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,.7);
+    animation: wl-pop .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .expand-hdr {
+    flex-shrink: 0; padding: 14px 18px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .expand-hdr-left { display: flex; align-items: center; gap: 10px; }
+  .expand-agent-tag { font-size: 10px; font-weight: 900; letter-spacing: 2px; }
+  .expand-ts { font-size: 9px; color: var(--muted); }
+  .expand-wl-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 12px; border: 1px solid rgba(0,242,255,.3);
+    border-radius: 14px; background: rgba(0,242,255,.07);
+    color: var(--cyan); font-size: 9px; font-weight: 700;
+    letter-spacing: 1px; cursor: pointer; transition: all .2s; margin-right: 8px;
+  }
+  .expand-wl-btn:hover { background: rgba(0,242,255,.18); }
+  .expand-hdr-right { display: flex; align-items: center; gap: 8px; }
+  .expand-body {
+    flex: 1; overflow-y: auto; padding: 20px 22px;
+    font-size: 14px; line-height: 1.9;
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+    white-space: pre-wrap; word-break: break-word;
+    border-left: 3px solid transparent;
+  }
+  .expand-body::-webkit-scrollbar { width: 3px; }
+  .expand-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); }
+
+  /* ── ローディング & トースト ── */
+  .loading-veil { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(7,13,26,.92); backdrop-filter: blur(10px); flex-direction: column; align-items: center; justify-content: center; gap: 22px; }
+  .loading-veil.on { display: flex; }
+  .radar { width: 80px; height: 80px; position: relative; }
+  .r-ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--cyan); opacity: 0; animation: r-expand 2s ease-out infinite; }
+  .r-ring:nth-child(2){animation-delay:.6s} .r-ring:nth-child(3){animation-delay:1.2s}
+  @keyframes r-expand { 0%{transform:scale(.2);opacity:.9} 100%{transform:scale(2.5);opacity:0} }
+  .r-core { position: absolute; inset: 36%; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 18px var(--cyan), 0 0 40px rgba(0,242,255,.4); }
+  .l-title { font-size: 13px; font-weight: 700; letter-spacing: 3px; color: rgba(255,255,255,.9); }
+  .toast { position: fixed; top: 24px; right: 24px; background: rgba(7,13,26,.96); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: 13px; font-weight: 600; color: var(--text); box-shadow: 0 8px 28px rgba(0,0,0,.4); transform: translateX(120%); transition: transform .4s cubic-bezier(.34,1.56,.64,1); z-index: 700; }
+  .toast.show { transform: translateX(0); }
+  .toast.ok { border-color: var(--manager); }
+  .toast.err { border-color: var(--devil); }
   </style>
 </head>
 <body>
-
 <header class="hdr z1">
   <div class="logo">
-    <div class="logo-name">SHONAN CENTRAL BEACON</div>
-    <div style="font-size: 8px; color: var(--muted); letter-spacing: 1.5px; margin-top: 2px;">STRATEGIC BOARDROOM | PCDEPOT 湘南エリア</div>
+    <span class="logo-icon">🏮</span>
+    <div>
+      <div class="logo-name">SHONAN CENTRAL BEACON</div>
+      <div class="logo-sub">STRATEGIC BOARDROOM &nbsp;|&nbsp; PCDEPOT 湘南エリア</div>
+    </div>
   </div>
-  <div class="clock" id="clock">--:--</div>
+  <div class="hdr-right">
+    <div class="sys-badge"><span class="live-dot"></span><span>SYSTEM ONLINE</span></div>
+    <div class="clock" id="clock">--:--</div>
+  </div>
 </header>
 
 <div class="agent-bar z1">
-  <div class="agent-slot" id="slot-SECRETARY"><div class="portrait-wrap" id="pw-SECRETARY"><span class="portrait-emoji">📱</span></div><div class="agent-id">CMO</div></div>
+  <div class="agent-slot" id="slot-SECRETARY" data-key="SECRETARY">
+    <div class="portrait-wrap" id="pw-SECRETARY"><span class="portrait-emoji">📋</span></div>
+    <div class="agent-id">秘書</div><div class="agent-role">SECRETARY</div>
+  </div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-SALES"><div class="portrait-wrap" id="pw-SALES"><span class="portrait-emoji">📊</span></div><div class="agent-id">CFO</div></div>
+  <div class="agent-slot" id="slot-MANAGER" data-key="MANAGER">
+    <div class="portrait-wrap" id="pw-MANAGER"><span class="portrait-emoji">📊</span></div>
+    <div class="agent-id">マネージャー</div><div class="agent-role">MANAGER</div>
+  </div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-PLANNER"><div class="portrait-wrap" id="pw-PLANNER"><span class="portrait-emoji">⚙️</span></div><div class="agent-id">COO</div></div>
+  <div class="agent-slot" id="slot-PLANNER" data-key="PLANNER">
+    <div class="portrait-wrap" id="pw-PLANNER"><span class="portrait-emoji">💡</span></div>
+    <div class="agent-id">プランナー</div><div class="agent-role">PLANNER</div>
+  </div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-MARKETING"><div class="portrait-wrap" id="pw-MARKETING"><span class="portrait-emoji">📜</span></div><div class="agent-id">CLO</div></div>
+  <div class="agent-slot" id="slot-SNS" data-key="SNS">
+    <div class="portrait-wrap" id="pw-SNS"><span class="portrait-emoji">📱</span></div>
+    <div class="agent-id">SNS</div><div class="agent-role">SNS</div>
+  </div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-DEVIL"><div class="portrait-wrap" id="pw-DEVIL"><span class="portrait-emoji">😈</span></div><div class="agent-id">Devil</div></div>
+  <div class="agent-slot" id="slot-DEVIL" data-key="DEVIL">
+    <div class="portrait-wrap" id="pw-DEVIL"><span class="portrait-emoji">😈</span></div>
+    <div class="agent-id">Devil</div><div class="agent-role">ADVOCATE</div>
+  </div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-ADVISOR"><div class="portrait-wrap" id="pw-ADVISOR"><span class="portrait-emoji">👴</span></div><div class="agent-id">齋藤相談役</div></div>
+  <div class="agent-slot" id="slot-ADVISOR" data-key="ADVISOR">
+    <div class="portrait-wrap" id="pw-ADVISOR"><span class="portrait-emoji">👴</span></div>
+    <div class="agent-id">相談役</div><div class="agent-role">ADVISOR</div>
+  </div>
 </div>
 
 <div class="body-grid z1">
   <div class="chat-wrap">
-    <div class="strategy-mode-container">
-      <div class="mode-tabs">
-        <button class="mode-tab active" onclick="setStrategyMode(this, 'CHATTING')">💬 通常対話</button>
-        <button class="mode-tab" onclick="setStrategyMode(this, 'MORNING')">☀️ モーニング</button>
-        <button class="mode-tab" onclick="setStrategyMode(this, 'WAR_ROOM')">🌙 深夜討議</button>
-        <button class="mode-tab" onclick="setStrategyMode(this, 'ON_DEMAND')">🔥 オンデマンド</button>
-      </div>
-      <p id="mode-description" class="mode-desc">参謀たちと自由にチャット形式で議論します。</p>
+    <div class="chat-hdr"><span class="live-dot"></span><span class="chat-hdr-lbl">ANALYSIS LOG</span></div>
+    <div class="mission-banner" id="missionBanner">
+      <span class="mission-banner-lbl">MISSION</span>
+      <span class="mission-banner-text" id="missionText"></span>
     </div>
-    <div class="agent-cols" id="agentCols">
-      <div class="agent-col col-secretary"><div class="agent-col-hdr">📱 CMO</div><div class="agent-col-body" id="colbody-SECRETARY"></div></div>
-      <div class="agent-col col-sales"><div class="agent-col-hdr">📊 CFO</div><div class="agent-col-body" id="colbody-SALES"></div></div>
-      <div class="agent-col col-planner"><div class="agent-col-hdr">⚙️ COO</div><div class="agent-col-body" id="colbody-PLANNER"></div></div>
-      <div class="agent-col col-marketing"><div class="agent-col-hdr">📜 CLO</div><div class="agent-col-body" id="colbody-MARKETING"></div></div>
-      <div class="agent-col col-devil"><div class="agent-col-hdr">😈 Devil</div><div class="agent-col-body" id="colbody-DEVIL"></div></div>
-      <div class="agent-col col-advisor"><div class="agent-col-hdr">👴 齋藤相談役</div><div class="agent-col-body" id="colbody-ADVISOR"></div></div>
-      <div class="agent-col col-interrogation"><div class="agent-col-hdr">▸ INTERROGATION</div><div class="agent-col-body" id="colbody-INTERROGATION"></div></div>
+    <div class="chat-log" id="chatLog">
+      <div class="chat-empty" id="chatEmpty">
+        <div class="empty-icon">⚡</div>
+        <div class="empty-lbl">MISSION INPUT 待機中<br>6名のAI参謀が命令を待っています</div>
+      </div>
+      <div class="agent-cols" id="agentCols" style="display:none">
+        <div class="agent-col col-secretary">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">📋</span>
+            <div><div class="col-hdr-name">秘書</div><div class="col-hdr-role">SECRETARY</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-SECRETARY"></div>
+        </div>
+        <div class="agent-col col-manager">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">📊</span>
+            <div><div class="col-hdr-name">マネージャー</div><div class="col-hdr-role">MANAGER</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-MANAGER"></div>
+        </div>
+        <div class="agent-col col-planner">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">💡</span>
+            <div><div class="col-hdr-name">プランナー</div><div class="col-hdr-role">PLANNER</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-PLANNER"></div>
+        </div>
+        <div class="agent-col col-sns">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">📱</span>
+            <div><div class="col-hdr-name">SNS</div><div class="col-hdr-role">SNS</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-SNS"></div>
+        </div>
+        <div class="agent-col col-devil">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">😈</span>
+            <div><div class="col-hdr-name">Devil</div><div class="col-hdr-role">ADVOCATE</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-DEVIL"></div>
+        </div>
+        <div class="agent-col col-advisor">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">👴</span>
+            <div><div class="col-hdr-name">相談役</div><div class="col-hdr-role">ADVISOR</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-ADVISOR"></div>
+        </div>
+        <div class="agent-col col-interrogation">
+          <div class="agent-col-hdr">
+            <span class="col-hdr-emoji">▸</span>
+            <div><div class="col-hdr-name">INTERROGATION</div><div class="col-hdr-role">LOG</div></div>
+          </div>
+          <div class="agent-col-body" id="colbody-INTERROGATION">
+            <div class="col-placeholder">AIからの逆質問がここに表示されます</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="input-footer z1">
+  <div class="input-top-row">
+    <span class="mission-lbl">MISSION</span>
+    <select class="mission-sel"><option>週次経営会議</option><option>店舗改善</option><option>エリア合同</option></select>
+    <button class="walluchi-trigger" onclick="openWalluchi()">🗣️ 壁打ちモード</button>
+    <div class="mode-pills">
+      <button class="pill on">TEXT</button><button class="pill">VOICE</button><button class="pill">FILE</button>
+    </div>
+  </div>
   <div class="input-main">
     <textarea id="textField" class="text-field" placeholder="経営課題を入力してください..."></textarea>
     <button class="exec-btn" id="execBtn" onclick="startAnalysis()">EXECUTE</button>
   </div>
 </div>
 
-<div class="loading-veil" id="loadVeil"><div class="logo-name">ANALYZING...</div></div>
+<!-- ローディング -->
+<div class="loading-veil" id="loadVeil">
+  <div class="radar"><div class="r-ring"></div><div class="r-ring"></div><div class="r-core"></div></div>
+  <div class="l-title">ANALYZING MISSION</div>
+</div>
 <div class="toast" id="toast"></div>
 
+<!-- ══════════ 壁打ちモーダル ══════════ -->
+<div class="wl-overlay" id="wlOverlay" onclick="handleWlOverlayClick(event)">
+  <div class="wl-modal" id="wlModal">
+    <div class="wl-hdr">
+      <div class="wl-hdr-label">
+        <div class="wl-hdr-title">1 ON 1 WALL MODE</div>
+        <div class="wl-hdr-sub">SELECT AGENT &amp; DEEP DIVE</div>
+      </div>
+      <div class="wl-agent-chips" id="wlChips"></div>
+      <button class="wl-close" onclick="closeWalluchi()">✕</button>
+    </div>
+    <div class="wl-log" id="wlLog">
+      <div class="wl-empty" id="wlEmpty">
+        <div class="wl-empty-icon">🎮</div>
+        <div class="wl-empty-lbl">上のエージェントを選択して<br>壁打ちを開始してください</div>
+      </div>
+    </div>
+    <div class="wl-footer">
+      <div class="wl-footer-left">
+        <div class="wl-agent-indicator" id="wlAgentIndicator" style="display:none">
+          <div class="wl-agent-dot" id="wlAgentDot"></div>
+          <span id="wlAgentName">—</span>
+          <span style="color:var(--muted);font-size:8px;letter-spacing:.5px">と壁打ち中 &nbsp;·&nbsp; Ctrl+Enter で送信</span>
+        </div>
+        <textarea class="wl-textarea" id="wlInput" placeholder="メッセージを入力（Ctrl+Enter で送信）..."></textarea>
+        <div class="wl-shortcut-hint">Ctrl + Enter で送信</div>
+      </div>
+      <button class="wl-send" id="wlSendBtn" onclick="sendWalluchi()">EXECUTE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ コメント拡大モーダル ══════════ -->
+<div class="expand-overlay" id="expandOverlay" onclick="handleExpandOverlayClick(event)">
+  <div class="expand-modal" id="expandModal">
+    <div class="expand-hdr">
+      <div class="expand-hdr-left">
+        <div class="expand-agent-tag" id="expandAgentTag"></div>
+        <div class="expand-ts" id="expandTs"></div>
+      </div>
+      <div class="expand-hdr-right">
+        <button class="expand-wl-btn" id="expandWlBtn">🗣️ この相手と壁打ち</button>
+        <button class="wl-close" onclick="closeExpand()">✕</button>
+      </div>
+    </div>
+    <div class="expand-body" id="expandBody"></div>
+  </div>
+</div>
+
 <script>
-  // ──【定数・設定】──
-  const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
-  const DRIVE_FILE_ID = '1RtTNCmLyT3Wt85tHgor95DBGTECnWSAH'; 
-  const AGENT_SPRITE_URL = `https://drive.google.com/thumbnail?id=${DRIVE_FILE_ID}&sz=w1200`;
+// ══ 定数・グローバル ══
+const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
 
-  // 精密座標
-  const SPRITE_CONFIG = {
-    SECRETARY: { left: '-45%',  top: '20px' }, // CMO
-    SALES:     { left: '-148%', top: '20px' }, // CFO
-    PLANNER:   { left: '-250%', top: '20px' }, // COO
-    MARKETING: { left: '-352%', top: '20px' }, // CLO
-    DEVIL:     { left: '-418%', top: '45px' }, // Devil
-    ADVISOR:   { left: '-515%', top: '20px' }  // Advisor
-  };
+const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1RtTNCmLyT3Wt85tHgor95DBGTECnWSAH&sz=w1200';
 
-  const AGENT_KEYS = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL', 'ADVISOR'];
-  const AGENT_REGEX = {
-    SECRETARY: /\[(?:CMO|秘書)\]:?\s*([\s\S]*?)(?=\[CFO\]|\[COO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
-    SALES:     /\[(?:CFO|営業部長)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[COO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
-    PLANNER:   /\[(?:COO|プランナー)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
-    MARKETING: /\[(?:CLO|マーケ)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
-    DEVIL:     /\[(?:Devil|デビル)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[CLO\]|\[齋藤相談役\]|$)/i,
-    ADVISOR:   /\[(?:齋藤相談役|ADVISOR)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[CLO\]|\[Devil\]|$)/i
-  };
+// 各キャラクターの精密座標（顔が丸枠中央に来るよう個別調整）
+const SPRITE_CONFIG = {
+  SECRETARY: { left: '-45%',  top: '20px' },
+  MANAGER:   { left: '-148%', top: '20px' },
+  PLANNER:   { left: '-250%', top: '20px' },
+  SNS:       { left: '-352%', top: '20px' },
+  DEVIL:     { left: '-418%', top: '45px' },
+  ADVISOR:   { left: '-515%', top: '20px' }
+};
 
-  window.addEventListener('load', () => {
-    AGENT_KEYS.forEach(key => {
-      const wrap = document.getElementById('pw-' + key);
-      const img = document.createElement('img');
-      img.className = 'agent-sprite';
-      img.src = AGENT_SPRITE_URL;
-      img.style.left = SPRITE_CONFIG[key].left;
-      img.style.marginTop = SPRITE_CONFIG[key].top;
-      img.onload = () => { if(wrap.querySelector('.portrait-emoji')) wrap.querySelector('.portrait-emoji').style.opacity = '0'; };
-      wrap.appendChild(img);
-    });
+let spriteLoaded = false;
+
+const AGENT_KEYS   = ['SECRETARY', 'MANAGER', 'PLANNER', 'SNS', 'DEVIL', 'ADVISOR'];
+const AGENT_COLORS = {
+  SECRETARY: '#3b82f6',
+  MANAGER:   '#22c55e',
+  PLANNER:   '#c9a227',
+  SNS:       '#a855f7',
+  DEVIL:     '#ef4444',
+  ADVISOR:   '#94a3b8'
+};
+const AGENT_LABELS = {
+  SECRETARY: '秘書',
+  MANAGER:   'マネージャー',
+  PLANNER:   'プランナー',
+  SNS:       'SNS',
+  DEVIL:     'Devil',
+  ADVISOR:   '相談役'
+};
+const AGENT_EMOJI = {
+  SECRETARY: '📋',
+  MANAGER:   '📊',
+  PLANNER:   '💡',
+  SNS:       '📱',
+  DEVIL:     '😈',
+  ADVISOR:   '👴'
+};
+
+// 他エージェントタグのパターン（終端検出用）
+const OTHER_TAGS = '(?=\\[秘書\\]|\\[SECRETARY\\]|\\[マネージャー\\]|\\[MANAGER\\]|\\[プランナー\\]|\\[PLANNER\\]|\\[SNS\\]|\\[Devil\\]|\\[デビル\\]|\\[相談役\\]|\\[ADVISOR\\]|\\[逆質問\\]|\\[INTERROGATION\\]|$)';
+
+const AGENT_REGEX = {
+  SECRETARY:     new RegExp('\\[(?:秘書|SECRETARY)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  MANAGER:       new RegExp('\\[(?:マネージャー|MANAGER)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  PLANNER:       new RegExp('\\[(?:プランナー|PLANNER)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  SNS:           new RegExp('\\[SNS\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  DEVIL:         new RegExp('\\[(?:Devil|デビル)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  ADVISOR:       new RegExp('\\[(?:相談役|ADVISOR)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+  INTERROGATION: new RegExp('\\[(?:逆質問|INTERROGATION)\\]:?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i')
+};
+
+// 壁打ちモード
+let wlSelectedAgent = null;
+
+// ══ 起動時 ══
+window.addEventListener('load', () => {
+  tick(); setInterval(tick, 1000);
+  buildWlChips();
+
+  AGENT_KEYS.forEach(function(k) {
+    var pw = document.getElementById('pw-' + k);
+    if (!pw) return;
+    var old = pw.querySelector('img.agent-sprite');
+    if (old) pw.removeChild(old);
+    var img = document.createElement('img');
+    img.className = 'agent-sprite';
+    var cfg = SPRITE_CONFIG[k];
+    img.style.cssText =
+      'position:absolute;width:630%;height:auto;' +
+      'top:50%;transform:translateY(calc(-50% + ' + cfg.top + '));' +
+      'left:' + cfg.left + ';pointer-events:none;';
+    img.onload = function() {
+      spriteLoaded = true;
+      var em = pw.querySelector('.portrait-emoji');
+      if (em) em.style.display = 'none';
+    };
+    img.onerror = function() { console.warn('Sprite load error: ' + k); };
+    img.src = AGENT_SPRITE_URL;
+    pw.appendChild(img);
   });
 
-  function tick() {
-    const n = new Date();
-    document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
-  }
-  setInterval(tick, 1000); tick();
+  // Ctrl+Enter で壁打ち送信
+  document.getElementById('wlInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); sendWalluchi(); }
+  });
+});
 
-  function setStrategyMode(el, mode) {
-    currentMode = mode;
-    document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('mode-description').innerText = {
-      'CHATTING': '参謀たちと自由にチャット形式で議論します。',
-      'MORNING': '本日の朝礼に最適な3つの要点をブリーフィングします。',
-      'WAR_ROOM': '深夜に行われた参謀たちの議論ログと答申書を読み込みます。',
-      'ON_DEMAND': '入力したテーマについて、6人がその場で徹底討論を開始します。'
-    }[mode];
-  }
+function tick() {
+  const n = new Date();
+  document.getElementById('clock').textContent =
+    String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+}
 
-  let currentMode = 'CHATTING';
+// ══ メイン分析 ══
+async function startAnalysis() {
+  const input = document.getElementById('textField').value.trim();
+  if (!input) { toast('入力してください', 'err'); return; }
 
-  async function startAnalysis() {
-    const input = document.getElementById('textField').value.trim();
-    if (currentMode !== 'MORNING' && !input) { toast('経営課題を入力してください', 'err'); return; }
-    AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.add('thinking'));
-    document.getElementById('loadVeil').classList.add('on');
-    try {
-      const res = await fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ mode: currentMode, userInput: input })
-      });
-      const result = await res.json();
-      if (result.status === 'success') { renderResult(result.data); } else { throw new Error(result.message); }
-    } catch (err) { toast('エラー: ' + err.message, 'err'); }
-    document.getElementById('loadVeil').classList.remove('on');
-    AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.remove('thinking'));
-  }
+  document.getElementById('chatEmpty').style.display = 'none';
+  document.getElementById('agentCols').style.display = 'grid';
+  document.getElementById('missionBanner').classList.add('show');
+  document.getElementById('missionText').textContent = input;
 
-  function renderResult(aiText) {
-    AGENT_KEYS.forEach((k, i) => {
-      setTimeout(() => {
-        const match = aiText.match(AGENT_REGEX[k]);
-        const text = match ? match[1].trim() : (i === 0 ? aiText : "");
-        if (text) {
-          const body = document.getElementById('colbody-' + k);
-          const div = document.createElement('div');
-          div.className = 'col-msg';
-          div.innerText = text;
-          body.appendChild(div);
-          body.scrollTop = body.scrollHeight;
-        }
-      }, i * 600);
+  AGENT_KEYS.forEach(k => setState(k, 'thinking'));
+  setLoading(true);
+  document.getElementById('execBtn').disabled = true;
+
+  try {
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST', body: JSON.stringify({ userInput: input }), redirect: 'follow'
     });
-  }
+    const result = await res.json();
+    if (result.status === 'success') onSuccess(result.data);
+    else throw new Error(result.message);
+  } catch (err) { onErr(err); }
+}
 
-  function toast(msg, type) {
-    const t = document.getElementById('toast');
-    t.innerText = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+function onSuccess(aiText) {
+  setLoading(false);
+  document.getElementById('execBtn').disabled = false;
+  AGENT_KEYS.forEach(k => setState(k, 'idle'));
+
+  AGENT_KEYS.forEach((k, i) => {
+    setTimeout(() => {
+      setState(k, 'active');
+      const match = aiText.match(AGENT_REGEX[k]);
+      const text = match ? match[1].trim() : (aiText.length > 0 && k === 'SECRETARY' ? aiText : '');
+      if (text) addColMsg(k, text);
+
+      // INTERROGATION列チェック
+      if (i === AGENT_KEYS.length - 1) {
+        const intMatch = aiText.match(AGENT_REGEX['INTERROGATION']);
+        if (intMatch && intMatch[1].trim()) addColMsg('INTERROGATION', intMatch[1].trim());
+      }
+
+      setTimeout(() => setState(k, 'idle'), 3000);
+    }, i * 1200);
+  });
+
+  toast('✓ 分析完了', 'ok');
+  document.getElementById('textField').value = '';
+}
+
+function onErr(e) {
+  setLoading(false);
+  document.getElementById('execBtn').disabled = false;
+  AGENT_KEYS.forEach(k => setState(k, 'idle'));
+  toast('エラー: ' + e.message, 'err');
+}
+
+function setState(key, state) {
+  const el = document.getElementById('slot-' + key);
+  if (!el) return;
+  el.classList.remove('active', 'thinking');
+  if (state === 'active')   el.classList.add('active');
+  if (state === 'thinking') el.classList.add('thinking');
+}
+
+// カラムにメッセージ追加 + クリックで拡大
+function addColMsg(agentKey, text) {
+  const colBody = document.getElementById('colbody-' + agentKey);
+  if (!colBody) return;
+  const now = new Date();
+  const ts = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  const div = document.createElement('div');
+  div.className = 'col-msg';
+  div.innerHTML =
+    '<div class="col-msg-ts">' + ts + '</div>' +
+    text.replace(/\n/g, '<br>') +
+    '<div class="col-msg-expand-hint">▸ クリックで全文表示</div>';
+  div.addEventListener('click', function() {
+    openExpand(agentKey, text, ts);
+  });
+  colBody.appendChild(div);
+  colBody.scrollTop = colBody.scrollHeight;
+}
+
+function setLoading(on) {
+  document.getElementById('loadVeil').classList.toggle('on', on);
+}
+
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || '') + ' show';
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ══════════════════════════════════════
+// 壁打ちモーダル
+// ══════════════════════════════════════
+function buildWlChips() {
+  const container = document.getElementById('wlChips');
+  AGENT_KEYS.forEach(k => {
+    const chip = document.createElement('button');
+    chip.className = 'wl-chip';
+    chip.id = 'wl-chip-' + k;
+    chip.innerHTML = '<span class="wl-chip-emoji">' + AGENT_EMOJI[k] + '</span>' + AGENT_LABELS[k];
+    chip.addEventListener('click', () => wlSelectAgent(k));
+    container.appendChild(chip);
+  });
+}
+
+function openWalluchi(preselect) {
+  document.getElementById('wlOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (preselect) wlSelectAgent(preselect);
+  else document.getElementById('wlInput').focus();
+}
+
+function closeWalluchi() {
+  document.getElementById('wlOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleWlOverlayClick(e) {
+  if (e.target === document.getElementById('wlOverlay')) closeWalluchi();
+}
+
+function wlSelectAgent(key) {
+  wlSelectedAgent = key;
+  const color = AGENT_COLORS[key];
+
+  AGENT_KEYS.forEach(k => {
+    const chip = document.getElementById('wl-chip-' + k);
+    if (!chip) return;
+    if (k === key) {
+      chip.classList.add('selected');
+      chip.style.background = color;
+      chip.style.borderColor = color;
+      chip.style.boxShadow = '0 0 14px ' + color + '55';
+    } else {
+      chip.classList.remove('selected');
+      chip.style.background = '';
+      chip.style.borderColor = '';
+      chip.style.boxShadow = '';
+    }
+  });
+
+  document.getElementById('wlAgentIndicator').style.display = 'flex';
+  document.getElementById('wlAgentDot').style.background = color;
+  document.getElementById('wlAgentName').textContent = AGENT_LABELS[key];
+  document.getElementById('wlAgentName').style.color = color;
+  document.getElementById('wlInput').focus();
+  document.getElementById('wlModal').style.borderColor = color + '55';
+}
+
+async function sendWalluchi() {
+  if (!wlSelectedAgent) { toast('エージェントを選択してください', 'err'); return; }
+  const input = document.getElementById('wlInput').value.trim();
+  if (!input) return;
+
+  const color = AGENT_COLORS[wlSelectedAgent];
+
+  wlAddMsg('user', 'YOU', input, '#c9a227');
+  document.getElementById('wlInput').value = '';
+  document.getElementById('wlEmpty').style.display = 'none';
+
+  const thinkingEl = document.createElement('div');
+  thinkingEl.className = 'wl-thinking';
+  thinkingEl.innerHTML =
+    AGENT_EMOJI[wlSelectedAgent] + '&nbsp;' + AGENT_LABELS[wlSelectedAgent] + ' が考えています' +
+    '<span class="wl-thinking-dots"><span></span><span></span><span></span></span>';
+  document.getElementById('wlLog').appendChild(thinkingEl);
+  document.getElementById('wlLog').scrollTop = document.getElementById('wlLog').scrollHeight;
+  document.getElementById('wlSendBtn').disabled = true;
+
+  try {
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST', body: JSON.stringify({ userInput: input, agent: wlSelectedAgent }), redirect: 'follow'
+    });
+    const result = await res.json();
+    thinkingEl.remove();
+    document.getElementById('wlSendBtn').disabled = false;
+
+    if (result.status === 'success') {
+      const match = result.data.match(AGENT_REGEX[wlSelectedAgent]);
+      const text = match ? match[1].trim() : result.data;
+      if (text) wlAddMsg('agent', AGENT_LABELS[wlSelectedAgent], text, color);
+      else wlAddMsg('agent', AGENT_LABELS[wlSelectedAgent], '（応答が取得できませんでした）', color);
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    thinkingEl.remove();
+    document.getElementById('wlSendBtn').disabled = false;
+    toast('エラー: ' + err.message, 'err');
   }
+}
+
+function wlAddMsg(role, name, text, color) {
+  const log = document.getElementById('wlLog');
+  const now = new Date();
+  const ts = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+
+  const wrap = document.createElement('div');
+  wrap.className = 'wl-msg' + (role === 'user' ? ' user' : '');
+
+  const avatarEmoji = role === 'user' ? '👤' : (AGENT_EMOJI[wlSelectedAgent] || '');
+  const avatarStyle = 'border-color:' + color + ';';
+
+  wrap.innerHTML =
+    '<div class="wl-msg-avatar" style="' + avatarStyle + '">' + avatarEmoji + '</div>' +
+    '<div class="wl-msg-body">' +
+    '<div class="wl-msg-name" style="color:' + color + '">' + name +
+    ' <span style="color:var(--muted);font-weight:300;font-size:8px">' + ts + '</span></div>' +
+    '<div class="wl-msg-bubble" style="border-color:' + color + '">' + text.replace(/\n/g, '<br>') + '</div>' +
+    '</div>';
+
+  log.appendChild(wrap);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ══════════════════════════════════════
+// コメント拡大モーダル
+// ══════════════════════════════════════
+function openExpand(agentKey, text, ts) {
+  const color = AGENT_COLORS[agentKey] || 'var(--cyan)';
+  const label = AGENT_LABELS[agentKey] || agentKey;
+  const emoji = AGENT_EMOJI[agentKey] || '';
+
+  document.getElementById('expandAgentTag').textContent = emoji + '  ' + label;
+  document.getElementById('expandAgentTag').style.color = color;
+  document.getElementById('expandTs').textContent = ts;
+  document.getElementById('expandBody').textContent = text;
+  document.getElementById('expandBody').style.borderLeftColor = color;
+  document.getElementById('expandModal').style.borderColor = color + '44';
+
+  const wlBtn = document.getElementById('expandWlBtn');
+  wlBtn.onclick = function() { closeExpand(); openWalluchi(agentKey); };
+  wlBtn.style.borderColor = color + '66';
+  wlBtn.style.color = color;
+
+  document.getElementById('expandOverlay').classList.add('open');
+}
+
+function closeExpand() {
+  document.getElementById('expandOverlay').classList.remove('open');
+}
+
+function handleExpandOverlayClick(e) {
+  if (e.target === document.getElementById('expandOverlay')) closeExpand();
+}
 </script>
 </body>
 </html>
