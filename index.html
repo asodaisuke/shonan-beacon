@@ -52,7 +52,9 @@
     display: flex; align-items: center; justify-content: center;
   }
   .portrait-emoji { font-size: 38px; line-height: 1; transition: opacity .4s; }
+  /* ★ スプライト画像の絶対配置 */
   .agent-sprite { position:absolute; width:500%; height:auto; min-height:120%; pointer-events:none; top:50%; transform:translateY(-50%); }
+  /* per-agent crop (背景画像方式のフォールバック用) */
   .portrait-wrap.p-secretary { background-position: 0% 50%; }
   .portrait-wrap.p-sales     { background-position: 25% 50%; }
   .portrait-wrap.p-planner   { background-position: 50% 50%; }
@@ -210,110 +212,150 @@
 <div class="toast" id="toast"></div>
 <script>
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyZE4HUKCEzNvdQWEpuH8Z0B2GrfT3dsNDP6sbmSW9ANts_oLdkGepiHLl2N4gIXziKVg/exec';
+
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w500';
 const SPRITE_LEFT = { SECRETARY:'0', SALES:'-100%', PLANNER:'-200%', MARKETING:'-300%', DEVIL:'-400%' };
 const SPRITE_TOP  = { SECRETARY:'30px', SALES:'28px', PLANNER:'30px', MARKETING:'25px', DEVIL:'30px' };
 let spriteLoaded = false;
+
 const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL'];
 const AGENT_COLORS = { SECRETARY:'#3b82f6', SALES:'#22c55e', PLANNER:'#c9a227', MARKETING:'#a855f7', DEVIL:'#ef4444' };
 const AGENT_LABELS = { SECRETARY:'秘書', SALES:'営業部長', PLANNER:'プランナー', MARKETING:'マーケ・SNS', DEVIL:'デビル' };
 const AGENT_EMOJI  = { SECRETARY:'📋', SALES:'📈', PLANNER:'💡', MARKETING:'📱', DEVIL:'😈' };
+
 window.addEventListener('load', () => {
   tick(); setInterval(tick, 1000);
-  var preload = new Image();
-  preload.crossOrigin = 'anonymous';
-  preload.onload = function() {
-    spriteLoaded = true;
-    AGENT_KEYS.forEach(function(k) {
-      var pw = document.getElementById('pw-' + k);
-      if (!pw) return;
-      var old = pw.querySelector('img.agent-sprite');
-      if (old) pw.removeChild(old);
-      var img = document.createElement('img');
-      img.className = 'agent-sprite';
-      img.src = AGENT_SPRITE_URL;
-      img.style.cssText = 'position:absolute;width:500%;height:auto;min-height:120%;top:50%;transform:translateY(calc(-50% + ' + SPRITE_TOP[k] + '));left:' + SPRITE_LEFT[k] + ';pointer-events:none;';
-      pw.appendChild(img);
+
+  AGENT_KEYS.forEach(function(k) {
+    var pw = document.getElementById('pw-' + k);
+    if (!pw) return;
+    var old = pw.querySelector('img.agent-sprite');
+    if (old) pw.removeChild(old);
+    var img = document.createElement('img');
+    img.className = 'agent-sprite';
+    img.style.cssText =
+      'position:absolute;width:500%;height:auto;min-height:120%;' +
+      'top:50%;transform:translateY(calc(-50% + ' + SPRITE_TOP[k] + '));' +
+      'left:' + SPRITE_LEFT[k] + ';pointer-events:none;';
+    img.onload = function() {
+      spriteLoaded = true;
       var em = pw.querySelector('.portrait-emoji');
       if (em) em.style.display = 'none';
-    });
-  };
-  preload.onerror = function() { console.warn('Sprite load failed, using emoji.'); };
-  preload.src = AGENT_SPRITE_URL;
+    };
+    img.onerror = function() {
+      console.warn('Agent sprite could not be loaded for: ' + k);
+    };
+    img.src = AGENT_SPRITE_URL;
+    pw.appendChild(img);
+  });
 });
+
 function tick() {
   const n = new Date();
-  document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
+
 async function startAnalysis() {
   const input = document.getElementById('textField').value.trim();
   if (!input) { toast('入力してください', 'err'); return; }
+
   addMsg('user', '👤', 'YOU', input, '#c9a227');
   AGENT_KEYS.forEach(k => setState(k, 'thinking'));
   setLoading(true);
   document.getElementById('execBtn').disabled = true;
+
   try {
-    const response = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ userInput: input }), redirect: 'follow' });
+    const response = await fetch(GAS_API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ userInput: input }),
+      redirect: 'follow'
+    });
     const result = await response.json();
     if (result.status === 'success') onSuccess(result.data);
     else throw new Error(result.message);
-  } catch (err) { onErr(err); }
+  } catch (err) {
+    onErr(err);
+  }
 }
+
 function onSuccess(aiText) {
   setLoading(false);
   document.getElementById('execBtn').disabled = false;
   AGENT_KEYS.forEach(k => setState(k, 'idle'));
-  const la = '(?=\\[秘書\\]|\\[営業部長\\]|\\[プランナー\\]|\\[マーケ.*?担当\\]|\\[デビル\\]|$)';
-  const rx = {
-    SECRETARY: new RegExp('\\[秘書\\]:?\\s*([\\s\\S]*?)' + la, 'i'),
-    SALES:     new RegExp('\\[営業部長\\]:?\\s*([\\s\\S]*?)' + la, 'i'),
-    PLANNER:   new RegExp('\\[プランナー\\]:?\\s*([\\s\\S]*?)' + la, 'i'),
-    MARKETING: new RegExp('\\[マーケ.*?担当\\]:?\\s*([\\s\\S]*?)' + la, 'i'),
-    DEVIL:     new RegExp('\\[デビル\\]:?\\s*([\\s\\S]*?)' + la, 'i')
+
+  const lookahead = '(?=\\[秘書\\]|\\[営業部長\\]|\\[プランナー\\]|\\[マーケ.*?担当\\]|\\[デビル\\]|$)';
+  const regexMap = {
+    SECRETARY: new RegExp('\\[秘書\\]:?\\s*([\\s\\S]*?)' + lookahead, 'i'),
+    SALES:     new RegExp('\\[営業部長\\]:?\\s*([\\s\\S]*?)' + lookahead, 'i'),
+    PLANNER:   new RegExp('\\[プランナー\\]:?\\s*([\\s\\S]*?)' + lookahead, 'i'),
+    MARKETING: new RegExp('\\[マーケ.*?担当\\]:?\\s*([\\s\\S]*?)' + lookahead, 'i'),
+    DEVIL:     new RegExp('\\[デビル\\]:?\\s*([\\s\\S]*?)' + lookahead, 'i')
   };
+
   AGENT_KEYS.forEach((k, i) => {
     setTimeout(() => {
       setState(k, 'active');
-      const m = aiText.match(rx[k]);
-      const t = m ? m[1].trim() : (aiText.length > 0 && k === 'SECRETARY' ? aiText : '');
-      if (t) addMsg(k.toLowerCase(), AGENT_EMOJI[k], AGENT_LABELS[k], t, AGENT_COLORS[k]);
+      const match = aiText.match(regexMap[k]);
+      const text = match ? match[1].trim() : (aiText.length > 0 && k === 'SECRETARY' ? aiText : '');
+      if (text) addMsg(k.toLowerCase(), AGENT_EMOJI[k], AGENT_LABELS[k], text, AGENT_COLORS[k]);
       setTimeout(() => setState(k, 'idle'), 3000);
     }, i * 1200);
   });
+
   toast('✓ 分析完了', 'ok');
   document.getElementById('textField').value = '';
 }
+
 function onErr(e) {
   setLoading(false);
   document.getElementById('execBtn').disabled = false;
   AGENT_KEYS.forEach(k => setState(k, 'idle'));
   toast('エラー: ' + e.message, 'err');
 }
+
 function setState(key, state) {
   const el = document.getElementById('slot-' + key);
   if (!el) return;
   el.classList.remove('active', 'thinking');
-  if (state === 'active') el.classList.add('active');
+  if (state === 'active')   el.classList.add('active');
   if (state === 'thinking') el.classList.add('thinking');
 }
+
 function addMsg(cls, emoji, name, text, color) {
   document.getElementById('chatEmpty').style.display = 'none';
   const log = document.getElementById('chatLog');
   const div = document.createElement('div');
   div.className = 'chat-msg a-' + cls;
+
   const agentKey = cls.toUpperCase();
+  const hasSprite = spriteLoaded && SPRITE_LEFT[agentKey] !== undefined;
+
   const bgPosMap = { SECRETARY:'0%', SALES:'25%', PLANNER:'50%', MARKETING:'75%', DEVIL:'100%' };
-  const avatarBg = (spriteLoaded && bgPosMap[agentKey])
-    ? 'background-image:url(\'' + AGENT_SPRITE_URL + '\');background-position:' + bgPosMap[agentKey] + ' 50%;'
+  const avatarBg = hasSprite
+    ? 'background-image:url(\'' + AGENT_SPRITE_URL + '\');background-position:' + (bgPosMap[agentKey] || '0%') + ' 50%;'
     : '';
-  div.innerHTML = '<div class="msg-avatar a-' + cls + '" style="' + avatarBg + '">' + (avatarBg ? '' : emoji) + '</div><div class="msg-body"><div class="msg-meta"><span class="msg-name" style="color:' + color + '">' + name + '</span></div><div class="msg-bubble">' + text.replace(/\n/g, '<br>') + '</div></div>';
+
+  div.innerHTML =
+    '<div class="msg-avatar a-' + cls + '" style="' + avatarBg + '">' +
+    (hasSprite ? '' : emoji) +
+    '</div>' +
+    '<div class="msg-body">' +
+    '<div class="msg-meta"><span class="msg-name" style="color:' + color + '">' + name + '</span></div>' +
+    '<div class="msg-bubble">' + text.replace(/\n/g, '<br>') + '</div>' +
+    '</div>';
   log.appendChild(div);
   log.scrollTop = log.scrollHeight;
 }
-function setLoading(on) { document.getElementById('loadVeil').classList.toggle('on', on); }
+
+function setLoading(on) {
+  document.getElementById('loadVeil').classList.toggle('on', on);
+}
+
 function toast(msg, type) {
   const el = document.getElementById('toast');
-  el.textContent = msg; el.className = 'toast ' + type + ' show';
+  el.textContent = msg;
+  el.className = 'toast ' + type + ' show';
   setTimeout(() => el.classList.remove('show'), 4000);
 }
 </script>
