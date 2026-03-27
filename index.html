@@ -898,6 +898,27 @@ function closeExpand() {
 function handleExpandOverlayClick(e) {
   if (e.target === document.getElementById('expandOverlay')) closeExpand();
 }
+  let currentMode = 'CHATTING';
+
+function setStrategyMode(mode) {
+  currentMode = mode;
+  
+  // 全タブからactiveクラスを消し、クリックされたものに付ける
+  document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  // モード説明文の更新
+  const desc = document.getElementById('mode-description');
+  const descriptions = {
+    'CHATTING': '参謀たちと自由にチャット形式で議論します。',
+    'MORNING': '本日の朝礼に最適な3つの要点をブリーフィングします。',
+    'WAR_ROOM': '深夜に行われた参謀たちの議論ログと答申書を読み込みます。',
+    'ON_DEMAND': '入力したテーマについて、5人がその場で徹底討論を開始します。'
+  };
+  desc.innerText = descriptions[mode];
+  
+  console.log("Strategic Mode Switched to:", mode);
+}
 </script>
 </body>
 </html>
