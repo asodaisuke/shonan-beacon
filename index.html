@@ -599,18 +599,19 @@ const SPRITE_LEFT = { SECRETARY:'0', SALES:'-100%', PLANNER:'-200%', MARKETING:'
 const SPRITE_TOP  = { SECRETARY:'30px', SALES:'28px', PLANNER:'30px', MARKETING: '25px', DEVIL:'30px', ADVISOR:'30px' };
 let spriteLoaded = false;
 
+// 610行目前後：末尾のカンマがあるか、クォーテーションで囲まれているかチェック
 const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL', 'ADVISOR'];
 const AGENT_COLORS = { SECRETARY:'#3b82f6', SALES:'#22c55e', PLANNER:'#c9a227', MARKETING:'#a855f7', DEVIL:'#ef4444', ADVISOR:'#94a3b8' };
 const AGENT_LABELS = { SECRETARY:'秘書', SALES:'営業部長', PLANNER:'プランナー', MARKETING:'マーケ・SNS', DEVIL:'デビル', ADVISOR:'齋藤相談役' };
 const AGENT_EMOJI  = { SECRETARY:'📋', SALES:'📈', PLANNER:'💡', MARKETING:'📱', DEVIL:'😈', ADVISOR:'👴' };
 const AGENT_REGEX  = {
-  SECRETARY: /\[秘書\]:?\s*([\s\S]*?)(?=\[営業部長\]|\[プランナー\]|\[マーケ|\[デビル\]|$)/i,
-  SALES:     /\[営業部長\]:?\s*([\s\S]*?)(?=\[秘書\]|\[プランナー\]|\[マーケ|\[デビル\]|$)/i,
-  PLANNER:   /\[プランナー\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[マーケ|\[デビル\]|$)/i,
-  MARKETING: /\[マーケ.*?担当\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[デビル\]|$)/i,
-  DEVIL:     /\[デビル\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[マーケ|$)/i
+  SECRETARY: /\[秘書\]:?\s*([\s\S]*?)(?=\[営業部長\]|\[プランナー\]|\[マーケ|\[デビル\]|\[齋藤相談役\]|$)/i,
+  SALES:     /\[営業部長\]:?\s*([\s\S]*?)(?=\[秘書\]|\[プランナー\]|\[マーケ|\[デビル\]|\[齋藤相談役\]|$)/i,
+  PLANNER:   /\[プランナー\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[マーケ|\[デビル\]|\[齋藤相談役\]|$)/i,
+  MARKETING: /\[マーケ.*?担当\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[デビル\]|\[齋藤相談役\]|$)/i,
+  DEVIL:     /\[デビル\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[マーケ|\[齋藤相談役\]|$)/i,
   ADVISOR:   /\[(?:齋藤相談役|ADVISOR)\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[マーケ|\[デビル\]|$)/i
-};
+}; // ← 最後の行の末尾にカンマ（,）を忘れずに！
 
 // 壁打ちモード
 let wlSelectedAgent = null;
