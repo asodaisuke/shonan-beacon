@@ -36,7 +36,8 @@
     /* ── エージェントバー ── */
     .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 0; padding: 12px 24px 10px; border-bottom: 1px solid var(--border); }
     .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 6px 20px; cursor: pointer; transition: transform .35s ease; }
-    .portrait-wrap { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2) center/500% no-repeat; display: flex; align-items: center; justify-content: center; }
+    .portrait-wrap { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2) center/600% no-repeat; display: flex; align-items: center; justify-content: center; }
+    .agent-sprite { position: absolute; width: 600%; height: auto; top: 50%; transform: translateY(-50%); pointer-events: none; }
     .portrait-emoji { font-size: 32px; }
     .agent-id { font-size: 10px; font-weight: 700; color: var(--muted); }
     .agent-slot.active .agent-id { color: var(--cyan); }
@@ -45,14 +46,14 @@
     @keyframes think-glow { 0%,100% { box-shadow: 0 0 10px rgba(201,162,39,.5); } 50% { box-shadow: 0 0 25px rgba(201,162,39,.9); } }
     .bar-divider { width: 1px; height: 50px; background: var(--border); }
 
-    /* ── 戦略モード・セレクター ── */
+    /* ── 戦略モード ── */
     .strategy-mode-container { position: relative; z-index: 100; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: rgba(201,162,39,0.05); border-bottom: 1px solid var(--border); }
     .mode-tabs { display: flex; gap: 8px; }
     .mode-tab { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-dim); padding: 6px 14px; font-size: 10px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: all 0.3s; }
     .mode-tab.active { background: rgba(201, 162, 39, 0.2); border-color: var(--gold); color: var(--gold); box-shadow: 0 0 10px rgba(201, 162, 39, 0.3); }
     .mode-desc { font-size: 10px; color: var(--text-dim); margin: 0; opacity: 0.8; }
 
-    /* ── メイングリッド（7列設定） ── */
+    /* ── メイングリッド ── */
     .body-grid { flex: 1; display: grid; grid-template-columns: 1fr; padding: 12px 24px 0; overflow: hidden; }
     .chat-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
     .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; overflow: hidden; }
@@ -60,10 +61,8 @@
     .agent-col-hdr { padding: 8px; border-bottom: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 6px; }
     .col-hdr-name { font-size: 9px; font-weight: 700; }
     .agent-col-body { flex: 1; overflow-y: auto; padding: 6px; display: flex; flex-direction: column; gap: 6px; }
-    
     .col-msg { background: rgba(255,255,255,.04); border-radius: 8px; padding: 8px; font-size: 11px; line-height: 1.6; border-left: 2px solid; cursor: pointer; }
     
-    /* エージェント別カラー */
     .col-secretary .agent-col-hdr { border-top: 2px solid var(--secretary); } .col-secretary .col-msg { border-color: var(--secretary); }
     .col-sales .agent-col-hdr { border-top: 2px solid var(--sales); } .col-sales .col-msg { border-color: var(--sales); }
     .col-planner .agent-col-hdr { border-top: 2px solid var(--planner); } .col-planner .col-msg { border-color: var(--planner); }
@@ -72,16 +71,10 @@
     .col-advisor .agent-col-hdr { border-top: 2px solid var(--advisor); } .col-advisor .col-msg { border-color: var(--advisor); }
     .col-interrogation .agent-col-hdr { border-top: 2px solid var(--cyan); } .col-interrogation .col-msg { border-color: var(--cyan); }
 
-    /* ── フッター入力 ── */
     .input-footer { padding: 14px 24px; border-top: 1px solid var(--border); }
     .input-main { display: flex; gap: 10px; }
     .text-field { flex: 1; background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 12px; padding: 12px; color: var(--text); outline: none; resize: none; min-height: 44px; }
     .exec-btn { width: 120px; background: var(--gold); border: none; border-radius: 12px; font-weight: 900; cursor: pointer; transition: 0.3s; }
-    .exec-btn:hover { background: var(--gold-lt); box-shadow: 0 0 20px rgba(201,162,39,0.4); }
-
-    /* 共通・演出 */
-    .mission-banner { display: none; padding: 8px 14px; background: rgba(201,162,39,0.1); border-bottom: 1px solid var(--border); font-size: 11px; }
-    .mission-banner.show { display: flex; align-items: center; gap: 10px; }
     .loading-veil { display: none; position: fixed; inset: 0; background: rgba(7,13,26,0.9); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
     .loading-veil.on { display: flex; }
     .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; background: #1a2a5e; border: 1px solid var(--cyan); transform: translateX(150%); transition: 0.4s; z-index: 2000; }
@@ -99,25 +92,22 @@
 </header>
 
 <div class="agent-bar z1">
-  <div class="agent-slot" id="slot-SECRETARY"><div class="portrait-wrap"><span class="portrait-emoji">📋</span></div><div class="agent-id">秘書</div></div>
+  <div class="agent-slot" id="slot-SECRETARY"><div class="portrait-wrap" id="pw-SECRETARY"><span class="portrait-emoji">📋</span></div><div class="agent-id">CMO</div></div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-SALES"><div class="portrait-wrap"><span class="portrait-emoji">📈</span></div><div class="agent-id">営業部長</div></div>
+  <div class="agent-slot" id="slot-SALES"><div class="portrait-wrap" id="pw-SALES"><span class="portrait-emoji">📈</span></div><div class="agent-id">CFO</div></div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-PLANNER"><div class="portrait-wrap"><span class="portrait-emoji">💡</span></div><div class="agent-id">プランナー</div></div>
+  <div class="agent-slot" id="slot-PLANNER"><div class="portrait-wrap" id="pw-PLANNER"><span class="portrait-emoji">💡</span></div><div class="agent-id">COO</div></div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-MARKETING"><div class="portrait-wrap"><span class="portrait-emoji">📱</span></div><div class="agent-id">マーケSNS</div></div>
+  <div class="agent-slot" id="slot-MARKETING"><div class="portrait-wrap" id="pw-MARKETING"><span class="portrait-emoji">📱</span></div><div class="agent-id">CLO</div></div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-DEVIL"><div class="portrait-wrap"><span class="portrait-emoji">😈</span></div><div class="agent-id">デビル</div></div>
+  <div class="agent-slot" id="slot-DEVIL"><div class="portrait-wrap" id="pw-DEVIL"><span class="portrait-emoji">😈</span></div><div class="agent-id">Devil</div></div>
   <div class="bar-divider"></div>
-  <div class="agent-slot" id="slot-ADVISOR"><div class="portrait-wrap"><span class="portrait-emoji">👴</span></div><div class="agent-id">齋藤相談役</div></div>
+  <div class="agent-slot" id="slot-ADVISOR"><div class="portrait-wrap" id="pw-ADVISOR"><span class="portrait-emoji">👴</span></div><div class="agent-id">齋藤相談役</div></div>
 </div>
 
 <div class="body-grid z1">
   <div class="chat-wrap">
-    <div class="mission-banner" id="missionBanner">
-      <b style="color:var(--gold)">MISSION:</b> <span id="missionText"></span>
-    </div>
-    
+    <div class="mission-banner" id="missionBanner"><b style="color:var(--gold)">MISSION:</b> <span id="missionText"></span></div>
     <div class="strategy-mode-container">
       <div class="mode-tabs">
         <button class="mode-tab active" onclick="setStrategyMode(this, 'CHATTING')">💬 通常対話</button>
@@ -127,13 +117,12 @@
       </div>
       <p id="mode-description" class="mode-desc">参謀たちと自由にチャット形式で議論します。</p>
     </div>
-
     <div class="agent-cols" id="agentCols">
-      <div class="agent-col col-secretary"><div class="agent-col-hdr">📋 秘書</div><div class="agent-col-body" id="colbody-SECRETARY"></div></div>
-      <div class="agent-col col-sales"><div class="agent-col-hdr">📈 営業部長</div><div class="agent-col-body" id="colbody-SALES"></div></div>
-      <div class="agent-col col-planner"><div class="agent-col-hdr">💡 プランナー</div><div class="agent-col-body" id="colbody-PLANNER"></div></div>
-      <div class="agent-col col-marketing"><div class="agent-col-hdr">📱 マーケSNS</div><div class="agent-col-body" id="colbody-MARKETING"></div></div>
-      <div class="agent-col col-devil"><div class="agent-col-hdr">😈 デビル</div><div class="agent-col-body" id="colbody-DEVIL"></div></div>
+      <div class="agent-col col-secretary"><div class="agent-col-hdr">📋 CMO</div><div class="agent-col-body" id="colbody-SECRETARY"></div></div>
+      <div class="agent-col col-sales"><div class="agent-col-hdr">📈 CFO</div><div class="agent-col-body" id="colbody-SALES"></div></div>
+      <div class="agent-col col-planner"><div class="agent-col-hdr">💡 COO</div><div class="agent-col-body" id="colbody-PLANNER"></div></div>
+      <div class="agent-col col-marketing"><div class="agent-col-hdr">📱 CLO</div><div class="agent-col-body" id="colbody-MARKETING"></div></div>
+      <div class="agent-col col-devil"><div class="agent-col-hdr">😈 Devil</div><div class="agent-col-body" id="colbody-DEVIL"></div></div>
       <div class="agent-col col-advisor"><div class="agent-col-hdr">👴 齋藤相談役</div><div class="agent-col-body" id="colbody-ADVISOR"></div></div>
       <div class="agent-col col-interrogation"><div class="agent-col-hdr">▸ INTERROGATION</div><div class="agent-col-body" id="colbody-INTERROGATION"></div></div>
     </div>
@@ -151,20 +140,46 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // ──【設定エリア】──
   const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
   
+  // ★ここに新しい画像のGoogleドライブIDを入れてください
+  const DRIVE_FILE_ID = '1RtTNCmLyT3Wt85tHgor95DBGTECnWSAH'; 
+  const AGENT_SPRITE_URL = `https://drive.google.com/thumbnail?id=${DRIVE_FILE_ID}&sz=w1000`;
+
+  // 画像の切り出し位置（左から 0%, -100%, -200%...）
+  const SPRITE_OFFSETS = {
+    SECRETARY: '0%',    // 1番目: CMO
+    SALES:     '-100%', // 2番目: CFO
+    PLANNER:   '-200%', // 3番目: COO
+    MARKETING: '-300%', // 4番目: CLO
+    DEVIL:     '-400%', // 5番目: Devil
+    ADVISOR:   '-500%'  // 6番目: 齋藤相談役
+  };
+
   let currentMode = 'CHATTING';
   const AGENT_KEYS   = ['SECRETARY', 'SALES', 'PLANNER', 'MARKETING', 'DEVIL', 'ADVISOR'];
-  const AGENT_LABELS = { SECRETARY:'秘書', SALES:'営業部長', PLANNER:'プランナー', MARKETING:'マーケ・SNS', DEVIL:'デビル', ADVISOR:'齋藤相談役' };
-  
   const AGENT_REGEX  = {
-    SECRETARY: /\[秘書\]:?\s*([\s\S]*?)(?=\[営業部長\]|\[プランナー\]|\[マーケ|\[デビル\]|\[齋藤相談役\]|$)/i,
-    SALES:     /\[営業部長\]:?\s*([\s\S]*?)(?=\[秘書\]|\[プランナー\]|\[マーケ|\[デビル\]|\[齋藤相談役\]|$)/i,
-    PLANNER:   /\[プランナー\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[マーケ|\[デビル\]|\[齋藤相談役\]|$)/i,
-    MARKETING: /\[マーケ.*?担当\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[デビル\]|\[齋藤相談役\]|$)/i,
-    DEVIL:     /\[デビル\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[マーケ|\[齋藤相談役\]|$)/i,
-    ADVISOR:   /\[(?:齋藤相談役|ADVISOR)\]:?\s*([\s\S]*?)(?=\[秘書\]|\[営業部長\]|\[プランナー\]|\[マーケ|\[デビル\]|$)/i
+    SECRETARY: /\[(?:秘書|CMO)\]:?\s*([\s\S]*?)(?=\[CFO\]|\[COO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
+    SALES:     /\[(?:営業部長|CFO)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[COO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
+    PLANNER:   /\[(?:プランナー|COO)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[CLO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
+    MARKETING: /\[(?:マーケ|CLO)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[Devil\]|\[齋藤相談役\]|$)/i,
+    DEVIL:     /\[(?:デビル|Devil)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[CLO\]|\[齋藤相談役\]|$)/i,
+    ADVISOR:   /\[(?:齋藤相談役|ADVISOR)\]:?\s*([\s\S]*?)(?=\[CMO\]|\[CFO\]|\[COO\]|\[CLO\]|\[Devil\]|$)/i
   };
+
+  // イラストの読み込み
+  window.addEventListener('load', () => {
+    AGENT_KEYS.forEach(key => {
+      const wrap = document.getElementById('pw-' + key);
+      const img = document.createElement('img');
+      img.className = 'agent-sprite';
+      img.src = AGENT_SPRITE_URL;
+      img.style.left = SPRITE_OFFSETS[key];
+      img.onload = () => wrap.querySelector('.portrait-emoji').style.display = 'none';
+      wrap.appendChild(img);
+    });
+  });
 
   function tick() {
     const n = new Date();
@@ -189,24 +204,18 @@
   async function startAnalysis() {
     const input = document.getElementById('textField').value.trim();
     if (currentMode !== 'MORNING' && !input) { toast('課題を入力してください', 'err'); return; }
-
     document.getElementById('missionBanner').classList.add('show');
     document.getElementById('missionText').textContent = currentMode === 'MORNING' ? '☀️ モーニング実行中' : input;
-    
     AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.add('thinking'));
     document.getElementById('loadVeil').classList.add('on');
-
     try {
       const res = await fetch(GAS_API_URL, {
         method: 'POST',
         body: JSON.stringify({ mode: currentMode, userInput: input })
       });
       const result = await res.json();
-      if (result.status === 'success') {
-        renderResult(result.data);
-      } else { throw new Error(result.message); }
+      if (result.status === 'success') { renderResult(result.data); } else { throw new Error(result.message); }
     } catch (err) { toast('エラー発生', 'err'); }
-    
     document.getElementById('loadVeil').classList.remove('on');
     AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.remove('thinking'));
   }
