@@ -86,6 +86,8 @@
   .mission-banner-text { font-size: 11px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; line-height: 1.5; }
 /* ── 戦略モード・セレクター（追加分） ── */
 .strategy-mode-container {
+  position: relative; /* ←これを追加 */
+  z-index: 10;        /* ←これを追加（一番手前に持ってくる） */
   display: flex;
   flex-direction: column;
   gap: 8px;
