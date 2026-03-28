@@ -16,51 +16,36 @@
       --card: rgba(255,255,255,0.032); --border: rgba(201,162,39,0.18);
       --secretary: #3b82f6; --manager: #22c55e; --planner: #c9a227;
       --sns: #a855f7; --devil: #ef4444; --advisor: #94a3b8;
-      --text-dim: rgba(226, 232, 240, 0.6);
     }
     html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: 'Montserrat', 'Noto Sans JP', sans-serif; color: var(--text); }
-    body::before {
-      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background-image: linear-gradient(rgba(0,200,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,255,.035) 1px, transparent 1px);
-      background-size: 44px 44px;
-    }
+    body { display: flex; flex-direction: column; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 0; background-image: linear-gradient(rgba(0,242,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,242,255,.03) 1px, transparent 1px); background-size: 44px 44px; pointer-events: none; }
     .z1 { position: relative; z-index: 1; }
 
-    /* ── ヘッダー ── */
+    /* ヘッダー */
     .hdr { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px 10px; border-bottom: 1px solid var(--border); }
     .logo-name { font-size: 15px; font-weight: 900; letter-spacing: 3px; background: linear-gradient(120deg, #a37a15, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200%; animation: gold-shift 4s linear infinite; }
     @keyframes gold-shift { 0%{background-position:0%} 100%{background-position:200%} }
-    .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; }
 
-    /* ── エージェントバー ── */
-    .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 12px 24px 10px; border-bottom: 1px solid var(--border); }
-    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0 15px; cursor: pointer; transition: transform .35s; }
-    .portrait-wrap { width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2); display: flex; align-items: center; justify-content: center; }
+    /* エージェントバー */
+    .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 12px 24px; border-bottom: 1px solid var(--border); }
+    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0 15px; cursor: pointer; }
+    .portrait-wrap { width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2); display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
     .agent-sprite { position: absolute; width: 630%; height: auto; pointer-events: none; }
-    .agent-id { font-size: 10px; font-weight: 900; color: var(--muted); letter-spacing: 1px; }
-    .agent-slot.active .agent-id { color: var(--cyan); }
-    .agent-slot.active .portrait-wrap { border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
-    .agent-slot.thinking .portrait-wrap { animation: think-glow 1s ease-in-out infinite; }
-    @keyframes think-glow { 0%,100% { box-shadow: 0 0 10px rgba(201,162,39,.5); } 50% { box-shadow: 0 0 25px rgba(201,162,39,.9); } }
-    .bar-divider { width: 1px; height: 50px; background: var(--border); margin: 0 5px; }
+    .agent-id { font-size: 10px; font-weight: 900; color: var(--muted); letter-spacing: 1px; margin-top: 5px; }
+    .agent-slot.thinking .portrait-wrap { animation: think-glow 1.2s ease-in-out infinite; }
+    @keyframes think-glow { 0%,100% { box-shadow: 0 0 10px rgba(201,162,39,.5); } 50% { box-shadow: 0 0 30px var(--gold); } }
 
-    /* ── 戦略モード ── */
-    .strategy-mode-container { position: relative; z-index: 100; padding: 12px 24px; background: rgba(201,162,39,0.06); border-bottom: 1px solid var(--border); }
-    .mode-tabs { display: flex; gap: 8px; margin-bottom: 6px; }
-    .mode-tab { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-dim); padding: 5px 12px; font-size: 10px; font-weight: 700; cursor: pointer; border-radius: 3px; }
-    .mode-tab.active { background: rgba(201, 162, 39, 0.15); border-color: var(--gold); color: var(--gold); }
-    .mode-desc { font-size: 10px; opacity: 0.6; }
-
-    /* ── ボディグリッド（安定版） ── */
+    /* ボディグリッド */
     .body-grid { flex: 1; display: flex; padding: 12px 24px 0; overflow: hidden; min-height: 0; }
     .chat-wrap { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
     .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 10px; overflow: hidden; min-height: 0; }
     .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; background: rgba(255,255,255,.01); }
-    .agent-col-hdr { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; flex-shrink: 0; }
+    .agent-col-hdr { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 10px; font-weight: 900; flex-shrink: 0; text-align: center; }
     .agent-col-body { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; scrollbar-width: thin; }
-    .col-msg { background: rgba(255,255,255,.03); border-radius: 8px; padding: 12px; font-size: 11px; line-height: 1.7; border-left: 3px solid; font-weight: 300; }
-    
-    /* エージェントカラー設定 */
+    .col-msg { background: rgba(255,255,255,.03); border-radius: 8px; padding: 12px; font-size: 11px; line-height: 1.7; border-left: 3px solid; white-space: pre-wrap; word-break: break-word; }
+
+    /* 色分け */
     .col-secretary .agent-col-hdr { border-top: 3px solid var(--secretary); color: var(--secretary); } .col-secretary .col-msg { border-color: var(--secretary); }
     .col-manager .agent-col-hdr { border-top: 3px solid var(--manager); color: var(--manager); } .col-manager .col-msg { border-color: var(--manager); }
     .col-planner .agent-col-hdr { border-top: 3px solid var(--planner); color: var(--planner); } .col-planner .col-msg { border-color: var(--planner); }
@@ -69,54 +54,34 @@
     .col-advisor .agent-col-hdr { border-top: 3px solid var(--advisor); color: var(--advisor); } .col-advisor .col-msg { border-color: var(--advisor); }
     .col-interrogation .agent-col-hdr { border-top: 3px solid var(--cyan); color: var(--cyan); } .col-interrogation .col-msg { border-color: var(--cyan); }
 
-    /* ── 入力エリア ── */
+    /* フッター */
     .input-footer { padding: 16px 24px 20px; border-top: 1px solid var(--border); }
     .input-main { display: flex; gap: 12px; }
     .text-field { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); outline: none; resize: none; min-height: 50px; font-family: inherit; font-size: 14px; }
     .exec-btn { width: 130px; background: linear-gradient(135deg, var(--gold), var(--gold-lt)); border: none; border-radius: 12px; font-weight: 900; cursor: pointer; color: #000; letter-spacing: 2px; }
 
-    .loading-veil { display: none; position: fixed; inset: 0; background: rgba(7,13,26,0.92); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
-    .loading-veil.on { display: flex; }
-    .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; background: #1a2a5e; border: 1px solid var(--cyan); transform: translateX(150%); transition: 0.4s; z-index: 2000; font-size: 13px; }
-    .toast.show { transform: translateX(0); }
+    .loading-veil { display: none; position: fixed; inset: 0; background: rgba(7,13,26,0.92); z-index: 1000; align-items: center; justify-content: center; }
   </style>
 </head>
 <body>
 
 <header class="hdr z1">
-  <div class="logo">
-    <div class="logo-name">SHONAN CENTRAL BEACON</div>
-    <div style="font-size: 8px; color: var(--muted); letter-spacing: 1.5px; margin-top: 2px;">STRATEGIC BOARDROOM | PCDEPOT 湘南エリア</div>
-  </div>
-  <div class="clock" id="clock">--:--</div>
+  <div class="logo-name">SHONAN CENTRAL BEACON</div>
+  <div id="clock" style="font-size: 18px; font-weight: 200;">--:--</div>
 </header>
 
 <div class="agent-bar z1">
   <div class="agent-slot" id="slot-SECRETARY"><div class="portrait-wrap" id="pw-SECRETARY"></div><div class="agent-id">秘書</div></div>
-  <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-MANAGER"><div class="portrait-wrap" id="pw-MANAGER"></div><div class="agent-id">マネージャー</div></div>
-  <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-PLANNER"><div class="portrait-wrap" id="pw-PLANNER"></div><div class="agent-id">プランナー</div></div>
-  <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-SNS"><div class="portrait-wrap" id="pw-SNS"></div><div class="agent-id">SNS</div></div>
-  <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-DEVIL"><div class="portrait-wrap" id="pw-DEVIL"></div><div class="agent-id">Devil</div></div>
-  <div class="bar-divider"></div>
   <div class="agent-slot" id="slot-ADVISOR"><div class="portrait-wrap" id="pw-ADVISOR"></div><div class="agent-id">相談役</div></div>
 </div>
 
 <div class="body-grid z1">
   <div class="chat-wrap">
-    <div class="strategy-mode-container">
-      <div class="mode-tabs">
-        <button class="mode-tab active" onclick="setStrategyMode(this, 'CHATTING')">💬 通常対話</button>
-        <button class="mode-tab" onclick="setStrategyMode(this, 'MORNING')">☀️ モーニング</button>
-        <button class="mode-tab" onclick="setStrategyMode(this, 'WAR_ROOM')">🌙 深夜討議</button>
-        <button class="mode-tab" onclick="setStrategyMode(this, 'ON_DEMAND')">🔥 オンデマンド</button>
-      </div>
-      <p id="mode-description" class="mode-desc">参謀たちと自由にチャット形式で議論します。</p>
-    </div>
-    <div class="agent-cols" id="agentCols">
+    <div class="agent-cols">
       <div class="agent-col col-secretary"><div class="agent-col-hdr">📋 秘書</div><div class="agent-col-body" id="colbody-SECRETARY"></div></div>
       <div class="agent-col col-manager"><div class="agent-col-hdr">📈 マネージャー</div><div class="agent-col-body" id="colbody-MANAGER"></div></div>
       <div class="agent-col col-planner"><div class="agent-col-hdr">💡 プランナー</div><div class="agent-col-body" id="colbody-PLANNER"></div></div>
@@ -136,34 +101,33 @@
 </div>
 
 <div class="loading-veil" id="loadVeil"><div class="logo-name">ANALYZING...</div></div>
-<div class="toast" id="toast"></div>
 
 <script>
-  // ──【定数・設定】──
   const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
   const DRIVE_FILE_ID = '1RtTNCmLyT3Wt85tHgor95DBGTECnWSAH'; 
   const AGENT_SPRITE_URL = `https://drive.google.com/thumbnail?id=${DRIVE_FILE_ID}&sz=w1200`;
 
-  // 精密座標
+  // ★代表、この座標こそが「バシッ」と決まるやつです！
   const SPRITE_CONFIG = {
-    SECRETARY: { left: '-45%',  top: '20px' }, // 秘書
-    MANAGER:   { left: '-148%', top: '20px' }, // マネージャー
-    PLANNER:   { left: '-250%', top: '20px' }, // プランナー
-    SNS:       { left: '-352%', top: '20px' }, // SNS
-    DEVIL:     { left: '-418%', top: '45px' }, // Devil (少し下げる)
-    ADVISOR:   { left: '-515%', top: '20px' }  // Advisor
+    SECRETARY: { left: '-45%',  top: '20px' }, 
+    MANAGER:   { left: '-148%', top: '20px' }, 
+    PLANNER:   { left: '-250%', top: '20px' }, 
+    SNS:       { left: '-352%', top: '20px' }, 
+    DEVIL:     { left: '-418%', top: '45px' }, 
+    ADVISOR:   { left: '-515%', top: '20px' }  
   };
 
   const AGENT_KEYS = ['SECRETARY', 'MANAGER', 'PLANNER', 'SNS', 'DEVIL', 'ADVISOR'];
+  const OTHER_TAGS = '(?=\\[(?:秘書|SECRETARY|マネージャー|MANAGER|プランナー|PLANNER|SNS|Devil|相談役|ADVISOR|CMO|CFO|COO|CLO|逆質問|INTERROGATION)\\]|$)';
   
-  // ★重要：正規表現を最新の役職名に完全対応（前回チャットでの強化版）
   const AGENT_REGEX = {
-    SECRETARY: /\[(?:秘書|SECRETARY|CMO)\][:：]?\s*([\s\S]*?)(?=\[(?:マネージャー|プランナー|SNS|Devil|相談役|CFO|COO|CLO|ADVISOR)\]|$)/i,
-    MANAGER:   /\[(?:マネージャー|MANAGER|CFO)\][:：]?\s*([\s\S]*?)(?=\[(?:秘書|プランナー|SNS|Devil|相談役|CMO|COO|CLO|ADVISOR)\]|$)/i,
-    PLANNER:   /\[(?:プランナー|PLANNER|COO)\][:：]?\s*([\s\S]*?)(?=\[(?:秘書|マネージャー|SNS|Devil|相談役|CMO|CFO|CLO|ADVISOR)\]|$)/i,
-    SNS:       /\[(?:SNS|CLO)\][:：]?\s*([\s\S]*?)(?=\[(?:秘書|マネージャー|プランナー|Devil|相談役|CMO|CFO|COO|ADVISOR)\]|$)/i,
-    DEVIL:     /\[(?:Devil|DEVIL|デビル)\][:：]?\s*([\s\S]*?)(?=\[(?:秘書|マネージャー|プランナー|SNS|相談役|CMO|CFO|COO|CLO|ADVISOR)\]|$)/i,
-    ADVISOR:   /\[(?:相談役|ADVISOR)\][:：]?\s*([\s\S]*?)(?=\[(?:秘書|マネージャー|プランナー|SNS|Devil|CMO|CFO|COO|CLO)\]|$)/i
+    SECRETARY: new RegExp('\\[(?:秘書|SECRETARY|CMO)\\][:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+    MANAGER:   new RegExp('\\[(?:マネージャー|MANAGER|CFO)\\][:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+    PLANNER:   new RegExp('\\[(?:プランナー|PLANNER|COO)\\][:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+    SNS:       new RegExp('\\[(?:SNS|CLO)\\][:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+    DEVIL:     new RegExp('\\[(?:Devil|デビル)\\][:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+    ADVISOR:   new RegExp('\\[(?:相談役|ADVISOR)\\][:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
+    INTERROGATION: new RegExp('\\[(?:逆質問|INTERROGATION)\\][:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i')
   };
 
   window.addEventListener('load', () => {
@@ -184,39 +148,17 @@
   }
   setInterval(tick, 1000); tick();
 
-  function setStrategyMode(el, mode) {
-    currentMode = mode;
-    document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('mode-description').innerText = {
-      'CHATTING': '参謀たちと自由にチャット形式で議論します。',
-      'MORNING': '本日の朝礼に最適な3つの要点をブリーフィングします。',
-      'WAR_ROOM': '深夜に行われた参謀たちの議論ログと答申書を読み込みます。',
-      'ON_DEMAND': '入力したテーマについて、6人がその場で徹底討論を開始します。'
-    }[mode];
-  }
-
-  let currentMode = 'CHATTING';
-
   async function startAnalysis() {
     const input = document.getElementById('textField').value.trim();
-    if (currentMode !== 'MORNING' && !input) { toast('経営課題を入力してください', 'err'); return; }
-    
+    if (!input) return;
     AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.add('thinking'));
     document.getElementById('loadVeil').classList.add('on');
-    document.getElementById('execBtn').disabled = true;
-
     try {
-      const res = await fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ mode: currentMode, userInput: input })
-      });
+      const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ mode: 'CHATTING', userInput: input }) });
       const result = await res.json();
-      if (result.status === 'success') { renderResult(result.data); } else { throw new Error(result.message); }
-    } catch (err) { toast('エラー: ' + err.message, 'err'); }
-    
+      if (result.status === 'success') { renderResult(result.data); }
+    } catch (e) { console.error(e); }
     document.getElementById('loadVeil').classList.remove('on');
-    document.getElementById('execBtn').disabled = false;
     AGENT_KEYS.forEach(k => document.getElementById('slot-' + k).classList.remove('thinking'));
   }
 
@@ -226,8 +168,8 @@
         const match = aiText.match(AGENT_REGEX[k]);
         let text = match ? match[1].trim() : (i === 0 ? aiText : "");
         
-        // ★重要：ゴミ（システムタグ）の除去ロジックを追加（前回チャットでの強化版）
-        text = text.replace(/^"?[A-Z]+"?:?\s*/, '').replace(/"$/, '').trim();
+        // ゴミ（システムタグ）の徹底除去
+        text = text.replace(/^"?[A-Zぁ-んァ-ヶー一-龠]+"?:?\s*/, '').replace(/"$/, '').trim();
 
         if (text && text.length > 5) {
           const body = document.getElementById('colbody-' + k);
@@ -239,13 +181,6 @@
         }
       }, i * 600);
     });
-  }
-
-  function toast(msg, type) {
-    const t = document.getElementById('toast');
-    t.innerText = msg; t.classList.add('show');
-    t.style.borderColor = type === 'err' ? 'var(--devil)' : 'var(--cyan)';
-    setTimeout(() => t.classList.remove('show'), 3000);
   }
 </script>
 </body>
