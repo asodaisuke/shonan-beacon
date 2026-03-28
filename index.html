@@ -798,6 +798,10 @@ function loadState() {
         openExpand(key, text, ts);
       };
     });
+    // ★ 再起動後も最新コメントが見えるよう各カラムを最下部にスクロール
+    cols.querySelectorAll('.agent-col-body').forEach(body => {
+      body.scrollTop = body.scrollHeight;
+    });
   }
   if (state.isWlOpen) openWalluchi(state.wlAgent);
 }
