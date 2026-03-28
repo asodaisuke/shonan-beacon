@@ -431,11 +431,18 @@
 
     <button class="walluchi-trigger" onclick="openWalluchi()">🗣️ 壁打ちモード</button>
     <div class="mode-pills">
-      <button class="pill on">TEXT</button><button class="pill">VOICE</button><button class="pill">FILE</button>
+      <button class="pill on" id="pillTEXT"  onclick="setInputMode('TEXT')">TEXT</button><button class="pill" id="pillVOICE" onclick="setInputMode('VOICE')">VOICE</button><button class="pill" id="pillFILE"  onclick="setInputMode('FILE')">FILE</button>
     </div>
+  </div>
+  <div id="_fileRow" style="display:none;align-items:center;gap:10px;padding:4px 0 2px;">
+    <input type="file" id="_fileInput" accept=".txt,.csv,.xlsx,.xls,.pdf" style="display:none" onchange="_onFileChange(this)">
+    <button onclick="_triggerFileSelect()" style="padding:5px 14px;border:1px solid var(--gold);border-radius:8px;background:transparent;color:var(--gold);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:1px;">📎 ファイル選択</button>
+    <span id="_fileLabel" style="font-size:10px;color:var(--muted);letter-spacing:.5px;">txt / csv / xlsx / pdf</span>
+    <button id="_fileClear" onclick="_clearFile()" style="display:none;padding:3px 8px;border:1px solid #555;border-radius:6px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;">✕ クリア</button>
   </div>
   <div class="input-main">
     <textarea id="textField" class="text-field" placeholder="経営課題や議題を入力してください..."></textarea>
+    <button id="_micBtn" onclick="_toggleVoice()" style="display:none;align-items:center;justify-content:center;width:72px;height:44px;border:1px solid var(--gold);border-radius:12px;background:transparent;color:var(--gold);font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;letter-spacing:.5px;">🎤 録音</button>
     <button class="exec-btn" id="execBtn" onclick="startAnalysis()">EXECUTE</button>
   </div>
 </div>
@@ -616,7 +623,13 @@ function tick() {
 // ══ 2. 分析実行（心臓部） ══
 async function startAnalysis() {
   const mode = document.getElementById('missionMode').value;
-  const input = document.getElementById('textField').value.trim();
+  let input = document.getElementById('textField').value.trim();
+  // FILEモード：ファイル内容をプレフィックスとして付加
+  if (_inputMode === 'FILE' && _attachedContent) {
+    const snippet = _attachedContent.substring(0, 8000);
+    const q = input || 'このファイルの内容を分析して経営上の示唆・行動計画を提言せよ';
+    input = `【添付ファイル: ${_attachedName}】\n${snippet}\n\n【質問/指示】\n${q}`;
+  }
   if (mode !== 'MORNING' && !input) return;
   document.getElementById('chatEmpty').style.display = 'none';
   document.getElementById('agentCols').style.display = 'grid';
@@ -787,6 +800,184 @@ function loadState() {
     });
   }
   if (state.isWlOpen) openWalluchi(state.wlAgent);
+}
+
+// ══════════════════════════════════════════
+// VOICE / FILE モード実装
+// ══════════════════════════════════════════
+let _inputMode = 'TEXT';
+let _recognition = null;
+let _isRecording = false;
+let _attachedContent = null;
+let _attachedName = null;
+
+// ── モード切り替え ──
+function setInputMode(mode) {
+  _inputMode = mode;
+  ['TEXT','VOICE','FILE'].forEach(m => {
+    document.getElementById('pill' + m).classList.toggle('on', m === mode);
+  });
+  const tf       = document.getElementById('textField');
+  const micBtn   = document.getElementById('_micBtn');
+  const fileRow  = document.getElementById('_fileRow');
+
+  if (mode === 'TEXT') {
+    tf.placeholder = '経営課題や議題を入力してください...';
+    micBtn.style.display  = 'none';
+    fileRow.style.display = 'none';
+    if (_isRecording) _stopVoice();
+  } else if (mode === 'VOICE') {
+    tf.placeholder = '🎤 マイクボタンを押して話してください...';
+    micBtn.style.display  = 'flex';
+    fileRow.style.display = 'none';
+  } else if (mode === 'FILE') {
+    tf.placeholder = '📎 ファイル選択後、追加の質問があれば入力...';
+    micBtn.style.display  = 'none';
+    fileRow.style.display = 'flex';
+    if (_isRecording) _stopVoice();
+  }
+}
+
+// ── VOICE：録音トグル ──
+function _toggleVoice() {
+  if (_isRecording) { _stopVoice(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('このブラウザは音声認識非対応です', 'err'); return; }
+  _recognition = new SR();
+  _recognition.lang = 'ja-JP';
+  _recognition.continuous = false;
+  _recognition.interimResults = true;
+  const btn = document.getElementById('_micBtn');
+  const tf  = document.getElementById('textField');
+  _recognition.onstart = () => {
+    _isRecording = true;
+    btn.textContent = '⏹ 停止';
+    btn.style.borderColor = '#ef4444';
+    btn.style.color = '#ef4444';
+    tf.placeholder = '🎙 聞き取り中...';
+  };
+  _recognition.onresult = (ev) => {
+    const transcript = Array.from(ev.results).map(r => r[0].transcript).join('');
+    tf.value = transcript;
+    if (ev.results[ev.results.length - 1].isFinal) _stopVoice();
+  };
+  _recognition.onerror = () => { _stopVoice(); toast('音声認識エラー', 'err'); };
+  _recognition.onend   = () => { if (_isRecording) _stopVoice(); };
+  _recognition.start();
+}
+
+function _stopVoice() {
+  _isRecording = false;
+  if (_recognition) { try { _recognition.stop(); } catch(e) {} _recognition = null; }
+  const btn = document.getElementById('_micBtn');
+  btn.textContent  = '🎤 録音';
+  btn.style.borderColor = 'var(--gold)';
+  btn.style.color       = 'var(--gold)';
+  document.getElementById('textField').placeholder = '🎤 マイクボタンを押して話してください...';
+}
+
+// ── FILE：ファイル選択トリガー ──
+function _triggerFileSelect() {
+  document.getElementById('_fileInput').click();
+}
+
+function _clearFile() {
+  _attachedContent = null;
+  _attachedName = null;
+  document.getElementById('_fileInput').value = '';
+  document.getElementById('_fileLabel').textContent = 'txt / csv / xlsx / pdf';
+  document.getElementById('_fileClear').style.display = 'none';
+}
+
+// ── FILE：ファイル読み込み ──
+async function _onFileChange(input) {
+  const file = input.files[0];
+  if (!file) return;
+  _attachedName = file.name;
+  const ext = file.name.split('.').pop().toLowerCase();
+  const label = document.getElementById('_fileLabel');
+  label.textContent = '⏳ 読込中...';
+  try {
+    if (['txt','csv','md'].includes(ext)) {
+      _attachedContent = await _readAsText(file);
+    } else if (['xlsx','xls'].includes(ext)) {
+      _attachedContent = await _readExcel(file);
+    } else if (ext === 'pdf') {
+      _attachedContent = await _readPdf(file);
+    } else {
+      toast('非対応形式です（txt/csv/xlsx/pdf）', 'err');
+      label.textContent = 'txt / csv / xlsx / pdf';
+      return;
+    }
+    const kb = Math.round(_attachedContent.length / 100) / 10;
+    label.textContent = `📄 ${file.name}  (${kb}KB)`;
+    document.getElementById('_fileClear').style.display = 'inline-block';
+    toast(file.name + ' を読み込みました', 'ok');
+  } catch(e) {
+    toast('読み込みエラー: ' + e.message, 'err');
+    label.textContent = 'txt / csv / xlsx / pdf';
+    _attachedContent = null;
+  }
+}
+
+function _readAsText(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsText(file, 'UTF-8');
+  });
+}
+
+async function _readExcel(file) {
+  if (!window.XLSX) await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => {
+      try {
+        const wb = XLSX.read(e.target.result, { type: 'binary' });
+        const text = wb.SheetNames.map(n =>
+          `[Sheet: ${n}]\n` + XLSX.utils.sheet_to_csv(wb.Sheets[n])
+        ).join('\n\n');
+        res(text);
+      } catch(err) { rej(err); }
+    };
+    r.onerror = rej;
+    r.readAsBinaryString(file);
+  });
+}
+
+async function _readPdf(file) {
+  if (!window.pdfjsLib) {
+    await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = async e => {
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise;
+        let text = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page    = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          text += content.items.map(it => it.str).join(' ') + '\n';
+        }
+        res(text);
+      } catch(err) { rej(err); }
+    };
+    r.onerror = rej;
+    r.readAsArrayBuffer(file);
+  });
+}
+
+function _loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
 }
 </script>
 </body>
