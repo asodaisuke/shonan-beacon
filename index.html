@@ -7,13 +7,12 @@
   <script>
     if (window.self !== window.top) { window.top.location.href = window.location.href; }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,700;0,900&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
-    /* ── v5.5マスター・スタイルを完全継承 ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #070d1a; --bg2: #0d1829; --gold: #c9a227; --gold-lt: #f0d060;
-      --cyan: #00f2ff; --navy: #1a2a5e; --text: #e2e8f0; --muted: #4a5568;
+      --cyan: #00f2ff; --text: #e2e8f0; --muted: #4a5568;
       --card: rgba(255,255,255,0.032); --border: rgba(201,162,39,0.18);
       --secretary: #3b82f6; --manager: #22c55e; --planner: #c9a227;
       --sns: #a855f7; --devil: #ef4444; --advisor: #94a3b8;
@@ -21,32 +20,31 @@
     html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: 'Montserrat', 'Noto Sans JP', sans-serif; color: var(--text); }
     body { display: flex; flex-direction: column; }
     body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(0,242,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,242,255,.03) 1px, transparent 1px); background-size: 44px 44px; }
-    .z1 { position: relative; z-index: 1; }
-
-    /* ヘッダー・エージェントバー */
+    
     .hdr { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px 10px; border-bottom: 1px solid var(--border); }
     .logo-name { font-size: 15px; font-weight: 900; letter-spacing: 3px; background: linear-gradient(120deg, #a37a15, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200%; animation: gold-shift 4s linear infinite; }
+    @keyframes gold-shift { 0%{background-position:0%} 100%{background-position:200%} }
     .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; }
 
     .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 20px 24px 10px; border-bottom: 1px solid var(--border); }
-    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0 15px; cursor: pointer; transition: transform .3s; }
+    .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0 15px; cursor: pointer; transition: transform 0.3s; }
     .portrait-wrap { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); overflow: hidden; position: relative; background: var(--bg2); display: flex; align-items: center; justify-content: center; }
     .agent-sprite { position: absolute; width: 650%; height: auto; pointer-events: none; }
     .agent-id { font-size: 10px; font-weight: 900; color: var(--muted); letter-spacing: 1.5px; margin-top: 5px; }
 
-    /* ── ボディ・グリッド（補強済み） ── */
     .body-grid { flex: 1; display: flex; padding: 12px 24px 0; overflow: hidden; min-height: 0; }
     .chat-wrap { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
     
-    /* grid-template-rows: 1fr で高さを強制固定 */
+    /* 物理補強：rowsを1frに固定 */
     .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 1fr; gap: 6px; padding: 10px; overflow: hidden; }
     
-    .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; background: rgba(255,255,255,.01); }
+    .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; background: rgba(255,255,255,.01); }
     .agent-col-hdr { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 10px; font-weight: 900; text-align: center; flex-shrink: 0; }
     .agent-col-body { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; scrollbar-width: thin; }
     .col-msg { background: rgba(255,255,255,.03); border-radius: 8px; padding: 12px; font-size: 11px; line-height: 1.7; border-left: 3px solid; white-space: pre-wrap; word-break: break-word; cursor: pointer; animation: msg-drop 0.4s ease both; }
+    @keyframes msg-drop { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
 
-    /* カラー継承 */
+    /* カラー設定 */
     .col-secretary .agent-col-hdr { border-top: 3px solid var(--secretary); color: var(--secretary); } .col-secretary .col-msg { border-color: var(--secretary); }
     .col-manager .agent-col-hdr { border-top: 3px solid var(--manager); color: var(--manager); } .col-manager .col-msg { border-color: var(--manager); }
     .col-planner .agent-col-hdr { border-top: 3px solid var(--planner); color: var(--planner); } .col-planner .col-msg { border-color: var(--planner); }
@@ -55,21 +53,21 @@
     .col-advisor .agent-col-hdr { border-top: 3px solid var(--advisor); color: var(--advisor); } .col-advisor .col-msg { border-color: var(--advisor); }
     .col-interrogation .agent-col-hdr { border-top: 3px solid var(--cyan); color: var(--cyan); } .col-interrogation .col-msg { border-color: var(--cyan); }
 
-    /* フッター */
-    .input-footer { padding: 16px 24px 20px; border-top: 1px solid var(--border); }
-    .input-main { display: flex; gap: 12px; }
-    .text-field { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--text); outline: none; resize: none; min-height: 50px; font-family: inherit; font-size: 14px; }
-    .exec-btn { width: 130px; background: linear-gradient(135deg, var(--gold), var(--gold-lt)); border: none; border-radius: 12px; font-weight: 900; cursor: pointer; color: #000; letter-spacing: 2px; }
-
     /* モーダル */
     .wl-overlay, .expand-overlay { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(4,9,18,.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; }
     .wl-overlay.open, .expand-overlay.open { display: flex; }
-    .wl-modal, .expand-modal { width: 80vw; height: 84vh; background: #0b1424; border: 1px solid rgba(0,242,255,.2); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
+    .wl-modal, .expand-modal { width: 80vw; height: 84vh; background: #0b1424; border: 1px solid rgba(0,242,255,.2); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,.7); }
     .expand-modal { width: 60vw; height: 70vh; }
-    .wl-hdr, .expand-hdr { padding: 15px; border-bottom: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: space-between; }
-    .wl-log, .expand-body { flex: 1; overflow-y: auto; padding: 20px; }
-    .wl-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; }
-    .wl-textarea { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: white; padding: 10px; resize: none; }
+    .wl-hdr, .expand-hdr { padding: 15px; border-bottom: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: space-between; background: rgba(0,242,255,0.03); }
+    .wl-log, .expand-body { flex: 1; overflow-y: auto; padding: 20px; line-height: 1.8; }
+    .wl-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; align-items: flex-end; }
+    .wl-textarea { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: white; padding: 10px; resize: none; min-height: 80px; }
+
+    .input-footer { padding: 10px 24px 15px; border-top: 1px solid var(--border); }
+    .input-main { display: flex; gap: 10px; align-items: flex-end; }
+    .text-field { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 12px; padding: 12px; color: var(--text); outline: none; resize: none; min-height: 44px; font-size: 14px; }
+    .exec-btn { width: 110px; height: 44px; border: none; border-radius: 12px; background: var(--gold); color: #000; font-weight: 900; cursor: pointer; }
+
     .loading-veil { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(7,13,26,.95); align-items: center; justify-content: center; flex-direction: column; }
     .loading-veil.on { display: flex; }
   </style>
@@ -120,13 +118,12 @@
   const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzKBCWxdwhsW4mSA0V1e3BNOsmreIc4D1n-wsPBvnmGvhe71Pz1XOdO7_EUDA-GYosuQA/exec';
   const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1RtTNCmLyT3Wt85tHgor95DBGTECnWSAH&sz=w1200';
 
-  // 精密座標死守
   const SPRITE_CONFIG = {
     SECRETARY: '-45%', MANAGER: '-148%', PLANNER: '-250%', SNS: '-352%', DEVIL: '-418%', ADVISOR: '-515%'
   };
   const AGENT_KEYS = ['SECRETARY', 'MANAGER', 'PLANNER', 'SNS', 'DEVIL', 'ADVISOR'];
 
-  // 正規表現強化：AIが太字（**）などで装飾してきても、役職名を正確にキャッチする
+  // 正規表現強化
   const OTHER_TAGS = '(?=\\[(?:秘書|SECRETARY|マネージャー|MANAGER|プランナー|PLANNER|SNS|Devil|相談役|ADVISOR|逆質問|INTERROGATION|CMO|CFO|COO|CLO)\\]|\\*\\*\\[|$)';
   const AGENT_REGEX = {
     SECRETARY: new RegExp('(?:\\[|\\*\\*\\[)(?:秘書|SECRETARY|CMO)(?:\\]|\\*\\*\\])[:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
@@ -169,13 +166,11 @@
   }
 
   function renderResult(aiText) {
-    // 描画間隔を 600ms -> 300ms に高速化してラグ感を軽減
     AGENT_KEYS.concat(['INTERROGATION']).forEach((k, i) => {
       setTimeout(() => {
         const match = aiText.match(AGENT_REGEX[k]);
         if (match) {
           let text = match[1].trim();
-          // システムゴミ取り
           text = text.replace(/^"?[A-Zぁ-んァ-ヶー一-龠]+"?:?\s*/, '').replace(/"$/, '').trim();
           if (text.length > 5) addColMsg(k, text);
         }
@@ -195,7 +190,6 @@
     saveState();
   }
 
-  // 壁打ち・保存
   let wlSelectedAgent = 'SECRETARY';
   function openWalluchi(k) { if(k) wlSelectedAgent = k; document.getElementById('wlOverlay').classList.add('open'); document.getElementById('wlAgentName').innerText = wlSelectedAgent + ' WALL'; }
   function closeWalluchi() { document.getElementById('wlOverlay').classList.remove('open'); }
