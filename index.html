@@ -32,7 +32,6 @@
       pointer-events: none; z-index: 0;
     }
     .z1 { position: relative; z-index: 1; }
-
     .hdr { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px 10px; border-bottom: 1px solid var(--border); }
     .logo { display: flex; align-items: center; gap: 12px; }
     .logo-name { font-size: 15px; font-weight: 900; letter-spacing: 3px; background: linear-gradient(120deg, #a37a15, var(--gold), var(--gold-lt), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200%; animation: gold-shift 4s linear infinite; }
@@ -43,7 +42,6 @@
     .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); animation: dot-blink 2s ease-in-out infinite; }
     @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:.15} }
     .clock { font-size: 18px; font-weight: 200; letter-spacing: 2px; color: var(--text); }
-
     .agent-bar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 0; padding: 24px 24px 10px; border-bottom: 1px solid var(--border); }
     .agent-slot { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 6px 20px; cursor: pointer; transition: transform .35s ease; }
     .agent-slot:hover { transform: translateY(-2px); }
@@ -65,20 +63,16 @@
     .agent-slot.thinking .agent-id { color: var(--gold); }
     .agent-role { font-size: 8px; letter-spacing: .5px; color: rgba(255,255,255,.2); }
     .bar-divider { width: 1px; height: 60px; flex-shrink: 0; background: linear-gradient(to bottom, transparent, var(--border), transparent); }
-
     .body-grid { flex: 1; display: grid; grid-template-columns: 1fr; gap: 0; padding: 12px 24px 0; min-height: 0; overflow: hidden; }
     .chat-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
     .chat-hdr { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .chat-hdr-lbl { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; color: var(--gold); }
-
     .mission-banner { flex-shrink: 0; display: none; align-items: center; gap: 12px; padding: 8px 14px; border-bottom: 1px solid var(--border); background: rgba(201,162,39,.06); }
     .mission-banner.show { display: flex; }
     .mission-banner-lbl { font-size: 8px; font-weight: 700; letter-spacing: 2px; color: var(--gold); white-space: nowrap; }
     .mission-banner-text { font-size: 11px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-weight: 300; line-height: 1.5; }
-
     .chat-log { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
     .agent-cols { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; min-height: 0; overflow: hidden; }
-
     .agent-col { display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.07); border-radius: 10px; background: rgba(255,255,255,.02); }
     .agent-col-hdr { padding: 8px 10px; display: flex; align-items: center; gap: 7px; border-bottom: 1px solid rgba(255,255,255,.07); flex-shrink: 0; }
     .col-hdr-emoji { font-size: 13px; flex-shrink: 0; }
@@ -87,7 +81,6 @@
     .agent-col-body { flex: 1; overflow-y: auto; padding: 7px; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
     .agent-col-body::-webkit-scrollbar { width: 2px; }
     .agent-col-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
-
     .col-msg {
       background: rgba(255,255,255,.04); border-radius: 8px; padding: 8px 10px;
       font-size: 11px; line-height: 1.72; font-family: 'Noto Sans JP', sans-serif;
@@ -100,7 +93,6 @@
     .col-msg-expand-hint { font-size: 7.5px; opacity: 0; color: var(--cyan); margin-top: 4px; letter-spacing: .5px; transition: opacity .2s; }
     .col-msg:hover .col-msg-expand-hint { opacity: .7; }
     @keyframes msg-drop { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-
     .col-secretary .agent-col-hdr   { border-top: 2px solid var(--secretary); }
     .col-secretary .col-hdr-name    { color: var(--secretary); }
     .col-secretary .col-msg         { border-color: var(--secretary); }
@@ -122,12 +114,10 @@
     .col-interrogation .agent-col-hdr { border-top: 2px solid var(--cyan); background: rgba(0,242,255,.04); }
     .col-interrogation .col-hdr-name  { color: var(--cyan); }
     .col-interrogation .col-msg       { border-color: var(--cyan); }
-
     .chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--muted); padding: 40px; text-align: center; }
     .empty-icon { font-size: 38px; opacity: .3; }
     .empty-lbl { font-size: 11px; letter-spacing: 1.2px; line-height: 1.9; }
     .col-placeholder { font-size: 10px; color: var(--muted); line-height: 1.8; letter-spacing: .3px; padding: 4px 2px; }
-
     .input-footer { flex-shrink: 0; padding: 10px 24px 14px; border-top: 1px solid var(--border); }
     .input-top-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
     .mission-lbl { font-size: 9px; letter-spacing: 2px; color: var(--cyan); white-space: nowrap; font-weight: bold; }
@@ -141,7 +131,6 @@
     .exec-btn { width: 110px; height: 44px; border: none; border-radius: 12px; background: linear-gradient(135deg, #8a6210, var(--gold), var(--gold-lt), var(--gold)); background-size: 300%; background-position: 0%; color: #050505; font-size: 11px; font-weight: 900; letter-spacing: 2.5px; cursor: pointer; flex-shrink: 0; transition: all .35s; }
     .exec-btn:hover { background-position: 100%; box-shadow: 0 4px 24px rgba(201,162,39,.55); transform: translateY(-1px); }
     .exec-btn:disabled { background: #1e2a3a; color: var(--muted); cursor: not-allowed; }
-
     .walluchi-trigger {
       display: flex; align-items: center; gap: 6px;
       padding: 5px 14px; border: 1px solid rgba(255,255,255,.2);
@@ -151,7 +140,6 @@
       white-space: nowrap;
     }
     .walluchi-trigger:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.4); }
-
     .wl-overlay {
       display: none; position: fixed; inset: 0; z-index: 500;
       background: rgba(4,9,18,.82); backdrop-filter: blur(12px);
@@ -266,7 +254,6 @@
     .wl-thinking-dots span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); animation: dot-blink 1.2s ease-in-out infinite; }
     .wl-thinking-dots span:nth-child(2) { animation-delay: .2s; }
     .wl-thinking-dots span:nth-child(3) { animation-delay: .4s; }
-
     .expand-overlay {
       display: none; position: fixed; inset: 0; z-index: 600;
       background: rgba(4,9,18,.78); backdrop-filter: blur(10px);
@@ -307,7 +294,6 @@
     }
     .expand-body::-webkit-scrollbar { width: 3px; }
     .expand-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); }
-
     .loading-veil { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(7,13,26,.92); backdrop-filter: blur(10px); flex-direction: column; align-items: center; justify-content: center; gap: 22px; }
     .loading-veil.on { display: flex; }
     .radar { width: 80px; height: 80px; position: relative; }
@@ -335,7 +321,6 @@
     <div class="clock" id="clock">--:--</div>
   </div>
 </header>
-
 <div class="agent-bar z1">
   <div class="agent-slot" id="slot-SECRETARY" data-key="SECRETARY">
     <div class="portrait-wrap" id="pw-SECRETARY"><span class="portrait-emoji">📋</span></div>
@@ -367,7 +352,6 @@
     <div class="agent-id">相談役</div><div class="agent-role">ADVISOR</div>
   </div>
 </div>
-
 <div class="body-grid z1">
   <div class="chat-wrap">
     <div class="chat-hdr"><span class="live-dot"></span><span class="chat-hdr-lbl">ANALYSIS LOG</span></div>
@@ -436,7 +420,6 @@
     </div>
   </div>
 </div>
-
 <div class="input-footer z1">
   <div class="input-top-row">
     <span class="mission-lbl">MODE</span>
@@ -445,7 +428,7 @@
       <option value="MORNING">朝礼ブリーフィング (MORNING)</option>
       <option value="ON_DEMAND">徹底討論・答申書作成 (ON_DEMAND)</option>
     </select>
-    
+
     <button class="walluchi-trigger" onclick="openWalluchi()">🗣️ 壁打ちモード</button>
     <div class="mode-pills">
       <button class="pill on">TEXT</button><button class="pill">VOICE</button><button class="pill">FILE</button>
@@ -456,13 +439,11 @@
     <button class="exec-btn" id="execBtn" onclick="startAnalysis()">EXECUTE</button>
   </div>
 </div>
-
 <div class="loading-veil" id="loadVeil">
   <div class="radar"><div class="r-ring"></div><div class="r-ring"></div><div class="r-core"></div></div>
   <div class="l-title">ANALYZING MISSION</div>
 </div>
 <div class="toast" id="toast"></div>
-
 <div class="wl-overlay" id="wlOverlay" onclick="handleWlOverlayClick(event)">
   <div class="wl-modal" id="wlModal">
     <div class="wl-hdr">
@@ -493,7 +474,6 @@
     </div>
   </div>
 </div>
-
 <div class="expand-overlay" id="expandOverlay" onclick="handleExpandOverlayClick(event)">
   <div class="expand-modal" id="expandModal">
     <div class="expand-hdr">
@@ -509,13 +489,11 @@
     <div class="expand-body" id="expandBody"></div>
   </div>
 </div>
-
 <script>
 // ══ 1. 定数・グローバル（代表の精密設定を1文字も変えず継承） ══
 const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby_9-PpbPSWv6RCQovjzjaUyVRpadsPb5on_Koa6dKqqugZBmIP5t0btCwAid2fs7zBXg/exec';
 const AGENT_SPRITE_URL = 'https://drive.google.com/thumbnail?id=1EU4kAsOos-6D9YbN6F6DUn7HRNAu5GoI&sz=w1200';
 const ADVISOR_IMG_URL = 'https://drive.google.com/thumbnail?id=1OWUIx87NwSr8AxEIONmpMIdxqZwSMS6C&sz=w1200';
-
 const SPRITE_CONFIG = {
   SECRETARY: { left: '-145%', top: '-65px' },
   MANAGER:   { left: '-15%',  top: '-55px' },
@@ -524,26 +502,95 @@ const SPRITE_CONFIG = {
   DEVIL:     { left: '-535%', top: '-50px' },
   ADVISOR:   { left: '-275%', top: '-50px' }
 };
-
 const AGENT_KEYS   = ['SECRETARY', 'MANAGER', 'PLANNER', 'SNS', 'DEVIL', 'ADVISOR'];
 const AGENT_COLORS = { SECRETARY:'#3b82f6', MANAGER:'#22c55e', PLANNER:'#c9a227', SNS:'#a855f7', DEVIL:'#ef4444', ADVISOR:'#94a3b8' };
 const AGENT_LABELS = { SECRETARY:'秘書', MANAGER:'マネージャー', PLANNER:'プランナー', SNS:'SNS', DEVIL:'Devil', ADVISOR:'相談役' };
 const AGENT_EMOJI  = { SECRETARY:'📋', MANAGER:'📊', PLANNER:'💡', SNS:'📱', DEVIL:'😈', ADVISOR:'👴' };
 
-// ★修正③：仕分けの境界を厳格化。次のタグが来る直前までを正確に切り出す
-const OTHER_TAGS = '(?=\\[(?:秘書|SECRETARY|マネージャー|MANAGER|プランナー|PLANNER|SNS|Devil|相談役|ADVISOR|逆質問|INTERROGATION)\\]|\\*\\*\\[|$)';
+// ══ 修正①②③：タグ正規表現とクリーンアップの強化 ══
+
+// 全エージェントのタグ名パターン（ルックアヘッド用）
+const _ALL_TAG_NAMES = '(?:秘書|SECRETARY|マネージャー|MANAGER|プランナー|PLANNER|SNS|Devil|デビル|相談役|ADVISOR|逆質問|INTERROGATION)';
+
+// ★修正③：ルックアヘッドを厳格化
+//   旧：\*\*\[ だけ見ていたため、本文中の **太字** + [ が偽ヒットして途中で切れていた
+//   新：**[TAG]** または [TAG] の完全形、または文字列末尾($)のみで停止
+const _NEXT_BOUNDARY = '(?=\\*\\*\\[' + _ALL_TAG_NAMES + '\\]\\*\\*|\\[' + _ALL_TAG_NAMES + '\\]|$)';
+
+// タグ形式 [TAG] と **[TAG]** の両方を正しく開閉マッチ
+function _makeTagRx(nameRx) {
+  // 開始：**[NAME]** または [NAME]
+  const open = '(?:\\*\\*\\[' + nameRx + '\\]\\*\\*|\\[' + nameRx + '\\])';
+  // タグ直後の区切り（コロン・スペース・改行）をスキップし、本文をキャプチャ
+  // [\s\S]*? は常に末尾($)まで届けられる（修正③：末尾途切れ対応）
+  return new RegExp(open + '[ \\t]*[:：]?[ \\t]*\\r?\\n?([\\s\\S]*?)' + _NEXT_BOUNDARY, 'i');
+}
+
 const AGENT_REGEX = {
-  SECRETARY: new RegExp('(?:\\[|\\*\\*\\[)(?:秘書|SECRETARY)(?:\\]|\\*\\*\\])[:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  MANAGER:   new RegExp('(?:\\[|\\*\\*\\[)(?:マネージャー|MANAGER)(?:\\]|\\*\\*\\])[:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  PLANNER:   new RegExp('(?:\\[|\\*\\*\\[)(?:プランナー|PLANNER)(?:\\]|\\*\\*\\])[:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  SNS:       new RegExp('(?:\\[|\\*\\*\\[)SNS(?:\\]|\\*\\*\\])[:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  DEVIL:     new RegExp('(?:\\[|\\*\\*\\[)(?:Devil|デビル)(?:\\]|\\*\\*\\])[:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  ADVISOR:   new RegExp('(?:\\[|\\*\\*\\[)(?:相談役|ADVISOR)(?:\\]|\\*\\*\\])[:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i'),
-  INTERROGATION: new RegExp('(?:\\[|\\*\\*\\[)(?:逆質問|INTERROGATION)(?:\\]|\\*\\*\\])[:：]?\\s*([\\s\\S]*?)' + OTHER_TAGS, 'i')
+  SECRETARY:     _makeTagRx('(?:秘書|SECRETARY)'),
+  MANAGER:       _makeTagRx('(?:マネージャー|MANAGER)'),
+  PLANNER:       _makeTagRx('(?:プランナー|PLANNER)'),
+  SNS:           _makeTagRx('SNS'),
+  DEVIL:         _makeTagRx('(?:Devil|デビル)'),
+  ADVISOR:       _makeTagRx('(?:相談役|ADVISOR)'),
+  INTERROGATION: _makeTagRx('(?:逆質問|INTERROGATION)')
 };
 
-let wlSelectedAgent = null;
+// ★追加：AIレスポンスのタグ形式を正規化する前処理（根本解決）
+// 【問題】AIが [TAG] 以外の記法（"TAG":、「TAG」:、**TAG**: 等）を使うと
+//   _NEXT_BOUNDARY が境界を認識できず秘書カラムが全文を飲み込む
+// 【対策】regex マッチの前に全タグ記法を [CANONICAL] 形式に統一する
+function _normalizeAiText(raw) {
+  const TAG_CANON = {
+    '\u79d8\u66f8': 'SECRETARY', 'SECRETARY': 'SECRETARY',
+    '\u30de\u30cd\u30fc\u30b8\u30e3\u30fc': 'MANAGER', 'MANAGER': 'MANAGER',
+    '\u30d7\u30e9\u30f3\u30ca\u30fc': 'PLANNER', 'PLANNER': 'PLANNER',
+    'SNS': 'SNS',
+    'Devil': 'DEVIL', '\u30c7\u30d3\u30eb': 'DEVIL', 'DEVIL': 'DEVIL',
+    '\u76f8\u8ac7\u5f79': 'ADVISOR', 'ADVISOR': 'ADVISOR',
+    '\u9006\u8cea\u554f': 'INTERROGATION', 'INTERROGATION': 'INTERROGATION'
+  };
+  // 長い名前を先に並べて前方一致誤爆を防ぐ
+  const allNames = '\u30de\u30cd\u30fc\u30b8\u30e3\u30fc|SECRETARY|MANAGER|PLANNER|ADVISOR|INTERROGATION|\u9006\u8cea\u554f|\u76f8\u8ac7\u5f79|\u30d7\u30e9\u30f3\u30ca\u30fc|\u30c7\u30d3\u30eb|DEVIL|Devil|\u79d8\u66f8|SNS';
+  // 行頭にあるタグ記法を [CANONICAL] に変換（行頭限定で文中への誤爆防止）
+  // 対象: "TAG": / 「TAG」: / 【TAG】: / **TAG**: / TAG: / [TAG]: / **[TAG]**:
+  // ※ [TAG]（コロンなし）はそのまま通過させ既存 regex に任せる
+  const normRx = new RegExp(
+    '^[ \\t]*(?:\\*{1,2})?[\\[\\u300c\\u300e\\u3010\\u300a"\']?' +
+    '(' + allNames + ')' +
+    '[\\]\\u300d\\u300f\\u3011\\u300b"\']?(?:\\*{1,2})?[ \\t]*[::\uff1a][ \\t]*',
+    'gim'
+  );
+  return raw.replace(normRx, function(_, name) {
+    return '[' + (TAG_CANON[name] || name.toUpperCase()) + '] ';
+  });
+}
 
+// ★修正②：文頭ノイズ（ヒゲ）を確実に除去するクリーンアップ関数
+//   対象：「、」「：」引用符、JSONキー名（"SECRETARY": 等）
+function _cleanColText(raw) {
+  let t = (raw || '').trim();
+  // 複数種のノイズが重なる場合に備え、変化がなくなるまでループ除去
+  for (let i = 0; i < 6; i++) {
+    const prev = t;
+    // 1. エージェント名ラベル（JSONキー名含む）を除去
+    //    Devil / デビル も追加（旧コードで露出していた抜け）
+    t = t.replace(
+      /^"?(?:SECRETARY|MANAGER|PLANNER|SNS|DEVIL|Devil|ADVISOR|INTERROGATION|秘書|マネージャー|プランナー|デビル|相談役|逆質問)"?\s*[:：]\s*/i,
+      ''
+    );
+    // 2. 文頭の記号・引用符・空白を除去
+    //    ★「。」を追加：デビルカラムで露出していた抜け
+    t = t.replace(/^[\s\r\n、，。，,:："""''「」『』]+/, '');
+    t = t.trim();
+    if (t === prev) break; // 変化なし＝除去完了
+  }
+  // 3. 文末の孤立した閉じ引用符・括弧を除去（JSONの末尾 " や 」 等）
+  t = t.replace(/["""''」』]+$/, '').trim();
+  return t;
+}
+
+let wlSelectedAgent = null;
 window.addEventListener('load', () => {
   buildWlChips();
   tick(); setInterval(tick, 1000);
@@ -562,25 +609,21 @@ window.addEventListener('load', () => {
   document.getElementById('textField').addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') startAnalysis(); });
   document.getElementById('wlInput').addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') sendWalluchi(); });
 });
-
 function tick() {
   const n = new Date();
   document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
-
 // ══ 2. 分析実行（心臓部） ══
 async function startAnalysis() {
   const mode = document.getElementById('missionMode').value;
   const input = document.getElementById('textField').value.trim();
   if (mode !== 'MORNING' && !input) return;
-
   document.getElementById('chatEmpty').style.display = 'none';
   document.getElementById('agentCols').style.display = 'grid';
   document.getElementById('missionBanner').classList.add('show');
   document.getElementById('missionText').textContent = input || "MISSION START";
   AGENT_KEYS.forEach(k => setState(k, 'thinking'));
   setLoading(true);
-
   try {
     const res = await fetch(GAS_API_URL, { method:'POST', body:JSON.stringify({userInput:input, mode:mode}) });
     const result = await res.json();
@@ -589,24 +632,27 @@ async function startAnalysis() {
   setLoading(false);
 }
 
+// ★修正①②③：renderResponse を全面修正
 function renderResponse(aiText) {
   AGENT_KEYS.forEach(k => setState(k, 'idle'));
   const allKeys = [...AGENT_KEYS, 'INTERROGATION'];
-  
+  // ★追加：タグ記法を正規化してから分配（"TAG": / 「TAG」: 等の混在対策）
+  const normalizedText = _normalizeAiText(aiText);
+
   allKeys.forEach((k, i) => {
     setTimeout(() => {
       setState(k, 'active');
-      const match = aiText.match(AGENT_REGEX[k]);
-      
-      if (match) {
-        let text = match[1].trim();
-        // ★不具合①：文頭の「、」やゴミを徹底掃除
-        text = text.replace(/^[、，。．,:：\s"'“”「『]+/, '').replace(/^"?[A-Zぁ-んァ-ヶー一-龠]+"?:?\s*/i, '').replace(/["'“”」』]+$/, '').trim();
-        if (text.length > 2) addColMsg(k, text);
-      } else if (i === 0 && !aiText.includes('[')) {
-        // ★不具合③：タグが一個も無い「完全な平文」の時だけ秘書に入れる
-        addColMsg('SECRETARY', aiText.trim());
+      const match = normalizedText.match(AGENT_REGEX[k]);
+
+      if (match && match[1] !== undefined) {
+        // ★修正②：文頭ノイズをクリーンアップしてから表示
+        const text = _cleanColText(match[1]);
+        if (text.length > 0) addColMsg(k, text);
       }
+      // ★修正①：フォールバック（タグなし→秘書へ全投入）を完全廃止
+      //   タグが見つからない場合は当該カラムには何も表示しない（混入ゼロ）
+      //   ※壁打ちモードのフォールバックは sendWalluchi 内で個別に維持
+
       setTimeout(() => setState(k, 'idle'), 3000);
     }, i * 300);
   });
@@ -624,7 +670,6 @@ function addColMsg(k, t) {
   body.scrollTop = body.scrollHeight;
   saveState();
 }
-
 // ══ 3. 壁打ち・保存（既存機能維持） ══
 function buildWlChips() {
   const container = document.getElementById('wlChips');
@@ -672,10 +717,12 @@ async function sendWalluchi() {
     const res = await fetch(GAS_API_URL, { method:'POST', body:JSON.stringify({userInput:input, agent:wlSelectedAgent}) });
     const result = await res.json();
     if(result.status === 'success') {
-      const match = result.data.match(AGENT_REGEX[wlSelectedAgent]);
-      let resText = match ? match[1].trim() : result.data;
-      resText = resText.replace(/^[、，,:：\s"'“”]+/, '').trim();
-      wlAddMsg('agent', AGENT_LABELS[wlSelectedAgent], resText, AGENT_COLORS[wlSelectedAgent]);
+      const normWl = _normalizeAiText(result.data);
+      const match = normWl.match(AGENT_REGEX[wlSelectedAgent]);
+      // 壁打ちは1対1専用モード：タグがあればキャプチャ、なければ生データ全体を使う（フォールバック維持）
+      const raw = (match && match[1] != null) ? match[1] : result.data;
+      const resText = _cleanColText(raw);
+      if(resText.length > 0) wlAddMsg('agent', AGENT_LABELS[wlSelectedAgent], resText, AGENT_COLORS[wlSelectedAgent]);
     }
   } catch(e) { toast('Err','err'); }
 }
